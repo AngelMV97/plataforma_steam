@@ -1,170 +1,302 @@
-const openai = require('../config/openai');
+const OpenAI = require('openai');
 const { supabase } = require('../config/supabase');
+const {
+  getRubricCriteria,
+  getGradeProfile,
+  getDimensionForSection,
+  LEVEL_DESCRIPTORS
+} = require('../config/rubrics');
 
-/**
- * AI Tutor Service - Cognitive interventions
- */
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
 class TutorService {
-  
   /**
-   * Analyze student's bitácora and generate intervention
+   * Generate cognitive intervention based on student interaction
    */
-  async generateIntervention(attemptId, bitacoraContent, interactionHistory = []) {
+  async generateCognitiveIntervention({
+    studentMessage,
+    bitacoraContent,
+    articleContext,
+    conversationHistory,
+    studentProfile,
+    currentSection
+  }) {
     try {
-      // Determine intervention type based on student's progress
-      const interventionType = this.determineInterventionType(
-        bitacoraContent, 
-        interactionHistory
-      );
+      // Get student's grade level
+      const gradeLevel = studentProfile.grade_level || '9';
+      
+      // Get student's cognitive profile
+      const { data: cognitiveProfile } = await supabase
+        .from('cognitive_profiles')
+        .select('profile_data')
+        .eq('student_id', studentProfile.id)
+        .single();
+      
+      // Determine cognitive dimension for current section
+      const focusDimension = getDimensionForSection(currentSection);
+      
+      // Get current level on this dimension (1-4)
+      const currentLevel = cognitiveProfile?.profile_data?.[focusDimension]?.level || 1;
+      const nextLevel = Math.min(currentLevel + 1, 4);
+      
+      // Get rubric criteria
+      const currentCriteria = getRubricCriteria(gradeLevel, focusDimension, currentLevel);
+      const nextCriteria = getRubricCriteria(gradeLevel, focusDimension, nextLevel);
+      const gradeProfile = getGradeProfile(gradeLevel);
+      
+      // Build context from article chunks
+      const articleText = articleContext
+        .map((chunk, i) => `[Fragmento ${i + 1}]: ${chunk.content}`)
+        .join('\n\n');
+      
+      // Build conversation context (last 6 messages)
+      const conversationText = conversationHistory
+        .slice(-6)
+        .map(msg => `${msg.role === 'student' ? 'Estudiante' : 'Tutor'}: ${msg.tutor_message}`)
+        .join('\n');
+      
+      // Create adaptive system prompt
+      const systemPrompt = `Eres un tutor AI cognitivo especializado en desarrollo de pensamiento científico.
 
-      // Generate contextual prompt for AI
-      const prompt = this.buildPrompt(interventionType, bitacoraContent, interactionHistory);
+╔══════════════════════════════════════════════════════════════╗
+║ PERFIL DEL ESTUDIANTE                                         ║
+╚══════════════════════════════════════════════════════════════╝
+Nivel: ${gradeProfile.name} (Grado ${gradeLevel}°)
+Descripción: ${gradeProfile.profile}
+Expectativa para este nivel: ${gradeProfile.expectations}
 
-      // Call OpenAI
-      const completion = await openai.chat.completions.create({
-        model: process.env.OPENAI_MODEL || 'gpt-4o-mini',
+╔══════════════════════════════════════════════════════════════╗
+║ DIMENSIÓN COGNITIVA EN FOCO                                   ║
+╚══════════════════════════════════════════════════════════════╝
+Dimensión: ${gradeProfile.dimensions[focusDimension].name}
+Sección de bitácora: ${currentSection}
+
+Nivel actual del estudiante: ${LEVEL_DESCRIPTORS[currentLevel]}
+→ "${currentCriteria}"
+
+Objetivo (siguiente nivel): ${LEVEL_DESCRIPTORS[nextLevel]}
+→ "${nextCriteria}"
+
+╔══════════════════════════════════════════════════════════════╗
+║ ESTRATEGIA PEDAGÓGICA                                         ║
+╚══════════════════════════════════════════════════════════════╝
+Tu misión es guiar al estudiante desde su nivel actual hacia el siguiente nivel.
+
+Según su nivel actual (${currentLevel}/4):
+${currentLevel === 1 ? `
+- Estudiante en nivel INICIAL: Necesita MUCHA estructura y guía
+- Usa preguntas cerradas para orientar
+- Divide problemas en pasos pequeños
+- Da ejemplos concretos del artículo
+- Valida intentos y celebra avances pequeños
+` : currentLevel === 2 ? `
+- Estudiante EN DESARROLLO: Necesita guía moderada
+- Usa preguntas socráticas simples
+- Ayuda a organizar su pensamiento
+- Pide que justifique con evidencia del artículo
+- Señala conexiones que podría hacer
+` : currentLevel === 3 ? `
+- Estudiante COMPETENTE: Puede trabajar con autonomía
+- Usa preguntas abiertas y desafiantes
+- Pide análisis crítico
+- Fomenta que proponga alternativas
+- Desafía supuestos implícitos
+` : `
+- Estudiante AVANZADO: Altamente autónomo
+- Usa preguntas muy abiertas
+- Desafía a generalizar y transferir
+- Pide que critique y proponga nuevos enfoques
+- Fomenta pensamiento original
+`}
+
+MÉTODO: Siempre usa método socrático. NO des respuestas directas.
+- Si pregunta "¿Es correcto?", responde con otra pregunta
+- Si pide la respuesta, guía el razonamiento
+- Si comete un error, pregunta cómo podría verificarlo
+
+╔══════════════════════════════════════════════════════════════╗
+║ CONTEXTO DEL ARTÍCULO                                         ║
+╚══════════════════════════════════════════════════════════════╝
+${articleText || 'No hay fragmentos del artículo disponibles'}
+
+╔══════════════════════════════════════════════════════════════╗
+║ BITÁCORA DEL ESTUDIANTE                                       ║
+╚══════════════════════════════════════════════════════════════╝
+Observaciones: ${bitacoraContent.observaciones || 'Sin observaciones aún'}
+Preguntas: ${JSON.stringify(bitacoraContent.preguntas || [])}
+Hipótesis: ${bitacoraContent.hipotesis || 'Sin hipótesis aún'}
+Variables: ${JSON.stringify(bitacoraContent.variables || [])}
+Experimentos: ${bitacoraContent.experimentos || 'Sin experimentos aún'}
+
+╔══════════════════════════════════════════════════════════════╗
+║ CONVERSACIÓN RECIENTE                                         ║
+╚══════════════════════════════════════════════════════════════╝
+${conversationText || 'Primera interacción'}
+
+╔══════════════════════════════════════════════════════════════╗
+║ TU RESPUESTA                                                  ║
+╚══════════════════════════════════════════════════════════════╝
+Responde de forma breve (máx 3-4 oraciones), en español, con tono cercano pero profesional.
+Ajusta la complejidad de tu lenguaje al nivel ${gradeProfile.name}.
+Usa el artículo como referencia cuando sea relevante.`;
+
+      const response = await openai.chat.completions.create({
+        model: 'gpt-4o-mini',
         messages: [
-          {
-            role: 'system',
-            content: this.getSystemPrompt()
-          },
-          {
-            role: 'user',
-            content: prompt
-          }
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: studentMessage }
         ],
         temperature: 0.7,
-        max_tokens: 500
+        max_tokens: 300
       });
 
-      const tutorMessage = completion.choices[0].message.content;
+      const aiMessage = response.choices[0].message.content;
 
-      // Save interaction to database
-      const { data: interaction, error } = await supabase
-        .from('tutor_interactions')
-        .insert({
-          attempt_id: attemptId,
-          interaction_type: interventionType,
-          tutor_message: tutorMessage,
-          context_snapshot: bitacoraContent,
-          ai_model_used: process.env.OPENAI_MODEL || 'gpt-4o-mini'
-        })
-        .select()
-        .single();
-
-      if (error) throw error;
+      // Determine intervention type and strategy
+      const interventionType = this.classifyInterventionType(aiMessage);
+      const strategy = this.determineStrategy(aiMessage, currentLevel);
 
       return {
-        success: true,
-        interaction,
-        interventionType
+        message: aiMessage,
+        intervention_type: interventionType,
+        cognitive_dimension: focusDimension,
+        strategy: strategy
       };
-
     } catch (error) {
-      console.error('Tutor intervention error:', error);
+      console.error('Cognitive intervention error:', error);
       throw error;
     }
   }
 
   /**
-   * Determine which type of intervention to use
+   * Classify intervention type
    */
-  determineInterventionType(bitacoraContent, interactionHistory) {
-    const recentInteractions = interactionHistory.slice(-3);
-    const lastTypes = recentInteractions.map(i => i.interaction_type);
+  classifyInterventionType(aiMessage) {
+    const lower = aiMessage.toLowerCase();
 
-    // Avoid repeating same intervention type
-    const interventionTypes = [
-      'clarification',
-      'counterexample', 
-      'metacognition',
-      'transfer',
-      'focus'
-    ];
-
-    // Simple logic - can be enhanced with ML later
-    if (bitacoraContent.hypotheses?.length === 0) {
+    if (lower.includes('?') && !lower.includes('observ')) {
+      return 'socratic_question';
+    }
+    if (lower.includes('considera') || lower.includes('piensa en')) {
+      return 'hint';
+    }
+    if (lower.includes('contradicc') || lower.includes('pero')) {
+      return 'challenge';
+    }
+    if (lower.includes('bien') || lower.includes('correcto') || lower.includes('exacto')) {
+      return 'validation';
+    }
+    if (lower.includes('evidencia') || lower.includes('artículo')) {
       return 'clarification';
     }
-    
-    if (bitacoraContent.attempts?.length > 2 && !lastTypes.includes('metacognition')) {
-      return 'metacognition';
-    }
 
-    if (bitacoraContent.reflections?.length === 0) {
-      return 'focus';
-    }
-
-    // Default to varied intervention
-    const availableTypes = interventionTypes.filter(t => !lastTypes.includes(t));
-    return availableTypes[Math.floor(Math.random() * availableTypes.length)];
+    return 'guidance';
   }
 
   /**
-   * Build prompt for AI based on intervention type
+   * Determine pedagogical strategy based on message and student level
    */
-  buildPrompt(interventionType, bitacoraContent, interactionHistory) {
-    const context = `
-Student's current work:
-- Initial understanding: ${bitacoraContent.initial_understanding || 'Not yet defined'}
-- Hypotheses: ${JSON.stringify(bitacoraContent.hypotheses || [])}
-- Attempts so far: ${JSON.stringify(bitacoraContent.attempts || [])}
-- Reflections: ${JSON.stringify(bitacoraContent.reflections || [])}
+  determineStrategy(aiMessage, studentLevel) {
+    const lower = aiMessage.toLowerCase();
 
-Previous interactions: ${interactionHistory.length} interventions
-    `;
+    // Level-aware strategies
+    if (studentLevel <= 2) {
+      if (lower.includes('ejemplo') || lower.includes('por ejemplo')) {
+        return 'concrete_example';
+      }
+      if (lower.includes('paso') || lower.includes('primero')) {
+        return 'step_by_step';
+      }
+    }
 
-    const prompts = {
-      clarification: `${context}\n\nThe student seems unclear about the problem. Ask a clarifying question that helps them define what they're trying to solve or understand. Don't give answers, help them articulate their thinking.`,
-      
-      counterexample: `${context}\n\nThe student has made an assumption or claim. Provide a gentle counterexample or edge case that challenges their thinking without being discouraging. Make them reconsider.`,
-      
-      metacognition: `${context}\n\nThe student has been working but may not be reflecting on their process. Ask a metacognitive question that makes them think about HOW they're thinking, their strategy, or what they're learning about their own reasoning.`,
-      
-      transfer: `${context}\n\nHelp the student see connections. Ask if they've encountered similar ideas in other contexts, or how this concept might apply elsewhere. Encourage transferring knowledge.`,
-      
-      focus: `${context}\n\nThe student seems scattered or stuck. Help them focus by asking what specific part is most uncertain or what they could tackle first. Guide them to break down the problem.`
-    };
+    if (lower.includes('¿cómo') || lower.includes('¿por qué')) {
+      return 'metacognitive_prompt';
+    }
+    if (lower.includes('artículo') || lower.includes('texto')) {
+      return 'evidence_request';
+    }
+    if (lower.includes('relacion') || lower.includes('conect')) {
+      return 'transfer_facilitation';
+    }
+    if (lower.includes('compara') || lower.includes('diferen')) {
+      return 'comparison';
+    }
+    if (lower.includes('alternativa') || lower.includes('otro modo')) {
+      return 'alternative_thinking';
+    }
 
-    return prompts[interventionType] || prompts.clarification;
-  }
-
-  /**
-   * System prompt defining tutor's role
-   */
-  getSystemPrompt() {
-    return `You are a cognitive tutor for a STEM academy focused on scientific thinking.
-
-Your role:
-- Help students think deeply, not give answers
-- Ask strategic questions that reveal reasoning
-- Introduce counterexamples when appropriate
-- Foster metacognition (thinking about thinking)
-- Encourage multiple approaches
-- Be supportive but challenging
-
-Your constraints:
-- NEVER solve the problem for them
-- Keep responses brief (2-3 sentences max)
-- Use clear, simple Spanish (Latin American)
-- Focus on PROCESS, not just results
-- Encourage experimentation and revision
-
-Tone: Curious, supportive, Socratic`;
+    return 'socratic_questioning';
   }
 
   /**
    * Get interaction history for an attempt
    */
   async getInteractionHistory(attemptId) {
-    const { data, error } = await supabase
-      .from('tutor_interactions')
-      .select('*')
-      .eq('attempt_id', attemptId)
-      .order('timestamp', { ascending: true });
+    try {
+      const { data, error } = await supabase
+        .from('tutor_interactions')
+        .select('*')
+        .eq('attempt_id', attemptId)
+        .order('timestamp', { ascending: true });
 
-    if (error) throw error;
-    return data || [];
+      if (error) throw error;
+
+      return data || [];
+    } catch (error) {
+      console.error('Get history error:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Analyze student's problem-solving process (not correctness)
+   */
+  async analyzeProblemSolvingProcess(bitacoraContent, generatedProblem, studentProfile) {
+    const prompt = `
+Eres un evaluador experto de procesos de pensamiento en STEM.
+
+PROBLEMA TRABAJADO:
+${JSON.stringify(generatedProblem, null, 2)}
+
+TRABAJO DEL ESTUDIANTE:
+${JSON.stringify(bitacoraContent, null, 2)}
+
+INSTRUCCIONES:
+Analiza el PROCESO de pensamiento del estudiante, NO la corrección de su respuesta.
+
+Evalúa:
+1. **Representación**: ¿Cómo modeló el problema? ¿Usó diagramas, ecuaciones, analogías?
+2. **Abstracción**: ¿Identificó variables clave? ¿Hizo supuestos explícitos?
+3. **Estrategia**: ¿Planificó un enfoque? ¿Probó alternativas?
+4. **Argumentación**: ¿Justificó sus decisiones? ¿Explicó su razonamiento?
+5. **Metacognición**: ¿Reflexionó sobre errores? ¿Reconoció limitaciones?
+6. **Transferencia**: ¿Conectó con otros contextos? ¿Vio patrones generales?
+
+Proporciona:
+- 2-3 fortalezas observadas en su proceso
+- 1-2 áreas de mejora (sin decirle "la respuesta correcta")
+- 1 pregunta socrática para profundizar
+
+Formato JSON:
+{
+  "strengths": ["fortaleza 1", "fortaleza 2"],
+  "growth_areas": ["área 1", "área 2"],
+  "deep_question": "pregunta reflexiva"
+}
+`;
+
+    const response = await openai.chat.completions.create({
+      model: 'gpt-4o',
+      messages: [
+        { role: 'system', content: 'Eres un evaluador de procesos cognitivos.' },
+        { role: 'user', content: prompt }
+      ],
+      response_format: { type: 'json_object' }
+    });
+
+    return JSON.parse(response.choices[0].message.content);
   }
 }
 

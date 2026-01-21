@@ -85,7 +85,7 @@ CREATE TABLE public.student_attempts (
     }'::jsonb,
     status VARCHAR(20) DEFAULT 'in_progress' CHECK (status IN ('in_progress', 'completed', 'abandoned')),
     started_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    last_updated TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     completed_at TIMESTAMP WITH TIME ZONE
 );
 
@@ -530,3 +530,174 @@ ORDER BY table_name;
 -- Fix the search_path warnings if any
 ALTER FUNCTION public.update_updated_at_column() SET search_path = '';
 ALTER FUNCTION public.create_cognitive_profile_for_new_student() SET search_path = '';
+
+
+-- ============================================
+-- ADDITIONAL MIGRATION FOR RAG EMBEDDINGS AND PDF HANDLING
+-- ============================================
+-- Enable pgvector extension
+CREATE EXTENSION IF NOT EXISTS vector;
+
+-- Create embeddings table for RAG
+CREATE TABLE public.article_embeddings (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    article_id UUID REFERENCES public.articles(id) ON DELETE CASCADE,
+    content TEXT NOT NULL,
+    embedding vector(1536), -- OpenAI ada-002 dimension
+    page_number INT,
+    chunk_index INT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Create index for similarity search
+CREATE INDEX ON public.article_embeddings 
+USING ivfflat (embedding vector_cosine_ops)
+WITH (lists = 100);
+
+-- Add RLS policies
+ALTER TABLE public.article_embeddings ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Anyone can read embeddings"
+    ON public.article_embeddings FOR SELECT
+    TO authenticated
+    USING (true);
+
+CREATE POLICY "Mentors can insert embeddings"
+    ON public.article_embeddings FOR INSERT
+    TO authenticated
+    WITH CHECK (
+        EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('mentor', 'admin'))
+    );
+
+-- Update articles table to store PDF URL
+ALTER TABLE public.articles 
+ADD COLUMN IF NOT EXISTS pdf_url TEXT,
+ADD COLUMN IF NOT EXISTS pdf_processed BOOLEAN DEFAULT false,
+ADD COLUMN IF NOT EXISTS week_number INT;
+
+-- Add index for week filtering
+CREATE INDEX idx_articles_created_at ON public.articles(created_at DESC);
+
+-- ============================================
+-- END OF ADDITIONAL MIGRATION
+-- ============================================
+
+-- ============================================
+-- MIGRATION: Adapt schema for RAG-based approach
+-- ============================================
+
+-- 1. Drop problems table
+DROP TABLE IF EXISTS public.problems CASCADE;
+
+-- 2. Update student_attempts to link to articles directly
+ALTER TABLE public.student_attempts 
+DROP CONSTRAINT IF EXISTS student_attempts_problem_id_fkey;
+
+ALTER TABLE public.student_attempts 
+DROP COLUMN IF EXISTS problem_id;
+
+ALTER TABLE public.student_attempts 
+ADD COLUMN IF NOT EXISTS article_id UUID REFERENCES public.articles(id) ON DELETE CASCADE;
+
+CREATE INDEX IF NOT EXISTS idx_student_attempts_article 
+ON public.student_attempts(article_id);
+
+-- 3. Add helpful columns
+ALTER TABLE public.student_attempts 
+ADD COLUMN IF NOT EXISTS rag_queries_count INT DEFAULT 0;
+
+COMMENT ON COLUMN public.student_attempts.bitacora_content IS 
+'Student work log - free-form notes, questions, reflections, and AI conversation history';
+
+-- 4. Verify final table list
+SELECT table_name 
+FROM information_schema.tables 
+WHERE table_schema = 'public' 
+AND table_type = 'BASE TABLE'
+ORDER BY table_name;
+
+-- Verification: Run this to confirm policies are still valid
+SELECT 
+    tablename, 
+    policyname, 
+    cmd,
+    qual
+FROM pg_policies 
+WHERE schemaname = 'public' 
+AND tablename = 'student_attempts';
+
+
+-- ============================================
+-- MIGRATION: Bitácora Structured Template
+-- Date: 2026-01-21
+-- Purpose: Update schema for structured bitácora sections + AI tutor context
+-- ============================================
+
+-- 1. Update student_attempts bitacora_content structure to match pedagogical template
+ALTER TABLE public.student_attempts 
+ALTER COLUMN bitacora_content SET DEFAULT '{
+  "observaciones": "",
+  "preguntas": [],
+  "hipotesis": "",
+  "variables": [],
+  "experimentos": "",
+  "errores_aprendizajes": "",
+  "reflexiones": "",
+  "conclusiones": ""
+}'::jsonb;
+
+-- Update comment to reflect new structure
+COMMENT ON COLUMN public.student_attempts.bitacora_content IS 
+'Structured student notebook with 8 sections: observaciones, preguntas, hipotesis, variables, experimentos, errores_aprendizajes, reflexiones, conclusiones';
+
+-- 2. Add context fields to tutor_interactions for better AI tracking
+ALTER TABLE public.tutor_interactions
+ADD COLUMN IF NOT EXISTS cognitive_dimension VARCHAR(50),
+ADD COLUMN IF NOT EXISTS intervention_strategy VARCHAR(50),
+ADD COLUMN IF NOT EXISTS article_chunks_used JSONB DEFAULT '[]'::jsonb,
+ADD COLUMN IF NOT EXISTS bitacora_section VARCHAR(50);
+
+-- Add comments for documentation
+COMMENT ON COLUMN tutor_interactions.cognitive_dimension IS 
+'Which of the 6 cognitive dimensions this interaction targets: representation, abstraction, strategy, argumentation, metacognition, transfer';
+
+COMMENT ON COLUMN tutor_interactions.intervention_strategy IS 
+'Type of pedagogical intervention: socratic_question, hint, clarification, validation, challenge, connection';
+
+COMMENT ON COLUMN tutor_interactions.article_chunks_used IS 
+'Array of article_embeddings chunk indices used in RAG for this response';
+
+COMMENT ON COLUMN tutor_interactions.bitacora_section IS 
+'Which bitacora section the student was working on when this interaction occurred';
+
+-- 3. Add role field to tutor_interactions to distinguish student vs AI messages
+ALTER TABLE public.tutor_interactions
+ADD COLUMN IF NOT EXISTS role VARCHAR(20) DEFAULT 'tutor' CHECK (role IN ('student', 'tutor'));
+
+-- Update comment on tutor_message to clarify it can be from either party
+COMMENT ON COLUMN tutor_interactions.tutor_message IS 
+'Message content - can be from student (role=student) or AI tutor (role=tutor)';
+
+-- 4. Create index for faster bitacora queries by week
+CREATE INDEX IF NOT EXISTS idx_attempts_student_article 
+ON public.student_attempts(student_id, article_id);
+
+-- 5. Create index for tutor interactions ordering
+CREATE INDEX IF NOT EXISTS idx_tutor_interactions_timestamp 
+ON public.tutor_interactions(attempt_id, timestamp);
+
+-- 6. Verify the changes
+SELECT column_name, data_type, column_default 
+FROM information_schema.columns 
+WHERE table_name = 'student_attempts' 
+AND column_name = 'bitacora_content';
+
+SELECT column_name, data_type 
+FROM information_schema.columns 
+WHERE table_name = 'tutor_interactions' 
+AND column_name IN ('cognitive_dimension', 'intervention_strategy', 'article_chunks_used', 'bitacora_section', 'role')
+ORDER BY column_name;
+
+-- ============================================
+-- END OF MIGRATION
+-- ============================================

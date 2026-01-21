@@ -1,7 +1,25 @@
 const express = require('express');
 const router = express.Router();
-const { authenticateUser } = require('../middleware/auth');
+const multer = require('multer');
+const { authenticateUser, requireRole } = require('../middleware/auth');
 const problemService = require('../services/problemService');
+const pdfService = require('../services/pdfService');
+const { supabase } = require('../config/supabase');
+
+// Configure multer for file upload
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB limit
+  },
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype === 'application/pdf') {
+      cb(null, true);
+    } else {
+      cb(new Error('Only PDF files are allowed'));
+    }
+  },
+});
 
 /**
  * GET /api/articles
@@ -9,9 +27,29 @@ const problemService = require('../services/problemService');
  */
 router.get('/', authenticateUser, async (req, res) => {
   try {
-    const { difficulty_level } = req.query;
-    const articles = await problemService.getArticles({ difficulty_level });
-    res.json({ success: true, data: articles });
+    const { difficulty_level, current_week } = req.query;
+    
+    let query = supabase
+      .from('articles')
+      .select('*')
+      .order('created_at', { ascending: false });
+    
+    if (difficulty_level) {
+      query = query.eq('difficulty_level', difficulty_level);
+    }
+    
+    // Filter for current week (articles uploaded in last 7 days)
+    if (current_week === 'true') {
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+      query = query.gte('created_at', sevenDaysAgo.toISOString());
+    }
+    
+    const { data, error } = await query;
+    
+    if (error) throw error;
+    
+    res.json({ success: true, data: data || [] });
   } catch (error) {
     console.error('Get articles error:', error);
     res.status(500).json({ error: 'Failed to fetch articles' });
@@ -20,15 +58,131 @@ router.get('/', authenticateUser, async (req, res) => {
 
 /**
  * GET /api/articles/:id
- * Get single article with problems
+ * Get single article
  */
 router.get('/:id', authenticateUser, async (req, res) => {
   try {
-    const article = await problemService.getArticleWithProblems(req.params.id);
-    res.json({ success: true, data: article });
+    const { data, error } = await supabase
+      .from('articles')
+      .select('*')
+      .eq('id', req.params.id)
+      .single();
+    
+    if (error) throw error;
+    
+    res.json({ success: true, data });
   } catch (error) {
     console.error('Get article error:', error);
     res.status(500).json({ error: 'Failed to fetch article' });
+  }
+});
+
+/**
+ * POST /api/articles
+ * Create new article with PDF upload (mentors only)
+ */
+router.post(
+  '/',
+  authenticateUser,
+  requireRole('mentor', 'admin'),
+  upload.single('pdf'),
+  async (req, res) => {
+    try {
+      const {
+        title,
+        subtitle,
+        summary,
+        difficulty_level,
+        cognitive_axes,
+        article_type,
+        estimated_reading_minutes,
+        week_number,
+      } = req.body;
+
+      const pdfFile = req.file;
+
+      if (!pdfFile) {
+        return res.status(400).json({ error: 'PDF file is required' });
+      }
+
+      // Parse cognitive_axes if it's a string
+      const parsedAxes = typeof cognitive_axes === 'string' 
+        ? JSON.parse(cognitive_axes) 
+        : cognitive_axes;
+
+      // Upload PDF to Supabase Storage
+      const fileName = `${Date.now()}-${pdfFile.originalname}`;
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('articles')
+        .upload(fileName, pdfFile.buffer, {
+          contentType: 'application/pdf',
+          cacheControl: '3600',
+        });
+
+      if (uploadError) throw uploadError;
+
+      // Get public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from('articles')
+        .getPublicUrl(fileName);
+
+      // Create article record
+      const { data: article, error: articleError } = await supabase
+        .from('articles')
+        .insert({
+          title,
+          subtitle,
+          summary,
+          difficulty_level: parseInt(difficulty_level),
+          cognitive_axes: parsedAxes,
+          article_type,
+          estimated_reading_minutes: parseInt(estimated_reading_minutes),
+          week_number: week_number ? parseInt(week_number) : null,
+          pdf_url: publicUrl,
+          pdf_processed: false,
+          created_by: req.user.id,
+        })
+        .select()
+        .single();
+
+      if (articleError) throw articleError;
+
+      // Process PDF asynchronously (don't wait)
+      pdfService.processPDF(pdfFile.buffer, article.id)
+        .then(() => console.log(`PDF processed for article ${article.id}`))
+        .catch(err => console.error('Background PDF processing error:', err));
+
+      res.json({ 
+        success: true, 
+        data: article,
+        message: 'Article created. PDF is being processed in the background.'
+      });
+    } catch (error) {
+      console.error('Create article error:', error);
+      res.status(500).json({ error: error.message || 'Failed to create article' });
+    }
+  }
+);
+
+/**
+ * POST /api/articles/:id/search
+ * Search article content using RAG
+ */
+router.post('/:id/search', authenticateUser, async (req, res) => {
+  try {
+    const { query } = req.body;
+    const articleId = req.params.id;
+    
+    if (!query) {
+      return res.status(400).json({ error: 'Query is required' });
+    }
+    
+    const results = await pdfService.searchArticleContent(articleId, query);
+    
+    res.json({ success: true, data: results });
+  } catch (error) {
+    console.error('Article search error:', error);
+    res.status(500).json({ error: 'Failed to search article' });
   }
 });
 

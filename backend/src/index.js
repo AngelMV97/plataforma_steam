@@ -15,6 +15,11 @@ app.use(express.json());
 // Routes
 app.use('/api/articles', require('./routes/articles'));
 app.use('/api/attempts', require('./routes/attempts'));
+app.use('/api/evaluations', require('./routes/evaluations'));
+app.use('/api/profiles', require('./routes/profiles'));
+app.use('/api/cognitive-profiles', require('./routes/cognitive-profiles'));
+app.use('/api/sessions', require('./routes/sessions'));
+app.use('/api/problems', require('./routes/problems'));
 
 // Health check
 app.get('/health', (req, res) => {
