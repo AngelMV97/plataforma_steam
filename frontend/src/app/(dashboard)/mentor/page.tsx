@@ -4,6 +4,7 @@
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { api } from '@/lib/api';
+import { UsersIcon, BookOpenIcon, BarChartIcon, AlertCircleIcon, NotebookIcon } from '@/components/icons/MinimalIcons';
 
 export default function MentorDashboard() {
   const router = useRouter();
@@ -58,37 +59,52 @@ export default function MentorDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#FAFAF8] dark:bg-[#0F1419]">
       <div className="max-w-7xl mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">
+        <h1 className="font-serif text-4xl font-semibold text-[#1F3A5F] dark:text-[#5B8FB9] mb-8">
           Panel de Mentor
         </h1>
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="text-3xl font-bold text-gray-900">
+          <div className="bg-white dark:bg-[#1a1f26] border border-[#E5E7EB] dark:border-[#1F2937] rounded-lg shadow-sm p-6">
+            <div className="flex items-center justify-between mb-3">
+              <UsersIcon className="w-8 h-8 text-[#1F3A5F] dark:text-[#5B8FB9]" />
+            </div>
+            <div className="text-3xl font-bold text-[#1F3A5F] dark:text-[#5B8FB9]">
               {loading ? '...' : stats.totalStudents}
             </div>
-            <div className="text-sm text-gray-600 mt-1">Estudiantes</div>
+            <div className="text-sm text-[#6B7280] dark:text-[#9CA3AF] mt-1">Estudiantes</div>
           </div>
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="text-3xl font-bold text-blue-600">
+          
+          <div className="bg-white dark:bg-[#1a1f26] border border-[#E5E7EB] dark:border-[#1F2937] rounded-lg shadow-sm p-6">
+            <div className="flex items-center justify-between mb-3">
+              <NotebookIcon className="w-8 h-8 text-[#2F6F6D] dark:text-[#4A9B98]" />
+            </div>
+            <div className="text-3xl font-bold text-[#2F6F6D] dark:text-[#4A9B98]">
               {loading ? '...' : stats.totalAttempts}
             </div>
-            <div className="text-sm text-gray-600 mt-1">Bitácoras Iniciadas</div>
+            <div className="text-sm text-[#6B7280] dark:text-[#9CA3AF] mt-1">Bitácoras Iniciadas</div>
           </div>
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="text-3xl font-bold text-green-600">
+          
+          <div className="bg-white dark:bg-[#1a1f26] border border-[#E5E7EB] dark:border-[#1F2937] rounded-lg shadow-sm p-6">
+            <div className="flex items-center justify-between mb-3">
+              <BarChartIcon className="w-8 h-8 text-[#2F6F6D] dark:text-[#4A9B98]" />
+            </div>
+            <div className="text-3xl font-bold text-[#2F6F6D] dark:text-[#4A9B98]">
               {loading ? '...' : stats.completedAttempts}
             </div>
-            <div className="text-sm text-gray-600 mt-1">Bitácoras Completadas</div>
+            <div className="text-sm text-[#6B7280] dark:text-[#9CA3AF] mt-1">Bitácoras Completadas</div>
           </div>
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="text-3xl font-bold text-orange-600">
+          
+          <div className="bg-white dark:bg-[#1a1f26] border border-[#E5E7EB] dark:border-[#1F2937] rounded-lg shadow-sm p-6">
+            <div className="flex items-center justify-between mb-3">
+              <AlertCircleIcon className="w-8 h-8 text-[#DC2626] dark:bg-red-600" />
+            </div>
+            <div className="text-3xl font-bold text-[#DC2626] dark:bg-red-600">
               {loading ? '...' : stats.pendingEvaluations}
             </div>
-            <div className="text-sm text-gray-600 mt-1">Pendientes de Evaluar</div>
+            <div className="text-sm text-[#6B7280] dark:text-[#9CA3AF] mt-1">Pendientes de Evaluar</div>
           </div>
         </div>
 
@@ -96,26 +112,30 @@ export default function MentorDashboard() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <button
             onClick={() => router.push('/mentor/students')}
-            className="bg-white rounded-lg shadow p-8 hover:shadow-lg transition-shadow text-left group"
+            className="group bg-white dark:bg-[#1a1f26] border border-[#E5E7EB] dark:border-[#1F2937] rounded-lg shadow-sm p-8 hover:border-[#2F6F6D]/30 hover:shadow-lg transition-all text-left"
           >
-            <div className="text-4xl mb-4">👥</div>
-            <h2 className="text-2xl font-semibold text-gray-900 mb-2 group-hover:text-blue-600">
+            <div className="w-14 h-14 rounded-full bg-[#1F3A5F]/10 dark:bg-[#5B8FB9]/10 flex items-center justify-center mb-6 group-hover:bg-[#1F3A5F]/15 group-hover:scale-110 transition-all duration-300">
+              <UsersIcon className="w-7 h-7 text-[#1F3A5F] dark:text-[#5B8FB9]" />
+            </div>
+            <h2 className="font-serif text-2xl font-semibold text-[#1F3A5F] dark:text-[#5B8FB9] mb-2 group-hover:text-[#2F6F6D] dark:group-hover:text-[#4A9B98] transition-colors">
               Ver Estudiantes
             </h2>
-            <p className="text-gray-600">
+            <p className="text-[#6B7280] dark:text-[#9CA3AF]">
               Gestiona y evalúa las bitácoras de tus estudiantes
             </p>
           </button>
 
           <button
             onClick={() => router.push('/mentor/articles')}
-            className="bg-white rounded-lg shadow p-8 hover:shadow-lg transition-shadow text-left group"
+            className="group bg-white dark:bg-[#1a1f26] border border-[#E5E7EB] dark:border-[#1F2937] rounded-lg shadow-sm p-8 hover:border-[#2F6F6D]/30 hover:shadow-lg transition-all text-left"
           >
-            <div className="text-4xl mb-4">📚</div>
-            <h2 className="text-2xl font-semibold text-gray-900 mb-2 group-hover:text-blue-600">
+            <div className="w-14 h-14 rounded-full bg-[#2F6F6D]/10 dark:bg-[#4A9B98]/10 flex items-center justify-center mb-6 group-hover:bg-[#2F6F6D]/15 group-hover:scale-110 transition-all duration-300">
+              <BookOpenIcon className="w-7 h-7 text-[#2F6F6D] dark:text-[#4A9B98]" />
+            </div>
+            <h2 className="font-serif text-2xl font-semibold text-[#1F3A5F] dark:text-[#5B8FB9] mb-2 group-hover:text-[#2F6F6D] dark:group-hover:text-[#4A9B98] transition-colors">
               Gestionar Artículos
             </h2>
-            <p className="text-gray-600">
+            <p className="text-[#6B7280] dark:text-[#9CA3AF]">
               Sube y administra artículos científicos para análisis
             </p>
           </button>

@@ -2,11 +2,37 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import dynamic from 'next/dynamic';
 import { api } from '@/lib/api';
 import { Button } from '@/components/ui/Button';
-import BitacoraEditor from '@/components/bitacora/BitacoraEditor';
-import AiTutorPanel from '@/components/bitacora/AiTutorPanel';
-import ProblemReflection from '@/components/problems/ProblemReflection';
+
+// Dynamically import heavy components to avoid memory issues during compilation
+const BitacoraEditor = dynamic(() => import('@/components/bitacora/BitacoraEditor'), {
+  ssr: false,
+  loading: () => (
+    <div className="bg-white rounded-lg shadow p-8 flex items-center justify-center">
+      <div className="text-gray-600">Cargando editor de bitácora...</div>
+    </div>
+  ),
+});
+
+const AiTutorPanel = dynamic(() => import('@/components/bitacora/AiTutorPanel'), {
+  ssr: false,
+  loading: () => (
+    <div className="bg-white rounded-lg shadow p-8 flex items-center justify-center">
+      <div className="text-gray-600">Cargando tutor IA...</div>
+    </div>
+  ),
+});
+
+const ProblemReflection = dynamic(() => import('@/components/problems/ProblemReflection'), {
+  ssr: false,
+  loading: () => (
+    <div className="bg-white rounded-lg shadow p-8 flex items-center justify-center">
+      <div className="text-gray-600">Cargando problema...</div>
+    </div>
+  ),
+});
 
 interface Article {
   id: string;

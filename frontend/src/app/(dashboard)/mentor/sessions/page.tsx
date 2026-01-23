@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { api } from '@/lib/api';
+import { ClockIcon, CheckCircleIcon, ArrowRightIcon } from '@/components/icons/MinimalIcons';
 
 interface Session {
   id: string;
@@ -52,6 +53,10 @@ export default function MentorSessionsPage() {
 
   const getSessionTypeLabel = (type: string) => {
     const labels: Record<string, string> = {
+      core: 'Sesión Núcleo',
+      reinforcement: 'Refuerzo',
+      test_prep: 'Preparación ICFES',
+      // Legacy support
       guided: 'Guiada',
       discussion: 'Discusión',
       metacognitive: 'Metacognitiva'
@@ -61,10 +66,10 @@ export default function MentorSessionsPage() {
 
   const getStatusBadge = (status: string) => {
     const badges: Record<string, string> = {
-      scheduled: 'bg-blue-100 text-blue-800',
-      in_progress: 'bg-yellow-100 text-yellow-800',
-      completed: 'bg-green-100 text-green-800',
-      cancelled: 'bg-red-100 text-red-800'
+      scheduled: 'bg-[#E0F2FE] text-[#0369A1]',
+      in_progress: 'bg-[#FEF3C7] text-[#92400E]',
+      completed: 'bg-[#D1FAE5] text-[#065F46]',
+      cancelled: 'bg-red-50 text-[#DC2626]'
     };
     const labels: Record<string, string> = {
       scheduled: 'Programada',
@@ -81,44 +86,41 @@ export default function MentorSessionsPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Cargando sesiones...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#2F6F6D] dark:border-[#4A9B98] mx-auto mb-4"></div>
+          <p className="text-[#6B7280] dark:text-[#9CA3AF]">Cargando sesiones...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 py-6">
-          <div className="flex justify-between items-center">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">Sesiones</h1>
-              <p className="text-gray-600 mt-2">Gestiona las sesiones grupales</p>
-            </div>
-            <button
-              onClick={() => router.push('/mentor/sessions/new')}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold"
-            >
-              + Nueva Sesión
-            </button>
-          </div>
+    <div className="space-y-6 bg-[#FAFAF8] dark:bg-[#0F1419]">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-[#1F3A5F] dark:text-[#5B8FB9]">Sesiones</h1>
+          <p className="text-[#6B7280] dark:text-[#9CA3AF] mt-2">Gestiona las sesiones grupales</p>
         </div>
+        <button
+          onClick={() => router.push('/mentor/sessions/new')}
+          className="inline-flex items-center px-6 py-3 !bg-[#2F6F6D] !text-white font-medium rounded-lg hover:!bg-[#1F3A5F] transition-colors"
+        >
+          + Nueva Sesión
+        </button>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div>
         {/* Filter */}
-        <div className="bg-white rounded-lg shadow p-4 mb-6">
+        <div className="bg-white dark:bg-[#1a1f26] rounded-lg border border-[#E5E7EB] dark:border-[#1F2937] p-4">
           <div className="flex gap-4">
             <button
               onClick={() => setFilter('upcoming')}
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                 filter === 'upcoming'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  ? '!bg-[#2F6F6D] dark:!bg-[#4A9B98] !text-white'
+                  : 'bg-[#F3F4F6] dark:bg-[#1F2937] text-[#4B5563] dark:text-[#D1D5DB] hover:bg-[#E5E7EB] dark:hover:bg-[#374151]'
               }`}
             >
               Próximas
@@ -127,8 +129,8 @@ export default function MentorSessionsPage() {
               onClick={() => setFilter('completed')}
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                 filter === 'completed'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  ? '!bg-[#2F6F6D] dark:!bg-[#4A9B98] !text-white'
+                  : 'bg-[#F3F4F6] dark:bg-[#1F2937] text-[#4B5563] dark:text-[#D1D5DB] hover:bg-[#E5E7EB] dark:hover:bg-[#374151]'
               }`}
             >
               Completadas
@@ -137,8 +139,8 @@ export default function MentorSessionsPage() {
               onClick={() => setFilter('all')}
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                 filter === 'all'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  ? '!bg-[#2F6F6D] dark:!bg-[#4A9B98] !text-white'
+                  : 'bg-[#F3F4F6] dark:bg-[#1F2937] text-[#4B5563] dark:text-[#D1D5DB] hover:bg-[#E5E7EB] dark:hover:bg-[#374151]'
               }`}
             >
               Todas
@@ -149,30 +151,32 @@ export default function MentorSessionsPage() {
         {/* Sessions List */}
         <div className="space-y-4">
           {sessions.length === 0 ? (
-            <div className="bg-white rounded-lg shadow p-8 text-center text-gray-500">
-              No hay sesiones {filter !== 'all' && `(${filter === 'upcoming' ? 'próximas' : 'completadas'})`}
+            <div className="bg-white dark:bg-[#1a1f26] rounded-lg border border-[#E5E7EB] dark:border-[#1F2937] p-8 text-center">
+              <ClockIcon className="w-12 h-12 text-[#6B7280] dark:text-[#9CA3AF] mx-auto mb-3" />
+              <p className="text-[#6B7280] dark:text-[#9CA3AF]">No hay sesiones {filter !== 'all' && `(${filter === 'upcoming' ? 'próximas' : 'completadas'})`}</p>
             </div>
           ) : (
             sessions.map((session) => (
               <div
                 key={session.id}
-                className="bg-white rounded-lg shadow hover:shadow-md transition-shadow cursor-pointer"
+                className="bg-white dark:bg-[#1a1f26] rounded-lg border border-[#E5E7EB] dark:border-[#1F2937] hover:border-[#2F6F6D] dark:hover:border-[#4A9B98] transition-all cursor-pointer"
                 onClick={() => router.push(`/mentor/sessions/${session.id}`)}
               >
                 <div className="p-6">
                   <div className="flex justify-between items-start mb-4">
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
-                        <h3 className="text-xl font-semibold text-gray-900">
+                        <h3 className="text-xl font-semibold text-[#1F3A5F] dark:text-[#5B8FB9]">
                           {session.article 
                             ? `Semana ${session.article.week_number} - ${session.article.title}`
                             : 'Sesión General'}
                         </h3>
                         {getStatusBadge(session.status)}
                       </div>
-                      <div className="flex items-center gap-4 text-sm text-gray-600">
-                        <span>
-                          📅 {new Date(session.session_date).toLocaleDateString('es-ES', {
+                      <div className="flex items-center gap-4 text-sm text-[#6B7280] dark:text-[#9CA3AF]">
+                        <span className="inline-flex items-center gap-1">
+                          <ClockIcon className="w-4 h-4" />
+                          {new Date(session.session_date).toLocaleDateString('es-ES', {
                             weekday: 'long',
                             year: 'numeric',
                             month: 'long',
@@ -180,13 +184,13 @@ export default function MentorSessionsPage() {
                           })}
                         </span>
                         <span>
-                          🕐 {new Date(session.session_date).toLocaleTimeString('es-ES', {
+                          {new Date(session.session_date).toLocaleTimeString('es-ES', {
                             hour: '2-digit',
                             minute: '2-digit'
                           })}
                         </span>
-                        <span>⏱️ {session.duration_minutes} min</span>
-                        <span className="px-2 py-1 bg-gray-100 rounded text-xs">
+                        <span>{session.duration_minutes} min</span>
+                        <span className="px-2 py-1 bg-[#F3F4F6] dark:bg-[#1F2937] text-[#4B5563] dark:text-[#D1D5DB] rounded text-xs font-medium">
                           {getSessionTypeLabel(session.session_type)}
                         </span>
                       </div>
@@ -194,7 +198,7 @@ export default function MentorSessionsPage() {
                   </div>
 
                   {session.notes && (
-                    <p className="text-sm text-gray-700 mb-3">{session.notes}</p>
+                    <p className="text-sm text-[#4B5563] dark:text-[#D1D5DB] mb-3">{session.notes}</p>
                   )}
 
                   {session.meeting_link && (
@@ -203,9 +207,10 @@ export default function MentorSessionsPage() {
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={(e) => e.stopPropagation()}
-                      className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 text-sm font-medium"
+                      className="inline-flex items-center gap-2 !text-[#2F6F6D] hover:!text-[#1F3A5F] text-sm font-medium"
                     >
-                      🔗 Enlace de reunión
+                      <ArrowRightIcon className="w-4 h-4" />
+                      Enlace de reunión
                     </a>
                   )}
                 </div>

@@ -84,10 +84,10 @@ export default function EvaluatePage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center min-h-screen bg-[#FAFAF8] dark:bg-[#0F1419]">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Cargando...</p>
+          <p className="text-[#6B7280] dark:text-[#9CA3AF]">Cargando...</p>
         </div>
       </div>
     );
@@ -95,13 +95,13 @@ export default function EvaluatePage() {
 
   if (error || !attempt || !student) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center text-red-600">
+      <div className="flex items-center justify-center min-h-screen bg-[#FAFAF8] dark:bg-[#0F1419]">
+        <div className="text-center text-red-600 dark:text-red-400">
           <p className="text-xl mb-4">Error</p>
           <p>{error || 'No se encontró el intento'}</p>
           <button 
             onClick={() => router.back()}
-            className="mt-4 px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+            className="mt-4 px-4 py-2 bg-[#E5E7EB] dark:bg-[#1F2937] text-[#1F2937] dark:text-[#F3F4F6] rounded hover:bg-[#D1D5DB] dark:hover:bg-[#374151]"
           >
             Volver
           </button>
@@ -111,20 +111,20 @@ export default function EvaluatePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#FAFAF8] dark:bg-[#0F1419]">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b">
+      <div className="bg-white dark:bg-[#1a1f26] shadow-sm border-b border-[#E5E7EB] dark:border-[#1F2937]">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <button
             onClick={() => router.back()}
-            className="text-blue-600 hover:text-blue-800 mb-2 flex items-center gap-2"
+            className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 mb-2 flex items-center gap-2"
           >
             ← Volver
           </button>
-          <h1 className="text-2xl font-bold text-gray-900">
+          <h1 className="text-2xl font-bold text-[#1F2937] dark:text-[#F3F4F6]">
             Evaluar Bitácora
           </h1>
-          <div className="mt-2 text-sm text-gray-600">
+          <div className="mt-2 text-sm text-[#6B7280] dark:text-[#9CA3AF]">
             <p><strong>Estudiante:</strong> {student.full_name} ({student.grade_level}°)</p>
             <p><strong>Artículo:</strong> {attempt.articles.title}</p>
             <p><strong>Semana:</strong> {attempt.articles.week_number}</p>
@@ -136,14 +136,14 @@ export default function EvaluatePage() {
       <div className="max-w-7xl mx-auto p-4">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Left: Bitácora Viewer */}
-          <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-xl font-semibold mb-4">Bitácora del Estudiante</h2>
+          <div className="bg-white dark:bg-[#1a1f26] rounded-lg shadow p-6">
+            <h2 className="text-xl font-semibold mb-4 text-[#1F2937] dark:text-[#F3F4F6]">Bitácora del Estudiante</h2>
             <BitacoraViewer content={attempt.bitacora_content} />
           </div>
 
           {/* Right: Evaluation Form */}
-          <div className="bg-white rounded-lg shadow p-6 sticky top-4 self-start">
-            <h2 className="text-xl font-semibold mb-4">Formulario de Evaluación</h2>
+          <div className="bg-white dark:bg-[#1a1f26] rounded-lg shadow p-6 sticky top-4 self-start">
+            <h2 className="text-xl font-semibold mb-4 text-[#1F2937] dark:text-[#F3F4F6]">Formulario de Evaluación</h2>
             <EvaluationForm
               gradeLevel={student.grade_level}
               existingEvaluations={existingEvaluations}

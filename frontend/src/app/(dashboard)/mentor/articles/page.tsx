@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { api } from '@/lib/api';
 import Link from 'next/link';
-import { Button } from '@/components/ui/Button';
+import { BookOpenIcon, ArrowRightIcon, TrashIcon } from '@/components/icons/MinimalIcons';
 
 interface Article {
   id: string;
@@ -14,6 +14,7 @@ interface Article {
   cognitive_axes: string[];
   article_type: string;
   estimated_reading_minutes: number;
+  week_number: number | null;
   created_at: string;
 }
 
@@ -21,6 +22,7 @@ export default function MentorArticlesPage() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [deleteModal, setDeleteModal] = useState<{ show: boolean; articleId: string; articleTitle: string } | null>(null);
 
   useEffect(() => {
     fetchArticles();
@@ -39,12 +41,45 @@ export default function MentorArticlesPage() {
     }
   }
 
+  async function handleDeleteArticle(articleId: string, articleTitle: string) {
+    setDeleteModal({ show: true, articleId, articleTitle });
+  }
+
+  async function confirmDelete() {
+    if (!deleteModal) return;
+
+    try {
+      await api.delete(`/api/articles/${deleteModal.articleId}`);
+      setDeleteModal(null);
+      // Refresh the articles list
+      await fetchArticles();
+    } catch (err: any) {
+      console.error('Error deleting article:', err);
+      setError(err.message || 'Error al eliminar el artículo');
+      setDeleteModal(null);
+    }
+  }
+
+  function getDifficultyLabel(level: number): string {
+    const labels = ['', 'Básico', 'Intermedio', 'Avanzado', 'Experto'];
+    return labels[level] || 'Desconocido';
+  }
+
+  function getArticleTypeLabel(type: string): string {
+    const types: Record<string, string> = {
+      divulgacion: 'Divulgación',
+      tecnico: 'Técnico',
+      caso_real: 'Caso Real',
+    };
+    return types[type] || type;
+  }
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Cargando artículos...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#2F6F6D] dark:border-[#4A9B98] mx-auto"></div>
+          <p className="mt-4 text-[#6B7280] dark:text-[#9CA3AF]">Cargando artículos...</p>
         </div>
       </div>
     );
@@ -55,75 +90,84 @@ export default function MentorArticlesPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+          <h1 className="text-3xl font-bold text-[#1F3A5F] dark:text-[#5B8FB9]">
             Gestión de Artículos
           </h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-2">
+          <p className="text-[#6B7280] dark:text-[#9CA3AF] mt-2">
             Administra el contenido de la academia
           </p>
         </div>
-        <Link href="/mentor/articles/new">
-          <Button>
-            + Nuevo Artículo
-          </Button>
+        <Link
+          href="/mentor/articles/new"
+          className="inline-flex items-center px-6 py-3 !bg-[#2F6F6D] !text-white font-medium rounded-lg hover:!bg-[#1F3A5F] transition-colors"
+        >
+          + Nuevo Artículo
         </Link>
       </div>
 
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-          <p className="text-red-600">{error}</p>
+        <div className="bg-red-50 dark:bg-red-900/20 border border-[#DC2626] dark:border-red-800 rounded-lg p-4">
+          <p className="text-[#DC2626] dark:text-red-400">{error}</p>
         </div>
       )}
 
       {/* Articles List */}
       {articles.length === 0 ? (
-        <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-12 text-center">
-          <div className="text-6xl mb-4">📚</div>
-          <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+        <div className="bg-white dark:bg-[#1a1f26] rounded-lg border-2 border-[#E5E7EB] dark:border-[#1F2937] p-12 text-center">
+          <div className="flex justify-center mb-4">
+            <div className="w-24 h-24 rounded-full bg-[#F3F4F6] dark:bg-[#1F2937] flex items-center justify-center">
+              <BookOpenIcon className="w-12 h-12 text-[#6B7280] dark:text-[#9CA3AF]" />
+            </div>
+          </div>
+          <h3 className="text-xl font-semibold text-[#1F3A5F] dark:text-[#5B8FB9] mb-2">
             No hay artículos creados
           </h3>
-          <p className="text-gray-600 dark:text-gray-400 mb-6">
+          <p className="text-[#6B7280] dark:text-[#9CA3AF] mb-6">
             Comienza creando tu primer artículo científico
           </p>
-          <Link href="/mentor/articles/new">
-            <Button>
-              Crear Primer Artículo
-            </Button>
+          <Link
+            href="/mentor/articles/new"
+            className="inline-flex items-center px-6 py-3 !bg-[#2F6F6D] !text-white font-medium rounded-lg hover:!bg-[#1F3A5F] transition-colors"
+          >
+            Crear Primer Artículo
           </Link>
         </div>
       ) : (
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
-          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-            <thead className="bg-gray-50 dark:bg-gray-900">
+        <div className="bg-white dark:bg-[#1a1f26] rounded-lg border border-[#E5E7EB] dark:border-[#1F2937] overflow-hidden">
+          <table className="min-w-full divide-y divide-[#E5E7EB] dark:divide-[#1F2937]">
+            <thead className="bg-[#F9FAFB] dark:bg-[#0F1419]">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-[#6B7280] dark:text-[#9CA3AF] uppercase tracking-wider">
                   Artículo
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-[#6B7280] dark:text-[#9CA3AF] uppercase tracking-wider">
                   Tipo
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-[#6B7280] dark:text-[#9CA3AF] uppercase tracking-wider">
                   Nivel
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-[#6B7280] dark:text-[#9CA3AF] uppercase tracking-wider">
+                  Semana
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-[#6B7280] dark:text-[#9CA3AF] uppercase tracking-wider">
                   Duración
                 </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-right text-xs font-medium text-[#6B7280] dark:text-[#9CA3AF] uppercase tracking-wider">
                   Acciones
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+            <tbody className="bg-white dark:bg-[#1a1f26] divide-y divide-[#E5E7EB] dark:divide-[#1F2937]">
               {articles.map((article) => (
-                <tr key={article.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                <tr key={article.id} className="hover:bg-[#FAFAF8] dark:hover:bg-[#0F1419] transition-colors">
                   <td className="px-6 py-4">
                     <div className="flex items-start">
                       <div>
-                        <div className="text-sm font-medium text-gray-900 dark:text-white">
+                        <div className="text-sm font-medium text-[#1F3A5F] dark:text-[#5B8FB9]">
                           {article.title}
                         </div>
                         {article.subtitle && (
-                          <div className="text-sm text-gray-500 dark:text-gray-400">
+                          <div className="text-sm text-[#6B7280] dark:text-[#9CA3AF]">
                             {article.subtitle}
                           </div>
                         )}
@@ -131,36 +175,94 @@ export default function MentorArticlesPage() {
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className="text-sm text-gray-700 dark:text-gray-300">
-                      {article.article_type}
+                    <span className="text-sm text-[#4B5563] dark:text-[#D1D5DB]">
+                      {getArticleTypeLabel(article.article_type)}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className="text-sm text-gray-700 dark:text-gray-300">
-                      Nivel {article.difficulty_level}
+                    <span className="text-sm text-[#4B5563] dark:text-[#D1D5DB]">
+                      {getDifficultyLabel(article.difficulty_level)}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className="text-sm text-[#4B5563] dark:text-[#D1D5DB]">
+                      {article.week_number ? `Semana ${article.week_number}` : '—'}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-[#6B7280] dark:text-[#9CA3AF]">
                     {article.estimated_reading_minutes} min
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-3">
                     <Link
                       href={`/mentor/articles/${article.id}`}
-                      className="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400"
+                      className="!text-[#2F6F6D] hover:!text-[#1F3A5F] transition-colors inline-flex items-center gap-1"
                     >
                       Ver
+                      <ArrowRightIcon className="w-4 h-4" />
                     </Link>
                     <Link
                       href={`/mentor/articles/${article.id}/edit`}
-                      className="text-purple-600 hover:text-purple-900 dark:text-purple-400"
+                      className="!text-[#2F6F6D] hover:!text-[#1F3A5F] transition-colors inline-flex items-center gap-1"
                     >
                       Editar
+                      <ArrowRightIcon className="w-4 h-4" />
                     </Link>
+                    <button
+                      onClick={() => handleDeleteArticle(article.id, article.title)}
+                      className="!text-[#DC2626] hover:!text-[#991B1B] transition-colors inline-flex items-center gap-1"
+                      title="Eliminar artículo"
+                    >
+                      <TrashIcon className="w-4 h-4" />
+                    </button>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {deleteModal?.show && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-[#1a1f26] rounded-lg max-w-md w-full p-6 space-y-4">
+            {/* Header */}
+            <div className="flex items-start space-x-3">
+              <div className="flex-shrink-0">
+                <div className="w-12 h-12 rounded-full bg-red-50 dark:bg-red-900/20 flex items-center justify-center">
+                  <TrashIcon className="w-6 h-6 text-[#DC2626] dark:text-red-400" />
+                </div>
+              </div>
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold text-[#1F3A5F] dark:text-[#5B8FB9]">
+                  Eliminar Artículo
+                </h3>
+                <p className="text-sm text-[#6B7280] dark:text-[#9CA3AF] mt-1">
+                  ¿Estás seguro de que deseas eliminar <span className="font-medium text-[#1F3A5F] dark:text-[#5B8FB9]">"{deleteModal.articleTitle}"</span>?
+                </p>
+                <p className="text-sm text-[#DC2626] dark:text-red-400 mt-2">
+                  Esta acción no se puede deshacer.
+                </p>
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="flex items-center justify-end space-x-3 pt-4">
+              <button
+                onClick={() => setDeleteModal(null)}
+                className="px-4 py-2 border border-[#E5E7EB] dark:border-[#1F2937] !text-[#6B7280] dark:!text-[#9CA3AF] font-medium rounded-lg hover:bg-[#F9FAFB] dark:hover:bg-[#0F1419] transition-colors"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={confirmDelete}
+                className="px-4 py-2 !bg-[#DC2626] !text-white font-medium rounded-lg hover:!bg-[#991B1B] transition-colors inline-flex items-center gap-2"
+              >
+                <TrashIcon className="w-4 h-4" />
+                Eliminar
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

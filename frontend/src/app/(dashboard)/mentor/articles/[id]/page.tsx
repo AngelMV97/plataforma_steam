@@ -60,7 +60,7 @@ export default function MentorArticleDetailPage() {
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Cargando artículo...</p>
+          <p className="mt-4 text-[#6B7280] dark:text-[#9CA3AF]">Cargando artículo...</p>
         </div>
       </div>
     );
@@ -68,9 +68,9 @@ export default function MentorArticleDetailPage() {
 
   if (error || !article) {
     return (
-      <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-        <h3 className="text-red-800 font-semibold mb-2">Error al cargar artículo</h3>
-        <p className="text-red-600">{error || 'Artículo no encontrado'}</p>
+      <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6">
+        <h3 className="text-red-800 dark:text-red-400 font-semibold mb-2">Error al cargar artículo</h3>
+        <p className="text-red-600 dark:text-red-400">{error || 'Artículo no encontrado'}</p>
         <Button onClick={() => router.back()} variant="outline" className="mt-4">
           Volver
         </Button>
@@ -84,7 +84,7 @@ export default function MentorArticleDetailPage() {
       <div className="flex items-center justify-between">
         <button
           onClick={() => router.back()}
-          className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white flex items-center"
+          className="text-[#6B7280] dark:text-[#9CA3AF] hover:text-[#1F2937] dark:hover:text-[#F3F4F6] flex items-center"
         >
           <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -107,20 +107,20 @@ export default function MentorArticleDetailPage() {
       </div>
 
       {/* Article Content */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-8">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+      <div className="bg-white dark:bg-[#1a1f26] rounded-lg shadow p-8">
+        <h1 className="text-3xl font-bold text-[#1F2937] dark:text-[#F3F4F6] mb-2">
           {article.title}
         </h1>
         {article.subtitle && (
-          <p className="text-xl text-gray-600 dark:text-gray-400 mb-6">
+          <p className="text-xl text-[#6B7280] dark:text-[#9CA3AF] mb-6">
             {article.subtitle}
           </p>
         )}
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 text-sm">
           <div>
-            <span className="text-gray-500 dark:text-gray-400">Nivel:</span>
-            <p className="font-semibold text-gray-900 dark:text-white">
+            <span className="text-[#6B7280] dark:text-[#9CA3AF]">Nivel:</span>
+            <p className="font-semibold text-[#1F2937] dark:text-[#F3F4F6]">
               {article.difficulty_level}
             </p>
           </div>
@@ -145,12 +145,12 @@ export default function MentorArticleDetailPage() {
         </div>
 
         <div className="mb-6">
-          <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Resumen</h3>
-          <p className="text-gray-700 dark:text-gray-300">{article.summary}</p>
+          <h3 className="font-semibold text-[#1F2937] dark:text-[#F3F4F6] mb-2">Resumen</h3>
+          <p className="text-[#4B5563] dark:text-[#D1D5DB]">{article.summary}</p>
         </div>
 
         <div className="mb-6">
-          <h3 className="font-semibold text-gray-900 dark:text-white mb-3">Ejes Cognitivos</h3>
+          <h3 className="font-semibold text-[#1F2937] dark:text-[#F3F4F6] mb-3">Ejes Cognitivos</h3>
           <div className="flex flex-wrap gap-2">
             {article.cognitive_axes?.map((axis, index) => (
               <span
@@ -165,8 +165,8 @@ export default function MentorArticleDetailPage() {
 
         {article.content_text && (
           <div className="mb-6">
-            <h3 className="font-semibold text-gray-900 dark:text-white mb-3">Contenido</h3>
-            <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4 whitespace-pre-wrap text-gray-700 dark:text-gray-300 max-h-96 overflow-y-auto">
+            <h3 className="font-semibold text-[#1F2937] dark:text-[#F3F4F6] mb-3">Contenido</h3>
+            <div className="bg-[#FAFAF8] dark:bg-[#0F1419] rounded-lg p-4 whitespace-pre-wrap text-[#4B5563] dark:text-[#D1D5DB] max-h-96 overflow-y-auto">
               {article.content_text}
             </div>
           </div>
@@ -174,7 +174,7 @@ export default function MentorArticleDetailPage() {
 
         {article.content_url && (
           <div className="mb-6">
-            <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Enlace Externo</h3>
+            <h3 className="font-semibold text-[#1F2937] dark:text-[#F3F4F6] mb-2">Enlace Externo</h3>
             <a
               href={article.content_url}
               target="_blank"
@@ -191,9 +191,9 @@ export default function MentorArticleDetailPage() {
       </div>
 
       {/* Problems Section */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-8">
+      <div className="bg-white dark:bg-[#1a1f26] rounded-lg shadow p-8">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+          <h2 className="text-2xl font-bold text-[#1F2937] dark:text-[#F3F4F6]">
             Problemas Asociados
           </h2>
           <Link href={`/mentor/articles/${articleId}/problems/new`}>
@@ -208,15 +208,15 @@ export default function MentorArticleDetailPage() {
             {article.problems.map((problem) => (
               <div
                 key={problem.id}
-                className="border border-gray-200 dark:border-gray-700 rounded-lg p-4"
+                className="border border-[#E5E7EB] dark:border-[#1F2937] rounded-lg p-4"
               >
-                <h3 className="font-semibold text-gray-900 dark:text-white mb-2">
+                <h3 className="font-semibold text-[#1F2937] dark:text-[#F3F4F6] mb-2">
                   {problem.title}
                 </h3>
-                <p className="text-gray-700 dark:text-gray-300 text-sm mb-3">
+                <p className="text-[#4B5563] dark:text-[#D1D5DB] text-sm mb-3">
                   {problem.description}
                 </p>
-                <div className="flex items-center space-x-4 text-xs text-gray-500 dark:text-gray-400">
+                <div className="flex items-center space-x-4 text-xs text-[#6B7280] dark:text-[#9CA3AF]">
                   <span>Tipo: {problem.problem_type}</span>
                   <span>Nivel: {problem.difficulty_level}</span>
                 </div>
@@ -224,7 +224,7 @@ export default function MentorArticleDetailPage() {
             ))}
           </div>
         ) : (
-          <p className="text-gray-500 dark:text-gray-400 italic text-center py-8">
+          <p className="text-[#6B7280] dark:text-[#9CA3AF] italic text-center py-8">
             No hay problemas asociados a este artículo.
             <br />
             <Link href={`/mentor/articles/${articleId}/problems/new`}>

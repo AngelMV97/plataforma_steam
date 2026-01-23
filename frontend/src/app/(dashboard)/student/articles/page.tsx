@@ -62,7 +62,7 @@ export default function StudentArticlesPage() {
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Cargando artículos...</p>
+          <p className="mt-4 text-[#6B7280] dark:text-[#9CA3AF]">Cargando artículos...</p>
         </div>
       </div>
     );
@@ -70,12 +70,12 @@ export default function StudentArticlesPage() {
 
   if (error) {
     return (
-      <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-        <h3 className="text-red-800 font-semibold mb-2">Error al cargar artículos</h3>
-        <p className="text-red-600">{error}</p>
+      <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6">
+        <h3 className="text-red-800 dark:text-red-400 font-semibold mb-2">Error al cargar artículos</h3>
+        <p className="text-red-600 dark:text-red-400">{error}</p>
         <button
           onClick={fetchArticles}
-          className="mt-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+          className="mt-4 px-4 py-2 bg-red-600 dark:bg-red-600 text-white rounded hover:bg-red-700 dark:hover:bg-red-700"
         >
           Reintentar
         </button>
@@ -87,16 +87,16 @@ export default function StudentArticlesPage() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+        <h1 className="text-3xl font-bold text-[#1F2937] dark:text-[#F3F4F6]">
           Artículos Científicos
         </h1>
-        <p className="text-gray-600 dark:text-gray-400 mt-2">
+        <p className="text-[#6B7280] dark:text-[#9CA3AF] mt-2">
           Explora artículos y desarrolla tu pensamiento científico
         </p>
       </div>
 
       {/* Filters */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 space-y-4">
+      <div className="bg-white dark:bg-[#1a1f26] rounded-lg shadow p-4 space-y-4">
         {/* Current Week Toggle */}
         <div className="flex items-center">
           <label className="flex items-center cursor-pointer">
@@ -104,9 +104,9 @@ export default function StudentArticlesPage() {
               type="checkbox"
               checked={showCurrentWeek}
               onChange={(e) => setShowCurrentWeek(e.target.checked)}
-              className="w-4 h-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+              className="w-4 h-4 text-indigo-600 focus:ring-indigo-500 border-[#E5E7EB] dark:border-[#1F2937] rounded"
             />
-            <span className="ml-3 text-sm font-medium text-gray-700 dark:text-gray-300">
+            <span className="ml-3 text-sm font-medium text-[#4B5563] dark:text-[#D1D5DB]">
               📅 Mostrar solo artículo de la semana actual
             </span>
           </label>
@@ -114,7 +114,7 @@ export default function StudentArticlesPage() {
 
         {/* Difficulty Filter */}
         <div className="flex items-center space-x-4">
-          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+          <span className="text-sm font-medium text-[#4B5563] dark:text-[#D1D5DB]">
             Filtrar por dificultad:
           </span>
           <div className="flex space-x-2">
@@ -149,12 +149,12 @@ export default function StudentArticlesPage() {
 
       {/* Articles Grid */}
       {filteredArticles.length === 0 ? (
-        <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-12 text-center">
+        <div className="bg-[#FAFAF8] dark:bg-[#1a1f26] rounded-lg p-12 text-center">
           <div className="text-6xl mb-4">📚</div>
-          <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+          <h3 className="text-xl font-semibold text-[#1F2937] dark:text-[#F3F4F6] mb-2">
             No hay artículos disponibles
           </h3>
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-[#6B7280] dark:text-[#9CA3AF]">
             {showCurrentWeek 
               ? 'No hay artículo para la semana actual aún'
               : 'Pronto habrá nuevos artículos para explorar'}
@@ -186,7 +186,7 @@ function FilterButton({
       className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
         active
           ? 'bg-indigo-600 text-white'
-          : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
+          : 'bg-[#F3F4F6] dark:bg-[#1F2937] text-[#4B5563] dark:text-[#D1D5DB] hover:bg-[#E5E7EB] dark:hover:bg-[#374151]'
       }`}
     >
       {label}
@@ -204,43 +204,43 @@ function ArticleCard({ article }: { article: Article }) {
 
   return (
     <Link href={`/student/articles/${article.id}`}>
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-lg transition p-6 h-full flex flex-col">
+      <div className="bg-white dark:bg-[#1a1f26] rounded-lg shadow hover:shadow-lg transition p-6 h-full flex flex-col">
         {/* Week Badge */}
         <div className="flex items-center justify-between mb-3">
           <span className="bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-400 px-2 py-1 rounded text-xs font-medium">
             Semana {article.week_number}
           </span>
-          <span className="text-xs text-gray-500">
+          <span className="text-xs text-[#6B7280] dark:text-[#9CA3AF]">
             {article.estimated_reading_minutes} min
           </span>
         </div>
 
         {/* Title */}
-        <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 line-clamp-2">
+        <h3 className="text-lg font-bold text-[#1F2937] dark:text-[#F3F4F6] mb-2 line-clamp-2">
           {article.title}
         </h3>
 
         {/* Subtitle */}
         {article.subtitle && (
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-3 line-clamp-2">
+          <p className="text-sm text-[#6B7280] dark:text-[#9CA3AF] mb-3 line-clamp-2">
             {article.subtitle}
           </p>
         )}
 
         {/* Summary */}
-        <p className="text-sm text-gray-700 dark:text-gray-300 mb-4 line-clamp-3 flex-grow">
+        <p className="text-sm text-[#4B5563] dark:text-[#D1D5DB] mb-4 line-clamp-3 flex-grow">
           {article.summary}
         </p>
 
         {/* Meta */}
-        <div className="flex items-center justify-between text-xs text-gray-600 dark:text-gray-400 pt-4 border-t border-gray-200 dark:border-gray-700">
+        <div className="flex items-center justify-between text-xs text-[#6B7280] dark:text-[#9CA3AF] pt-4 border-t border-[#E5E7EB] dark:border-[#1F2937]">
           <span>🎯 {difficultyLabels[article.difficulty_level]}</span>
           <span>📑 {typeLabels[article.article_type] || article.article_type}</span>
         </div>
 
         {/* Cognitive Axes Count */}
         <div className="mt-3">
-          <span className="text-xs text-gray-500">
+          <span className="text-xs text-[#6B7280] dark:text-[#9CA3AF]">
             {article.cognitive_axes?.length || 0} ejes cognitivos
           </span>
         </div>

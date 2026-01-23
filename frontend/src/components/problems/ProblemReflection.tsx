@@ -14,7 +14,7 @@ export default function ProblemReflection({ problem, bitacora_content }: Problem
       
       <div className="space-y-4">
         {problem.metacognitive_prompts?.map((prompt: string, idx: number) => (
-          <div key={idx} className="bg-white rounded-lg p-4 border-l-4 border-purple-500">
+          <div key={idx} className="bg-white dark:bg-[#1a1f26] rounded-lg p-4 border-l-4 border-purple-500 dark:border-purple-400">
             <p className="text-gray-800 font-medium mb-2">{prompt}</p>
             <p className="text-sm text-gray-600 italic">
               Piensa en tu respuesta mientras esperas la retroalimentación de tu mentor
@@ -22,7 +22,7 @@ export default function ProblemReflection({ problem, bitacora_content }: Problem
           </div>
         ))}
         
-        <div className="bg-white rounded-lg p-4">
+        <div className="bg-white dark:bg-[#1a1f26] rounded-lg p-4">
           <h4 className="font-semibold text-gray-900 mb-2">
             Enfoques Posibles
           </h4>

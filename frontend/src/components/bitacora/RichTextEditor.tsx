@@ -5,8 +5,6 @@ import StarterKit from '@tiptap/starter-kit';
 import Image from '@tiptap/extension-image';
 import Link from '@tiptap/extension-link';
 import { useEffect } from 'react';
-import Mathematics from '@tiptap/extension-mathematics';
-import 'katex/dist/katex.min.css';
 
 interface RichTextEditorProps {
   content: string;
@@ -16,6 +14,7 @@ interface RichTextEditorProps {
 
 export default function RichTextEditor({ content, onChange, placeholder }: RichTextEditorProps) {
   const editor = useEditor({
+    immediatelyRender: false, // Fix SSR hydration mismatch
     extensions: [
       StarterKit.configure({
         heading: {
@@ -31,8 +30,8 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
         HTMLAttributes: {
           class: 'text-blue-600 underline'
         }
-      }),
-      Mathematics
+      })
+      // Mathematics extension removed to prevent memory issues
     ],
     content: content || '',
     onUpdate: ({ editor }) => {
@@ -239,7 +238,7 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
       </div>
 
       {/* Editor Content */}
-      <EditorContent editor={editor} className="bg-white" />
+      <EditorContent editor={editor} className="bg-white dark:bg-[#1a1f26]" />
 
       {placeholder && !content && (
         <div className="absolute top-12 left-4 text-gray-400 pointer-events-none">

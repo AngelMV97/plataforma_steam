@@ -45,22 +45,22 @@ export default function MentorProfilesPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center min-h-screen bg-[#FAFAF8] dark:bg-[#0F1419]">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Cargando perfiles...</p>
+          <p className="text-[#6B7280] dark:text-[#9CA3AF]">Cargando perfiles...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#FAFAF8] dark:bg-[#0F1419]">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b">
+      <div className="bg-white dark:bg-[#1a1f26] shadow-sm border-b border-[#E5E7EB] dark:border-[#1F2937]">
         <div className="max-w-7xl mx-auto px-4 py-6">
-          <h1 className="text-3xl font-bold text-gray-900">Perfiles Cognitivos</h1>
-          <p className="text-gray-600 mt-2">
+          <h1 className="text-3xl font-bold text-[#1F2937] dark:text-[#F3F4F6]">Perfiles Cognitivos</h1>
+          <p className="text-[#6B7280] dark:text-[#9CA3AF] mt-2">
             Compara el progreso cognitivo de todos tus estudiantes
           </p>
         </div>
@@ -68,14 +68,14 @@ export default function MentorProfilesPage() {
 
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Filter */}
-        <div className="bg-white rounded-lg shadow p-4 mb-6">
-          <label className="text-sm font-medium text-gray-700 mr-4">
+        <div className="bg-white dark:bg-[#1a1f26] rounded-lg shadow p-4 mb-6">
+          <label className="text-sm font-medium text-[#1F2937] dark:text-[#F3F4F6] mr-4">
             Filtrar por grado:
           </label>
           <select
             value={selectedGrade}
             onChange={(e) => setSelectedGrade(e.target.value)}
-            className="border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500"
+            className="border border-[#E5E7EB] dark:border-[#1F2937] rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 bg-white dark:bg-[#1a1f26] text-[#1F2937] dark:text-[#F3F4F6]"
           >
             <option value="all">Todos los grados</option>
             <option value="9">9°</option>
@@ -102,24 +102,24 @@ export default function MentorProfilesPage() {
             return (
               <div
                 key={profile.student_id}
-                className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow cursor-pointer"
+                className="bg-white dark:bg-[#1a1f26] rounded-lg shadow hover:shadow-lg transition-shadow cursor-pointer"
                 onClick={() => router.push(`/mentor/students/${profile.student_id}/profile`)}
               >
                 <div className="p-6">
                   <div className="flex justify-between items-start mb-4">
                     <div>
-                      <h3 className="font-semibold text-gray-900">
+                      <h3 className="font-semibold text-[#1F2937] dark:text-[#F3F4F6]">
                         {profile.student?.full_name || 'Estudiante'}
                       </h3>
-                      <p className="text-sm text-gray-600">
+                      <p className="text-sm text-[#6B7280] dark:text-[#9CA3AF]">
                         Grado {profile.student?.grade_level}°
                       </p>
                     </div>
                     <div className="text-right">
-                      <div className="text-2xl font-bold text-blue-600">
+                      <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
                         {avgLevel.toFixed(1)}
                       </div>
-                      <div className="text-xs text-gray-500">Promedio</div>
+                      <div className="text-xs text-[#6B7280] dark:text-[#9CA3AF]">Promedio</div>
                     </div>
                   </div>
                   <RadarChart data={chartData} maxValue={4} size={280} />
@@ -130,7 +130,7 @@ export default function MentorProfilesPage() {
         </div>
 
         {filteredProfiles.length === 0 && (
-          <div className="bg-white rounded-lg shadow p-8 text-center text-gray-500">
+          <div className="bg-white dark:bg-[#1a1f26] rounded-lg shadow p-8 text-center text-[#6B7280] dark:text-[#9CA3AF]">
             No hay perfiles en este grado
           </div>
         )}

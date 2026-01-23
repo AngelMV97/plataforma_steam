@@ -59,23 +59,23 @@ export default function ProblemsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="bg-white shadow-sm border-b">
+    <div className="min-h-screen bg-[#FAFAF8] dark:bg-[#0F1419]">
+      <div className="bg-white dark:bg-[#1a1f26] shadow-sm border-b border-[#E5E7EB] dark:border-[#1F2937]">
         <div className="max-w-4xl mx-auto px-4 py-6">
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="text-3xl font-bold text-[#1F2937] dark:text-[#F3F4F6]">
             Generador de Problemas No Rutinarios
           </h1>
-          <p className="text-gray-600 mt-2">
+          <p className="text-[#6B7280] dark:text-[#9CA3AF] mt-2">
             La IA creará un problema personalizado basado en tu perfil cognitivo
           </p>
         </div>
       </div>
 
       <div className="max-w-4xl mx-auto px-4 py-8">
-        <div className="bg-white rounded-lg shadow p-8 space-y-8">
+        <div className="bg-white dark:bg-[#1a1f26] rounded-lg shadow p-8 space-y-8">
           {/* Problem Type Selection */}
           <div>
-            <h2 className="text-xl font-semibold mb-4">Tipo de Problema</h2>
+            <h2 className="text-xl font-semibold mb-4 text-[#1F2937] dark:text-[#F3F4F6]">Tipo de Problema</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {PROBLEM_TYPES.map(type => (
                 <button
@@ -83,13 +83,13 @@ export default function ProblemsPage() {
                   onClick={() => setSelectedType(type.value)}
                   className={`p-6 rounded-lg border-2 transition-all text-left ${
                     selectedType === type.value
-                      ? 'border-blue-600 bg-blue-50'
-                      : 'border-gray-300 hover:border-gray-400'
+                      ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20'
+                      : 'border-[#E5E7EB] dark:border-[#1F2937] hover:border-[#9CA3AF] dark:hover:border-[#4B5563] bg-white dark:bg-[#1a1f26]'
                   }`}
                 >
                   <div className="text-4xl mb-3">{type.icon}</div>
-                  <div className="font-semibold text-lg mb-1">{type.label}</div>
-                  <div className="text-sm text-gray-600">{type.description}</div>
+                  <div className="font-semibold text-lg mb-1 text-[#1F2937] dark:text-[#F3F4F6]">{type.label}</div>
+                  <div className="text-sm text-[#6B7280] dark:text-[#9CA3AF]">{type.description}</div>
                 </button>
               ))}
             </div>
@@ -97,13 +97,13 @@ export default function ProblemsPage() {
 
           {/* Cognitive Dimension Target (Optional) */}
           <div>
-            <h2 className="text-xl font-semibold mb-4">
+            <h2 className="text-xl font-semibold mb-4 text-[#1F2937] dark:text-[#F3F4F6]">
               Dimensión Cognitiva a Desarrollar (Opcional)
             </h2>
             <select
               value={selectedDimension}
               onChange={(e) => setSelectedDimension(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-[#E5E7EB] dark:border-[#1F2937] rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 bg-white dark:bg-[#1a1f26] text-[#1F2937] dark:text-[#F3F4F6]"
             >
               <option value="">Automático (basado en tu perfil)</option>
               {COGNITIVE_DIMENSIONS.map(dim => (
@@ -112,7 +112,7 @@ export default function ProblemsPage() {
                 </option>
               ))}
             </select>
-            <p className="text-sm text-gray-500 mt-2">
+            <p className="text-sm text-[#6B7280] dark:text-[#9CA3AF] mt-2">
               Si no seleccionas ninguna, la IA elegirá según tus áreas de mejora
             </p>
           </div>
@@ -121,7 +121,7 @@ export default function ProblemsPage() {
           <button
             onClick={handleGenerate}
             disabled={generating}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 rounded-lg text-lg transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+            className="w-full bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 text-white font-semibold py-4 rounded-lg text-lg transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
           >
             {generating ? (
               <>
@@ -139,11 +139,11 @@ export default function ProblemsPage() {
           </button>
 
           {/* Info Box */}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <h3 className="font-semibold text-blue-900 mb-2">
+          <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+            <h3 className="font-semibold text-blue-900 dark:text-blue-300 mb-2">
               ℹ️ Sobre los problemas no rutinarios
             </h3>
-            <ul className="text-sm text-blue-800 space-y-1">
+            <ul className="text-sm text-blue-800 dark:text-blue-400 space-y-1">
               <li>• No tienen una fórmula directa de solución</li>
               <li>• Tienen múltiples caminos válidos</li>
               <li>• Requieren que construyas modelos y justifiques decisiones</li>

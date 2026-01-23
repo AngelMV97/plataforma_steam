@@ -88,18 +88,18 @@ export default function StudentSessionsPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center min-h-screen bg-[#FAFAF8] dark:bg-[#0F1419]">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="bg-white shadow-sm border-b">
+    <div className="min-h-screen bg-[#FAFAF8] dark:bg-[#0F1419]">
+      <div className="bg-white dark:bg-[#1a1f26] shadow-sm border-b border-[#E5E7EB] dark:border-[#1F2937]">
         <div className="max-w-7xl mx-auto px-4 py-6">
-          <h1 className="text-3xl font-bold text-gray-900">Sesiones Disponibles</h1>
-          <p className="text-gray-600 mt-2">
+          <h1 className="text-3xl font-bold text-[#1F2937] dark:text-[#F3F4F6]">Sesiones Disponibles</h1>
+          <p className="text-[#6B7280] dark:text-[#9CA3AF] mt-2">
             Regístrate para las próximas sesiones grupales
           </p>
         </div>
@@ -107,7 +107,7 @@ export default function StudentSessionsPage() {
 
       <div className="max-w-7xl mx-auto px-4 py-8">
         {sessions.length === 0 ? (
-          <div className="bg-white rounded-lg shadow p-8 text-center text-gray-500">
+          <div className="bg-white dark:bg-[#1a1f26] rounded-lg shadow p-8 text-center text-[#6B7280] dark:text-[#9CA3AF]">
             No hay sesiones programadas próximamente
           </div>
         ) : (
@@ -117,15 +117,15 @@ export default function StudentSessionsPage() {
               const isPast = new Date(session.session_date) < new Date();
 
               return (
-                <div key={session.id} className="bg-white rounded-lg shadow p-6">
+                <div key={session.id} className="bg-white dark:bg-[#1a1f26] rounded-lg shadow p-6">
                   <div className="flex justify-between items-start mb-4">
                     <div className="flex-1">
-                      <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                      <h3 className="text-xl font-semibold text-[#1F2937] dark:text-[#F3F4F6] mb-2">
                         {session.article 
                           ? `Semana ${session.article.week_number} - ${session.article.title}`
                           : 'Sesión General'}
                       </h3>
-                      <div className="flex flex-wrap gap-3 text-sm text-gray-600">
+                      <div className="flex flex-wrap gap-3 text-sm text-[#6B7280] dark:text-[#9CA3AF]">
                         <span>
                           📅 {new Date(session.session_date).toLocaleDateString('es-ES', {
                             weekday: 'long',
@@ -144,14 +144,14 @@ export default function StudentSessionsPage() {
                       </div>
                     </div>
                     {isRegistered && (
-                      <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
+                      <span className="px-3 py-1 bg-green-100 dark:bg-emerald-900/30 text-green-800 dark:text-emerald-400 rounded-full text-sm font-medium">
                         ✓ Registrado
                       </span>
                     )}
                   </div>
 
                   {session.notes && (
-                    <p className="text-gray-700 mb-4">{session.notes}</p>
+                    <p className="text-[#4B5563] dark:text-[#D1D5DB] mb-4">{session.notes}</p>
                   )}
 
                   <div className="flex gap-3">
@@ -159,14 +159,14 @@ export default function StudentSessionsPage() {
                       isRegistered ? (
                         <button
                           onClick={() => handleUnregister(session.id)}
-                          className="px-4 py-2 border border-red-300 text-red-700 rounded-lg hover:bg-red-50"
+                          className="px-4 py-2 border border-red-300 dark:border-red-800 text-red-700 dark:text-red-400 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20"
                         >
                           Cancelar Registro
                         </button>
                       ) : (
                         <button
                           onClick={() => handleRegister(session.id)}
-                          className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold"
+                          className="px-6 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-lg font-semibold"
                         >
                           Registrarse
                         </button>
@@ -177,7 +177,7 @@ export default function StudentSessionsPage() {
                         href={session.meeting_link}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold"
+                        className="px-4 py-2 bg-green-600 hover:bg-green-700 dark:bg-emerald-600 dark:hover:bg-emerald-700 text-white rounded-lg font-semibold"
                       >
                         🔗 Unirse a la Reunión
                       </a>

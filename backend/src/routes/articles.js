@@ -186,4 +186,109 @@ router.post('/:id/search', authenticateUser, async (req, res) => {
   }
 });
 
+/**
+ * PUT /api/articles/:id
+ * Update article metadata (mentors only)
+ */
+router.put(
+  '/:id',
+  authenticateUser,
+  requireRole('mentor', 'admin'),
+  async (req, res) => {
+    try {
+      const { title, week_number, difficulty_level, article_type } = req.body;
+      const articleId = req.params.id;
+
+      // Validate required fields
+      if (!title || !title.trim()) {
+        return res.status(400).json({ error: 'El título es obligatorio' });
+      }
+
+      // Build update object with only provided fields
+      const updateData = {};
+      
+      if (title) updateData.title = title.trim();
+      if (week_number !== undefined) updateData.week_number = parseInt(week_number);
+      if (difficulty_level !== undefined) updateData.difficulty_level = parseInt(difficulty_level);
+      if (article_type) updateData.article_type = article_type;
+
+      // Update article in database
+      const { data: article, error: updateError } = await supabase
+        .from('articles')
+        .update(updateData)
+        .eq('id', articleId)
+        .select()
+        .single();
+
+      if (updateError) throw updateError;
+
+      if (!article) {
+        return res.status(404).json({ error: 'Artículo no encontrado' });
+      }
+
+      res.json({ 
+        success: true, 
+        data: article,
+        message: 'Artículo actualizado exitosamente'
+      });
+    } catch (error) {
+      console.error('Update article error:', error);
+      res.status(500).json({ error: error.message || 'Error al actualizar artículo' });
+    }
+  }
+);
+
+/**
+ * DELETE /api/articles/:id
+ * Delete article (mentors only)
+ */
+router.delete(
+  '/:id',
+  authenticateUser,
+  requireRole('mentor', 'admin'),
+  async (req, res) => {
+    try {
+      const articleId = req.params.id;
+
+      // First get the article to get the PDF filename
+      const { data: article, error: fetchError } = await supabase
+        .from('articles')
+        .select('pdf_url')
+        .eq('id', articleId)
+        .single();
+
+      if (fetchError || !article) {
+        return res.status(404).json({ error: 'Artículo no encontrado' });
+      }
+
+      // Delete the article from database
+      const { error: deleteError } = await supabase
+        .from('articles')
+        .delete()
+        .eq('id', articleId);
+
+      if (deleteError) throw deleteError;
+
+      // Optionally delete the PDF from storage
+      // Extract filename from pdf_url
+      if (article.pdf_url) {
+        const filename = article.pdf_url.split('/').pop();
+        if (filename) {
+          await supabase.storage
+            .from('articles')
+            .remove([filename]);
+        }
+      }
+
+      res.json({ 
+        success: true,
+        message: 'Artículo eliminado exitosamente'
+      });
+    } catch (error) {
+      console.error('Delete article error:', error);
+      res.status(500).json({ error: error.message || 'Error al eliminar artículo' });
+    }
+  }
+);
+
 module.exports = router;

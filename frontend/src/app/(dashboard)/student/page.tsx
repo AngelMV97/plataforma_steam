@@ -20,31 +20,31 @@ export default function StudentDashboard() {
 
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+        <div className="bg-white dark:bg-[#1a1f26] rounded-lg shadow p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Artículos en Progreso</p>
-              <p className="text-3xl font-bold text-gray-900 dark:text-white mt-1">3</p>
+              <p className="text-sm text-[#6B7280] dark:text-[#9CA3AF]">Artículos en Progreso</p>
+              <p className="text-3xl font-bold text-[#1F2937] dark:text-[#F3F4F6] mt-1">3</p>
             </div>
             <div className="text-4xl">📚</div>
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+        <div className="bg-white dark:bg-[#1a1f26] rounded-lg shadow p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Sesiones esta Semana</p>
-              <p className="text-3xl font-bold text-gray-900 dark:text-white mt-1">2</p>
+              <p className="text-sm text-[#6B7280] dark:text-[#9CA3AF]">Sesiones esta Semana</p>
+              <p className="text-3xl font-bold text-[#1F2937] dark:text-[#F3F4F6] mt-1">2</p>
             </div>
             <div className="text-4xl">📅</div>
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+        <div className="bg-white dark:bg-[#1a1f26] rounded-lg shadow p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Interacciones IA</p>
-              <p className="text-3xl font-bold text-gray-900 dark:text-white mt-1">12</p>
+              <p className="text-sm text-[#6B7280] dark:text-[#9CA3AF]">Interacciones IA</p>
+              <p className="text-3xl font-bold text-[#1F2937] dark:text-[#F3F4F6] mt-1">12</p>
             </div>
             <div className="text-4xl">🤖</div>
           </div>
@@ -54,9 +54,9 @@ export default function StudentDashboard() {
       {/* Active Work Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Articles */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
-          <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+        <div className="bg-white dark:bg-[#1a1f26] rounded-lg shadow">
+          <div className="p-6 border-b border-[#E5E7EB] dark:border-[#1F2937]">
+            <h2 className="text-xl font-semibold text-[#1F2937] dark:text-[#F3F4F6]">
               Artículos Recientes
             </h2>
           </div>
@@ -77,10 +77,10 @@ export default function StudentDashboard() {
               progress={0}
             />
           </div>
-          <div className="p-4 border-t border-gray-200 dark:border-gray-700">
+          <div className="p-4 border-t border-[#E5E7EB] dark:border-[#1F2937]">
             <Link
               href="/student/articles"
-              className="text-indigo-600 hover:text-indigo-700 text-sm font-medium"
+              className="text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 text-sm font-medium"
             >
               Ver todos los artículos →
             </Link>
@@ -88,9 +88,9 @@ export default function StudentDashboard() {
         </div>
 
         {/* Upcoming Sessions */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
-          <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+        <div className="bg-white dark:bg-[#1a1f26] rounded-lg shadow">
+          <div className="p-6 border-b border-[#E5E7EB] dark:border-[#1F2937]">
+            <h2 className="text-xl font-semibold text-[#1F2937] dark:text-[#F3F4F6]">
               Próximas Sesiones
             </h2>
           </div>
@@ -106,10 +106,10 @@ export default function StudentDashboard() {
               type="Virtual"
             />
           </div>
-          <div className="p-4 border-t border-gray-200 dark:border-gray-700">
+          <div className="p-4 border-t border-[#E5E7EB] dark:border-[#1F2937]">
             <Link
               href="/student/sessions"
-              className="text-indigo-600 hover:text-indigo-700 text-sm font-medium"
+              className="text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 text-sm font-medium"
             >
               Ver todas las sesiones →
             </Link>
@@ -118,12 +118,12 @@ export default function StudentDashboard() {
       </div>
 
       {/* Cognitive Profile Preview */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
-        <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+      <div className="bg-white dark:bg-[#1a1f26] rounded-lg shadow">
+        <div className="p-6 border-b border-[#E5E7EB] dark:border-[#1F2937]">
+          <h2 className="text-xl font-semibold text-[#1F2937] dark:text-[#F3F4F6]">
             Tu Perfil Cognitivo
           </h2>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+          <p className="text-sm text-[#6B7280] dark:text-[#9CA3AF] mt-1">
             Así está evolucionando tu proceso de pensamiento
           </p>
         </div>
@@ -137,10 +137,10 @@ export default function StudentDashboard() {
             <DimensionBar label="Transferencia" level={2} />
           </div>
         </div>
-        <div className="p-4 border-t border-gray-200 dark:border-gray-700">
+        <div className="p-4 border-t border-[#E5E7EB] dark:border-[#1F2937]">
           <Link
             href="/student/profile"
-            className="text-indigo-600 hover:text-indigo-700 text-sm font-medium"
+            className="text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 text-sm font-medium"
           >
             Ver perfil completo →
           </Link>
@@ -156,10 +156,10 @@ export default function StudentDashboard() {
           <div className="flex items-center space-x-4">
             <div className="text-4xl">📖</div>
             <div>
-              <h3 className="font-semibold text-gray-900 dark:text-white">
+              <h3 className="font-semibold text-[#1F2937] dark:text-[#F3F4F6]">
                 Explorar Artículos
               </h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+              <p className="text-sm text-[#6B7280] dark:text-[#9CA3AF]">
                 Descubre nuevos problemas y desafíos
               </p>
             </div>
@@ -173,10 +173,10 @@ export default function StudentDashboard() {
           <div className="flex items-center space-x-4">
             <div className="text-4xl">✍️</div>
             <div>
-              <h3 className="font-semibold text-gray-900 dark:text-white">
+              <h3 className="font-semibold text-[#1F2937] dark:text-[#F3F4F6]">
                 Continuar en Bitácora
               </h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+              <p className="text-sm text-[#6B7280] dark:text-[#9CA3AF]">
                 Retoma tu trabajo en progreso
               </p>
             </div>
@@ -198,14 +198,14 @@ function ArticleCard({ title, status, progress }: { title: string; status: strin
   return (
     <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
       <div className="flex items-start justify-between mb-2">
-        <h3 className="font-medium text-gray-900 dark:text-white text-sm">
+        <h3 className="font-medium text-[#1F2937] dark:text-[#F3F4F6] text-sm">
           {title}
         </h3>
         <span className={`text-xs px-2 py-1 rounded-full ${statusColors[status as keyof typeof statusColors]}`}>
           {status}
         </span>
       </div>
-      <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+      <div className="w-full bg-[#E5E7EB] dark:border-[#1F2937] rounded-full h-2">
         <div
           className="bg-indigo-600 h-2 rounded-full transition-all"
           style={{ width: `${progress}%` }}
@@ -217,13 +217,13 @@ function ArticleCard({ title, status, progress }: { title: string; status: strin
 
 function SessionCard({ title, date, type }: { title: string; date: string; type: string }) {
   return (
-    <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+    <div className="border border-[#E5E7EB] dark:border-[#1F2937] rounded-lg p-4">
       <div className="flex items-start justify-between">
         <div className="flex-1">
-          <h3 className="font-medium text-gray-900 dark:text-white text-sm mb-1">
+          <h3 className="font-medium text-[#1F2937] dark:text-[#F3F4F6] text-sm mb-1">
             {title}
           </h3>
-          <p className="text-xs text-gray-600 dark:text-gray-400">{date}</p>
+          <p className="text-xs text-[#6B7280] dark:text-[#9CA3AF]">{date}</p>
         </div>
         <span className="text-xs bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-400 px-2 py-1 rounded">
           {type}
@@ -240,10 +240,10 @@ function DimensionBar({ label, level }: { label: string; level: number }) {
   return (
     <div>
       <div className="flex items-center justify-between mb-2">
-        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+        <span className="text-sm font-medium text-[#4B5563] dark:text-[#D1D5DB]">
           {label}
         </span>
-        <span className="text-xs text-gray-600 dark:text-gray-400">
+        <span className="text-xs text-[#6B7280] dark:text-[#9CA3AF]">
           {levels[level - 1]}
         </span>
       </div>
@@ -252,7 +252,7 @@ function DimensionBar({ label, level }: { label: string; level: number }) {
           <div
             key={i}
             className={`h-2 flex-1 rounded ${
-              i <= level ? colors[level - 1] : 'bg-gray-200 dark:bg-gray-700'
+              i <= level ? colors[level - 1] : 'bg-[#E5E7EB] dark:border-[#1F2937]'
             }`}
           ></div>
         ))}

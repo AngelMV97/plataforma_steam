@@ -204,14 +204,28 @@ router.delete('/:id', authenticateUser, async (req, res) => {
       return res.status(403).json({ error: 'Only mentors can delete sessions' });
     }
 
-    const { error } = await supabase
+    const { id } = req.params;
+    console.log('Attempting to delete session:', id);
+
+    // Delete session (will cascade delete participants due to foreign key)
+    const { data, error } = await supabase
       .from('sessions')
-      .update({ status: 'cancelled' })
-      .eq('id', req.params.id);
+      .delete()
+      .eq('id', id)
+      .select();
 
-    if (error) throw error;
+    console.log('Delete result:', { data, error, deletedRows: data?.length });
 
-    res.json({ success: true });
+    if (error) {
+      console.error('Supabase delete error:', error);
+      throw error;
+    }
+
+    if (!data || data.length === 0) {
+      console.warn('No rows were deleted for session:', id);
+    }
+
+    res.json({ success: true, message: 'Session deleted successfully', deletedCount: data?.length || 0 });
   } catch (error) {
     console.error('Delete session error:', error);
     res.status(500).json({ error: 'Failed to delete session' });

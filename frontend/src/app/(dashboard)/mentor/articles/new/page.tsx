@@ -2,15 +2,15 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { ArrowRightIcon } from '@/components/icons/MinimalIcons';
 
 export default function NewArticlePage() {
   const router = useRouter();
   const supabase = createClientComponentClient();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [pdfFile, setPdfFile] = useState<File | null>(null);
 
   const [formData, setFormData] = useState({
@@ -116,8 +116,12 @@ export default function NewArticlePage() {
 
       const articleId = responseData.data?.id;
 
-      alert('Artículo creado exitosamente. El PDF se está procesando...');
-      router.push(`/mentor/articles/${articleId}`);
+      setSuccessMessage('Artículo creado exitosamente. El PDF se está procesando...');
+      
+      // Redirect after short delay
+      setTimeout(() => {
+        router.push(`/mentor/articles/${articleId}`);
+      }, 2000);
     } catch (err: any) {
       console.error('Error creating article:', err);
       
@@ -137,62 +141,75 @@ export default function NewArticlePage() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
+    <div className="max-w-3xl mx-auto space-y-6 bg-[#FAFAF8] dark:bg-[#0F1419]">
       {/* Header */}
       <div>
         <button
           onClick={() => router.back()}
-          className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white flex items-center mb-4"
+          className="!text-[#6B7280] dark:!text-[#9CA3AF] hover:!text-[#1F3A5F] dark:hover:!text-[#5B8FB9] flex items-center mb-4 transition-colors"
         >
           <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
           Volver
         </button>
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+        <h1 className="text-3xl font-bold text-[#1F3A5F] dark:text-[#5B8FB9]">
           Subir Artículo de la Semana
         </h1>
-        <p className="text-gray-600 dark:text-gray-400 mt-2">
+        <p className="text-[#6B7280] dark:text-[#9CA3AF] mt-2">
           Sube el artículo científico en PDF para todos los estudiantes
         </p>
       </div>
 
       {/* Form */}
-      <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-800 rounded-lg shadow p-8 space-y-6">
+      <form onSubmit={handleSubmit} className="bg-white dark:bg-[#1a1f26] rounded-lg border border-[#E5E7EB] dark:border-[#1F2937] p-8 space-y-6">
+        {/* Success Message */}
+        {successMessage && (
+          <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
+            <p className="text-green-600 dark:text-green-400 font-medium">{successMessage}</p>
+          </div>
+        )}
+
         {error && (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-            <p className="text-red-600 font-medium mb-2">Error:</p>
-            <p className="text-red-600 text-sm">{error}</p>
+          <div className="bg-red-50 dark:bg-red-900/20 border border-[#DC2626] dark:border-red-800 rounded-lg p-4">
+            <p className="text-[#DC2626] dark:text-red-400 font-medium mb-2">Error:</p>
+            <p className="text-[#DC2626] dark:text-red-400 text-sm">{error}</p>
           </div>
         )}
 
         {/* Title */}
-        <Input
-          label="Título *"
-          name="title"
-          value={formData.title}
-          onChange={handleChange}
-          placeholder="Título del artículo para identificarlo"
-          required
-        />
+        <div>
+          <label className="block text-sm font-medium text-[#1F3A5F] dark:text-[#5B8FB9] mb-2">
+            Título *
+          </label>
+          <input
+            type="text"
+            name="title"
+            value={formData.title}
+            onChange={handleChange}
+            placeholder="Título del artículo para identificarlo"
+            required
+            className="w-full px-4 py-3 rounded-lg border border-[#E5E7EB] dark:border-[#1F2937] focus:ring-2 focus:ring-[#2F6F6D] focus:border-transparent outline-none transition-all bg-white dark:bg-[#1a1f26] text-[#1F2937] dark:text-[#F3F4F6]"
+          />
+        </div>
 
         {/* PDF Upload */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label className="block text-sm font-medium text-[#1F3A5F] dark:text-[#5B8FB9] mb-2">
             Archivo PDF * (máx. 10MB)
           </label>
           <div className="mt-2">
-            <label className="flex flex-col items-center justify-center w-full h-40 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 transition">
+            <label className="flex flex-col items-center justify-center w-full h-40 border-2 border-[#E5E7EB] dark:border-[#1F2937] border-dashed rounded-lg cursor-pointer bg-[#FAFAF8] dark:bg-[#0F1419] hover:bg-[#F3F4F6] dark:hover:bg-[#1a1f26] transition">
               <div className="flex flex-col items-center justify-center pt-5 pb-6">
                 {pdfFile ? (
                   <>
                     <svg className="w-12 h-12 mb-3 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    <p className="text-base text-gray-700 dark:text-gray-300 font-medium mb-1">
+                    <p className="text-base text-[#4B5563] dark:text-[#D1D5DB] font-medium mb-1">
                       {pdfFile.name}
                     </p>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-[#6B7280] dark:text-[#9CA3AF]">
                       {(pdfFile.size / 1024 / 1024).toFixed(2)} MB
                     </p>
                     <button
@@ -201,20 +218,20 @@ export default function NewArticlePage() {
                         e.preventDefault();
                         setPdfFile(null);
                       }}
-                      className="mt-3 text-sm text-red-600 hover:text-red-700"
+                      className="mt-3 text-sm text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
                     >
                       Cambiar archivo
                     </button>
                   </>
                 ) : (
                   <>
-                    <svg className="w-12 h-12 mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-12 h-12 mb-4 text-[#6B7280]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                     </svg>
-                    <p className="mb-2 text-base text-gray-700 dark:text-gray-300">
+                    <p className="mb-2 text-base text-[#1F3A5F] dark:text-[#5B8FB9]">
                       <span className="font-semibold">Clic para subir</span> o arrastra el archivo
                     </p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                    <p className="text-sm text-[#6B7280] dark:text-[#9CA3AF]">
                       Solo archivos PDF (máx. 10MB)
                     </p>
                   </>
@@ -228,7 +245,7 @@ export default function NewArticlePage() {
               />
             </label>
           </div>
-          <p className="text-xs text-gray-500 mt-2">
+          <p className="text-xs text-[#6B7280] dark:text-[#9CA3AF] mt-2">
             El contenido del PDF será procesado automáticamente para el tutor AI
           </p>
         </div>
@@ -237,76 +254,81 @@ export default function NewArticlePage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Week Number */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-[#1F3A5F] dark:text-[#5B8FB9] mb-2">
               Semana *
             </label>
-            <Input
-              name="week_number"
+            <input
               type="number"
+              name="week_number"
               min="1"
               max="52"
               value={formData.week_number}
               onChange={handleChange}
               required
+              className="w-full px-4 py-3 rounded-lg border border-[#E5E7EB] dark:border-[#1F2937] focus:ring-2 focus:ring-[#2F6F6D] focus:border-transparent outline-none transition-all bg-white dark:bg-[#1a1f26] text-[#1F2937] dark:text-[#F3F4F6]"
             />
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-[#6B7280] dark:text-[#9CA3AF] mt-1">
               Número de semana del curso
             </p>
           </div>
 
-          {/* Difficulty Level - Optional for now */}
+          {/* Difficulty Level */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Nivel de Dificultad
+            <label className="block text-sm font-medium text-[#1F3A5F] dark:text-[#5B8FB9] mb-2">
+              Nivel de Dificultad *
             </label>
             <select
               name="difficulty_level"
               value={formData.difficulty_level}
               onChange={handleChange}
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+              className="w-full px-4 py-3 rounded-lg border border-[#E5E7EB] dark:border-[#1F2937] focus:ring-2 focus:ring-[#2F6F6D] focus:border-transparent outline-none transition-all bg-white dark:bg-[#1a1f26] text-[#1F2937] dark:text-[#F3F4F6]"
             >
               <option value={1}>1 - Básico</option>
               <option value={2}>2 - Intermedio</option>
               <option value={3}>3 - Avanzado</option>
               <option value={4}>4 - Experto</option>
             </select>
-            <p className="text-xs text-gray-500 mt-1">
-              Opcional (definir por cohorte)
+            <p className="text-xs text-[#6B7280] dark:text-[#9CA3AF] mt-1">
+              Nivel de complejidad
             </p>
           </div>
 
-          {/* Article Type - Optional for now */}
+          {/* Article Type */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Tipo de Artículo
+            <label className="block text-sm font-medium text-[#1F3A5F] dark:text-[#5B8FB9] mb-2">
+              Tipo de Artículo *
             </label>
             <select
               name="article_type"
               value={formData.article_type}
               onChange={handleChange}
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+              className="w-full px-4 py-3 rounded-lg border border-[#E5E7EB] dark:border-[#1F2937] focus:ring-2 focus:ring-[#2F6F6D] focus:border-transparent outline-none transition-all bg-white dark:bg-[#1a1f26] text-[#1F2937] dark:text-[#F3F4F6]"
             >
               <option value="divulgacion">Divulgación</option>
               <option value="tecnico">Técnico</option>
               <option value="caso_real">Caso Real</option>
             </select>
-            <p className="text-xs text-gray-500 mt-1">
-              Ayuda a estudiantes a identificar
+            <p className="text-xs text-[#6B7280] dark:text-[#9CA3AF] mt-1">
+              Categoría del artículo
             </p>
           </div>
         </div>
 
         {/* Actions */}
-        <div className="flex items-center justify-end space-x-4 pt-6 border-t border-gray-200 dark:border-gray-700">
-          <Button
+        <div className="flex items-center justify-end space-x-4 pt-6 border-t border-[#E5E7EB] dark:border-[#1F2937]">
+          <button
             type="button"
-            variant="outline"
             onClick={() => router.back()}
             disabled={loading}
+            className="px-6 py-3 border border-[#E5E7EB] dark:border-[#1F2937] !text-[#6B7280] dark:!text-[#9CA3AF] font-medium rounded-lg hover:bg-[#F9FAFB] dark:hover:bg-[#1a1f26] transition-colors disabled:opacity-50"
           >
             Cancelar
-          </Button>
-          <Button type="submit" disabled={loading || !pdfFile}>
+          </button>
+          <button
+            type="submit"
+            disabled={loading || !pdfFile}
+            className="inline-flex items-center px-6 py-3 !bg-[#2F6F6D] !text-white font-medium rounded-lg hover:!bg-[#1F3A5F] transition-colors disabled:opacity-50"
+          >
             {loading ? (
               <>
                 <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
@@ -316,9 +338,12 @@ export default function NewArticlePage() {
                 Procesando...
               </>
             ) : (
-              'Subir Artículo'
+              <>
+                Subir Artículo
+                <ArrowRightIcon className="w-5 h-5 ml-2" />
+              </>
             )}
-          </Button>
+          </button>
         </div>
       </form>
     </div>

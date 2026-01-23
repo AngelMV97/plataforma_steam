@@ -1,7 +1,17 @@
 'use client';
 
 import { useState } from 'react';
-import RichTextEditor from './RichTextEditor';
+import dynamic from 'next/dynamic';
+
+// Dynamically import RichTextEditor to avoid memory issues during compilation
+const RichTextEditor = dynamic(() => import('./RichTextEditor'), {
+  ssr: false,
+  loading: () => (
+    <div className="border border-gray-300 rounded-lg p-4 min-h-[100px] flex items-center justify-center text-gray-500">
+      Cargando editor...
+    </div>
+  ),
+});
 
 interface BitacoraEditorProps {
   bitacora_content: {
@@ -94,7 +104,7 @@ export default function BitacoraEditor({ bitacora_content, onSave, currentSectio
 
             {/* Section Content */}
             {isExpanded && (
-              <div className="p-4 bg-white">
+              <div className="p-4 bg-white dark:bg-[#1a1f26]">
                 {section.type === 'rich-text' ? (
                   <RichTextEditor
                     content={value as string}

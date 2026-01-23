@@ -71,10 +71,10 @@ export default function StudentProfilePage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center min-h-screen bg-[#FAFAF8] dark:bg-[#0F1419]">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Cargando perfil...</p>
+          <p className="text-[#6B7280] dark:text-[#9CA3AF]">Cargando perfil...</p>
         </div>
       </div>
     );
@@ -82,8 +82,8 @@ export default function StudentProfilePage() {
 
   if (error || !profileData) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center text-red-600">
+      <div className="flex items-center justify-center min-h-screen bg-[#FAFAF8] dark:bg-[#0F1419]">
+        <div className="text-center text-red-600 dark:text-red-400">
           <p className="text-xl mb-4">Error</p>
           <p>{error || 'No se pudo cargar el perfil'}</p>
         </div>
@@ -92,23 +92,23 @@ export default function StudentProfilePage() {
   }
 
   const chartData = {
-    representacion: profileData.representacion.level,
-    abstraccion: profileData.abstraccion.level,
-    estrategia: profileData.estrategia.level,
-    argumentacion: profileData.argumentacion.level,
-    metacognicion: profileData.metacognicion.level,
-    transferencia: profileData.transferencia.level
+    representacion: profileData.representacion?.level || 0,
+    abstraccion: profileData.abstraccion?.level || 0,
+    estrategia: profileData.estrategia?.level || 0,
+    argumentacion: profileData.argumentacion?.level || 0,
+    metacognicion: profileData.metacognicion?.level || 0,
+    transferencia: profileData.transferencia?.level || 0
   };
 
   const hasEvaluations = Object.values(chartData).some(v => v > 0);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#FAFAF8] dark:bg-[#0F1419]">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b">
+      <div className="bg-white dark:bg-[#1a1f26] shadow-sm border-b border-[#E5E7EB] dark:border-[#1F2937]">
         <div className="max-w-7xl mx-auto px-4 py-6">
-          <h1 className="text-3xl font-bold text-gray-900">Mi Perfil Cognitivo</h1>
-          <p className="text-gray-600 mt-2">
+          <h1 className="text-3xl font-bold text-[#1F2937] dark:text-[#F3F4F6]">Mi Perfil Cognitivo</h1>
+          <p className="text-[#6B7280] dark:text-[#9CA3AF] mt-2">
             Visualiza tu progreso en las 6 dimensiones cognitivas
           </p>
         </div>
@@ -116,36 +116,37 @@ export default function StudentProfilePage() {
 
       <div className="max-w-7xl mx-auto px-4 py-8">
         {!hasEvaluations ? (
-          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
-            <p className="text-yellow-800 font-medium">
+          <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-6 text-center">
+            <p className="text-yellow-800 dark:text-yellow-400 font-medium">
               Aún no tienes evaluaciones. Completa y envía tus bitácoras para que tu mentor las evalúe.
             </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Radar Chart */}
-            <div className="bg-white rounded-lg shadow p-6">
-              <h2 className="text-xl font-semibold mb-6 text-center">Perfil Actual</h2>
+            <div className="bg-white dark:bg-[#1a1f26] rounded-lg shadow p-6">
+              <h2 className="text-xl font-semibold mb-6 text-center text-[#1F2937] dark:text-[#F3F4F6]">Perfil Actual</h2>
               <RadarChart data={chartData} maxValue={4} size={400} />
             </div>
 
             {/* Dimension Details */}
-            <div className="bg-white rounded-lg shadow p-6">
-              <h2 className="text-xl font-semibold mb-4">Detalles por Dimensión</h2>
+            <div className="bg-white dark:bg-[#1a1f26] rounded-lg shadow p-6">
+              <h2 className="text-xl font-semibold mb-4 text-[#1F2937] dark:text-[#F3F4F6]">Detalles por Dimensión</h2>
               <div className="space-y-4">
                 {Object.entries(DIMENSION_LABELS).map(([key, label]) => {
-                  const level = profileData[key as keyof ProfileData].level;
+                  const dimensionData = profileData[key as keyof ProfileData];
+                  const level = dimensionData?.level || 0;
                   const percentage = (level / 4) * 100;
                   
                   return (
                     <div key={key}>
                       <div className="flex justify-between items-center mb-1">
-                        <span className="text-sm font-medium text-gray-700">{label}</span>
-                        <span className="text-sm font-semibold text-gray-900">
+                        <span className="text-sm font-medium text-[#4B5563] dark:text-[#D1D5DB]">{label}</span>
+                        <span className="text-sm font-semibold text-[#1F2937] dark:text-[#F3F4F6]">
                           {LEVEL_LABELS[level]}
                         </span>
                       </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div className="w-full bg-[#E5E7EB] dark:bg-[#1F2937] rounded-full h-2">
                         <div
                           className={`h-2 rounded-full transition-all ${
                             level === 4 ? 'bg-green-500' :
@@ -166,26 +167,26 @@ export default function StudentProfilePage() {
 
         {/* Historical Progress */}
         {history.length > 0 && (
-          <div className="mt-8 bg-white rounded-lg shadow p-6">
-            <h2 className="text-xl font-semibold mb-4">Evolución Histórica</h2>
+          <div className="mt-8 bg-white dark:bg-[#1a1f26] rounded-lg shadow p-6">
+            <h2 className="text-xl font-semibold mb-4 text-[#1F2937] dark:text-[#F3F4F6]">Evolución Histórica</h2>
             <div className="space-y-4">
               {history.map((point, idx) => (
                 <div key={idx} className="border-l-4 border-blue-500 pl-4 pb-4">
                   <div className="flex justify-between items-start mb-2">
                     <div>
-                      <h3 className="font-semibold text-gray-900">
+                      <h3 className="font-semibold text-[#1F2937] dark:text-[#F3F4F6]">
                         Semana {point.week_number}
                       </h3>
-                      <p className="text-sm text-gray-600">{point.article_title}</p>
+                      <p className="text-sm text-[#6B7280] dark:text-[#9CA3AF]">{point.article_title}</p>
                     </div>
-                    <span className="text-xs text-gray-500">
+                    <span className="text-xs text-[#6B7280] dark:text-[#9CA3AF]">
                       {new Date(point.evaluated_at).toLocaleDateString('es-ES')}
                     </span>
                   </div>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                     {Object.entries(point.dimensions).map(([dim, data]) => (
                       <div key={dim} className="text-sm">
-                        <span className="text-gray-600">{DIMENSION_LABELS[dim].split(' ')[0]}:</span>
+                        <span className="text-[#6B7280] dark:text-[#9CA3AF]">{DIMENSION_LABELS[dim].split(' ')[0]}:</span>
                         <span className={`ml-2 font-medium ${
                           data.level === 4 ? 'text-green-600' :
                           data.level === 3 ? 'text-blue-600' :

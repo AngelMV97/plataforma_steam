@@ -65,7 +65,7 @@ export default function ArticleDetailPage() {
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Cargando artículo...</p>
+          <p className="mt-4 text-[#6B7280] dark:text-[#9CA3AF]">Cargando artículo...</p>
         </div>
       </div>
     );
@@ -73,9 +73,9 @@ export default function ArticleDetailPage() {
 
   if (error || !article) {
     return (
-      <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-        <h3 className="text-red-800 font-semibold mb-2">Error al cargar artículo</h3>
-        <p className="text-red-600">{error || 'Artículo no encontrado'}</p>
+      <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6">
+        <h3 className="text-red-800 dark:text-red-400 font-semibold mb-2">Error al cargar artículo</h3>
+        <p className="text-red-600 dark:text-red-400">{error || 'Artículo no encontrado'}</p>
         <Button
           onClick={() => router.back()}
           variant="outline"
@@ -101,11 +101,11 @@ export default function ArticleDetailPage() {
       </button>
 
       {/* Article Header */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-8">
+      <div className="bg-white dark:bg-[#1a1f26] rounded-lg shadow p-8">
         <div className="flex items-start justify-between mb-4">
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-3">
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+              <h1 className="text-3xl font-bold text-[#1F2937] dark:text-[#F3F4F6]">
                 {article.title}
               </h1>
               <span className="bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-400 px-3 py-1 rounded-full text-sm font-medium">
@@ -113,18 +113,18 @@ export default function ArticleDetailPage() {
               </span>
             </div>
             {article.subtitle && (
-              <p className="text-xl text-gray-600 dark:text-gray-400">
+              <p className="text-xl text-[#6B7280] dark:text-[#9CA3AF]">
                 {article.subtitle}
               </p>
             )}
           </div>
-          <span className="text-sm text-gray-500">
+          <span className="text-sm text-[#6B7280] dark:text-[#9CA3AF]">
             📖 {article.estimated_reading_minutes} min
           </span>
         </div>
 
         {/* Meta Info */}
-        <div className="flex flex-wrap gap-4 text-sm text-gray-600 dark:text-gray-400 mb-6">
+        <div className="flex flex-wrap gap-4 text-sm text-[#6B7280] dark:text-[#9CA3AF] mb-6">
           <span className="flex items-center">
             🎯 Nivel {article.difficulty_level}
           </span>
@@ -143,14 +143,14 @@ export default function ArticleDetailPage() {
           <h3 className="font-semibold text-indigo-900 dark:text-indigo-300 mb-2">
             Resumen
           </h3>
-          <p className="text-gray-700 dark:text-gray-300">
+          <p className="text-[#4B5563] dark:text-[#D1D5DB]">
             {article.summary}
           </p>
         </div>
 
         {/* Cognitive Axes */}
         <div className="mb-6">
-          <h3 className="font-semibold text-gray-900 dark:text-white mb-3">
+          <h3 className="font-semibold text-[#1F2937] dark:text-[#F3F4F6] mb-3">
             Ejes Cognitivos que Desarrollarás
           </h3>
           <div className="flex flex-wrap gap-2">
@@ -166,7 +166,7 @@ export default function ArticleDetailPage() {
         </div>
 
         {/* CTA Button */}
-        <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
+        <div className="border-t border-[#E5E7EB] dark:border-[#1F2937] pt-6">
           <Button
             onClick={startBitacora}
             size="lg"
@@ -174,7 +174,7 @@ export default function ArticleDetailPage() {
           >
             Abrir Bitácora y Comenzar →
           </Button>
-          <p className="text-sm text-gray-500 mt-3">
+          <p className="text-sm text-[#6B7280] dark:text-[#9CA3AF] mt-3">
             Trabaja en tu bitácora interactuando con el tutor AI que te guiará en el análisis del artículo
           </p>
         </div>
@@ -182,11 +182,11 @@ export default function ArticleDetailPage() {
 
       {/* PDF Viewer */}
       {article.pdf_url && (
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+        <div className="bg-white dark:bg-[#1a1f26] rounded-lg shadow p-6">
+          <h2 className="text-2xl font-bold text-[#1F2937] dark:text-[#F3F4F6] mb-4">
             Artículo Completo
           </h2>
-          <div className="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden" style={{ height: '800px' }}>
+          <div className="border border-[#E5E7EB] dark:border-[#1F2937] rounded-lg overflow-hidden" style={{ height: '800px' }}>
             <iframe
               src={article.pdf_url}
               className="w-full h-full"
