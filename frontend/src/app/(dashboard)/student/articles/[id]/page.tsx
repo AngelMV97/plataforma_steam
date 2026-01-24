@@ -140,12 +140,6 @@ export default function ArticleDetailPage() {
             </span>
           )}
         </div>
-              >
-                {axis}
-              </span>
-            ))}
-          </div>
-        </div>
 
         {/* CTA Button */}
         <div className="border-t border-[#E5E7EB] dark:border-[#1F2937] pt-6">
