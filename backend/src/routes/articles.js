@@ -111,7 +111,13 @@ router.post(
         : cognitive_axes;
 
       // Upload PDF to Supabase Storage
-      const fileName = `${Date.now()}-${pdfFile.originalname}`;
+      // Sanitize filename: remove accents and special characters
+      const sanitizedFilename = pdfFile.originalname
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '') // Remove accents
+        .replace(/[^a-zA-Z0-9.-]/g, '_'); // Replace other special chars with underscore
+        
+      const fileName = `${Date.now()}-${sanitizedFilename}`;
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('articles')
         .upload(fileName, pdfFile.buffer, {
