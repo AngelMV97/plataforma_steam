@@ -91,6 +91,8 @@ export default function NewArticlePage() {
       
       // Use fetch to handle FormData properly with Supabase token
       const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+      console.log('🔍 API_URL being used:', API_URL);
+      console.log('🔍 NEXT_PUBLIC_API_URL from env:', process.env.NEXT_PUBLIC_API_URL);
       const response = await fetch(`${API_URL}/api/articles`, {
         method: 'POST',
         headers: {

@@ -1,10 +1,42 @@
 'use client';
 
 import { useAuth } from '@/contexts/AuthContext';
+import { useEffect, useState } from 'react';
+import { api } from '@/lib/api';
 import Link from 'next/link';
+
+interface Article {
+  id: string;
+  title: string;
+  subtitle: string;
+  difficulty_level: number;
+  cognitive_axes: string[];
+  article_type: string;
+  estimated_reading_minutes: number;
+  week_number: number;
+}
 
 export default function StudentDashboard() {
   const { profile } = useAuth();
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchRecentArticles();
+  }, []);
+
+  async function fetchRecentArticles() {
+    try {
+      const response = await api.get('/api/articles');
+      // Get only the 3 most recent articles
+      const recentArticles = (response.data || []).slice(0, 3);
+      setArticles(recentArticles);
+    } catch (err: any) {
+      console.error('Error fetching articles:', err);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <div className="space-y-8">
@@ -23,8 +55,8 @@ export default function StudentDashboard() {
         <div className="bg-white dark:bg-[#1a1f26] rounded-lg shadow p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-[#6B7280] dark:text-[#9CA3AF]">Artículos en Progreso</p>
-              <p className="text-3xl font-bold text-[#1F2937] dark:text-[#F3F4F6] mt-1">3</p>
+              <p className="text-sm text-[#6B7280] dark:text-[#9CA3AF]">Artículos Disponibles</p>
+              <p className="text-3xl font-bold text-[#1F2937] dark:text-[#F3F4F6] mt-1">{articles.length}</p>
             </div>
             <div className="text-4xl">📚</div>
           </div>
@@ -61,21 +93,21 @@ export default function StudentDashboard() {
             </h2>
           </div>
           <div className="p-6 space-y-4">
-            <ArticleCard
-              title="El Problema de Monty Hall: Probabilidad e Intuición"
-              status="En progreso"
-              progress={60}
-            />
-            <ArticleCard
-              title="Modelación de Sistemas Dinámicos"
-              status="Completado"
-              progress={100}
-            />
-            <ArticleCard
-              title="Análisis de Datos: COVID-19"
-              status="Pendiente"
-              progress={0}
-            />
+            {loading ? (
+              <p className="text-[#6B7280] dark:text-[#9CA3AF]">Cargando artículos...</p>
+            ) : articles.length === 0 ? (
+              <p className="text-[#6B7280] dark:text-[#9CA3AF]">No hay artículos disponibles</p>
+            ) : (
+              articles.map((article) => (
+                <Link key={article.id} href={`/student/articles/${article.id}`}>
+                  <ArticleCard
+                    title={article.title}
+                    subtitle={article.subtitle}
+                    difficultyLevel={article.difficulty_level}
+                  />
+                </Link>
+              ))
+            )}
           </div>
           <div className="p-4 border-t border-[#E5E7EB] dark:border-[#1F2937]">
             <Link
@@ -188,28 +220,36 @@ export default function StudentDashboard() {
 }
 
 // Helper Components
-function ArticleCard({ title, status, progress }: { title: string; status: string; progress: number }) {
-  const statusColors = {
-    'En progreso': 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400',
-    'Completado': 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400',
-    'Pendiente': 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-400',
-  };
+function ArticleCard({ 
+  title, 
+  subtitle, 
+  difficultyLevel 
+}: { 
+  title: string; 
+  subtitle: string; 
+  difficultyLevel: number;
+}) {
+  const difficultyLabels = ['Fácil', 'Medio', 'Difícil'];
+  const difficultyColors = [
+    'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400',
+    'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400',
+    'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
+  ];
 
   return (
-    <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+    <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:border-indigo-500 dark:hover:border-indigo-400 transition cursor-pointer">
       <div className="flex items-start justify-between mb-2">
-        <h3 className="font-medium text-[#1F2937] dark:text-[#F3F4F6] text-sm">
-          {title}
-        </h3>
-        <span className={`text-xs px-2 py-1 rounded-full ${statusColors[status as keyof typeof statusColors]}`}>
-          {status}
+        <div className="flex-1">
+          <h3 className="font-medium text-[#1F2937] dark:text-[#F3F4F6] text-sm mb-1">
+            {title}
+          </h3>
+          <p className="text-xs text-[#6B7280] dark:text-[#9CA3AF]">
+            {subtitle}
+          </p>
+        </div>
+        <span className={`text-xs px-2 py-1 rounded-full ml-2 whitespace-nowrap ${difficultyColors[difficultyLevel - 1]}`}>
+          {difficultyLabels[difficultyLevel - 1]}
         </span>
-      </div>
-      <div className="w-full bg-[#E5E7EB] dark:border-[#1F2937] rounded-full h-2">
-        <div
-          className="bg-indigo-600 h-2 rounded-full transition-all"
-          style={{ width: `${progress}%` }}
-        ></div>
       </div>
     </div>
   );
@@ -252,7 +292,7 @@ function DimensionBar({ label, level }: { label: string; level: number }) {
           <div
             key={i}
             className={`h-2 flex-1 rounded ${
-              i <= level ? colors[level - 1] : 'bg-[#E5E7EB] dark:border-[#1F2937]'
+              i <= level ? colors[level - 1] : 'bg-[#E5E7EB] dark:bg-[#374151]'
             }`}
           ></div>
         ))}
