@@ -323,7 +323,7 @@ export default function PostulacionPage() {
             
             {/* Placeholder for Google Form - user needs to replace with actual URL */}
             <a 
-              href="https://docs.google.com/forms/d/1q_2Y21nov3QFWfO7g_imgXmrs8UjQdpL5B7L3TKGbsw/edit" 
+              href="https://docs.google.com/forms/d/e/1FAIpQLSeyauR_JGwEPTRvgnnl6HcyvBcvUe0PhqHYwNwTF3TEJQbAxQ/viewform?usp=dialog" 
               target="_blank" 
               rel="noopener noreferrer"
               className="group bg-[#1F3A5F] dark:bg-[#5B8FB9] !text-white px-10 py-4 rounded-sm font-medium hover:bg-[#2F6F6D] dark:hover:bg-[#4A9B98] transition-all duration-300 inline-flex items-center gap-2 shadow-md hover:shadow-lg no-underline"

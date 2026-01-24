@@ -121,7 +121,7 @@ class PDFService {
       const { data, error } = await supabase
         .rpc('match_article_chunks', {
           query_embedding: queryEmbedding,
-          match_article_id: articleId,
+          article_id: articleId,
           match_threshold: 0.7,
           match_count: topK,
         });
