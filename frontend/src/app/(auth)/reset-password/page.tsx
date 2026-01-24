@@ -1,12 +1,12 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { Suspense, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { EyeIcon, EyeOffIcon } from '@/components/icons/MinimalIcons';
 
-export default function ResetPasswordPage() {
+function ResetPasswordContent() {
   const supabase = useMemo(() => createClientComponentClient(), []);
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -240,5 +240,13 @@ export default function ResetPasswordPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ResetPasswordPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#FAFAF8] dark:bg-[#0F1419] flex items-center justify-center"><div className="animate-pulse text-[#6B7280]">Cargando...</div></div>}>
+      <ResetPasswordContent />
+    </Suspense>
   );
 }
