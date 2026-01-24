@@ -98,11 +98,18 @@ export default function MentorArticleDetailPage() {
               Editar
             </Button>
           </Link>
-          <Link href={`/mentor/articles/${articleId}/problems/new`}>
+          {/* <Link href={`/mentor/articles/${articleId}/problems/new`}>
             <Button>
               + Agregar Problema
             </Button>
-          </Link>
+          </Link> */}
+          <button
+            disabled
+            className="px-4 py-2 bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 rounded cursor-not-allowed"
+            title="Funcionalidad próximamente"
+          >
+            + Agregar Problema
+          </button>
         </div>
       </div>
 
@@ -142,26 +149,7 @@ export default function MentorArticleDetailPage() {
               {new Date(article.created_at).toLocaleDateString()}
             </p>
           </div>
-        </div>
-
-        <div className="mb-6">
-          <h3 className="font-semibold text-[#1F2937] dark:text-[#F3F4F6] mb-2">Resumen</h3>
-          <p className="text-[#4B5563] dark:text-[#D1D5DB]">{article.summary}</p>
-        </div>
-
-        <div className="mb-6">
-          <h3 className="font-semibold text-[#1F2937] dark:text-[#F3F4F6] mb-3">Ejes Cognitivos</h3>
-          <div className="flex flex-wrap gap-2">
-            {article.cognitive_axes?.map((axis, index) => (
-              <span
-                key={index}
-                className="bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400 px-3 py-1 rounded-full text-sm"
-              >
-                {axis}
-              </span>
-            ))}
-          </div>
-        </div>
+        </div>        
 
         {article.content_text && (
           <div className="mb-6">
