@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { api } from '@/lib/api';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { Calendar, Clock, User } from 'lucide-react';
 
 interface Session {
   id: string;
@@ -126,21 +127,29 @@ export default function StudentSessionsPage() {
                           : 'Sesión General'}
                       </h3>
                       <div className="flex flex-wrap gap-3 text-sm text-[#6B7280] dark:text-[#9CA3AF]">
-                        <span>
-                          📅 {new Date(session.session_date).toLocaleDateString('es-ES', {
+                        <span className="flex items-center gap-1.5">
+                          <Calendar className="w-4 h-4" />
+                          {new Date(session.session_date).toLocaleDateString('es-ES', {
                             weekday: 'long',
                             month: 'long',
                             day: 'numeric'
                           })}
                         </span>
-                        <span>
-                          🕐 {new Date(session.session_date).toLocaleTimeString('es-ES', {
+                        <span className="flex items-center gap-1.5">
+                          <Clock className="w-4 h-4" />
+                          {new Date(session.session_date).toLocaleTimeString('es-ES', {
                             hour: '2-digit',
                             minute: '2-digit'
                           })}
                         </span>
-                        <span>⏱️ {session.duration_minutes} min</span>
-                        <span>👨‍🏫 {session.facilitator.full_name}</span>
+                        <span className="flex items-center gap-1.5">
+                          <Clock className="w-4 h-4" />
+                          {session.duration_minutes} min
+                        </span>
+                        <span className="flex items-center gap-1.5">
+                          <User className="w-4 h-4" />
+                          {session.facilitator.full_name}
+                        </span>
                       </div>
                     </div>
                     {isRegistered && (

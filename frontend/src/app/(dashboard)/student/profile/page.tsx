@@ -73,7 +73,7 @@ export default function StudentProfilePage() {
     return (
       <div className="flex items-center justify-center min-h-screen bg-[#FAFAF8] dark:bg-[#0F1419]">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#1F3A5F] dark:border-[#5B8FB9] mx-auto mb-4"></div>
           <p className="text-[#6B7280] dark:text-[#9CA3AF]">Cargando perfil...</p>
         </div>
       </div>
@@ -150,7 +150,7 @@ export default function StudentProfilePage() {
                         <div
                           className={`h-2 rounded-full transition-all ${
                             level === 4 ? 'bg-green-500' :
-                            level === 3 ? 'bg-blue-500' :
+                            level === 3 ? 'bg-[#1F3A5F] dark:bg-[#5B8FB9]' :
                             level === 2 ? 'bg-yellow-500' :
                             level === 1 ? 'bg-red-500' : 'bg-gray-300'
                           }`}
@@ -171,7 +171,7 @@ export default function StudentProfilePage() {
             <h2 className="text-xl font-semibold mb-4 text-[#1F2937] dark:text-[#F3F4F6]">Evolución Histórica</h2>
             <div className="space-y-4">
               {history.map((point, idx) => (
-                <div key={idx} className="border-l-4 border-blue-500 pl-4 pb-4">
+                <div key={idx} className="border-l-4 border-[#1F3A5F] dark:border-[#5B8FB9] pl-4 pb-4">
                   <div className="flex justify-between items-start mb-2">
                     <div>
                       <h3 className="font-semibold text-[#1F2937] dark:text-[#F3F4F6]">
@@ -189,7 +189,7 @@ export default function StudentProfilePage() {
                         <span className="text-[#6B7280] dark:text-[#9CA3AF]">{DIMENSION_LABELS[dim].split(' ')[0]}:</span>
                         <span className={`ml-2 font-medium ${
                           data.level === 4 ? 'text-green-600' :
-                          data.level === 3 ? 'text-blue-600' :
+                          data.level === 3 ? 'text-[#1F3A5F] dark:text-[#5B8FB9]' :
                           data.level === 2 ? 'text-yellow-600' : 'text-red-600'
                         }`}>
                           {LEVEL_LABELS[data.level]}

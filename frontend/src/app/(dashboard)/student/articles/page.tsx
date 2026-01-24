@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { api } from '@/lib/api';
 import Link from 'next/link';
+import { BookOpen, Calendar, Target, FileText } from 'lucide-react';
 
 interface Article {
   id: string;
@@ -150,7 +151,7 @@ export default function StudentArticlesPage() {
       {/* Articles Grid */}
       {filteredArticles.length === 0 ? (
         <div className="bg-[#FAFAF8] dark:bg-[#1a1f26] rounded-lg p-12 text-center">
-          <div className="text-6xl mb-4">📚</div>
+          <BookOpen className="w-16 h-16 mx-auto mb-4 text-[#6B7280] dark:text-[#9CA3AF]" />
           <h3 className="text-xl font-semibold text-[#1F2937] dark:text-[#F3F4F6] mb-2">
             No hay artículos disponibles
           </h3>
@@ -234,8 +235,14 @@ function ArticleCard({ article }: { article: Article }) {
 
         {/* Meta */}
         <div className="flex items-center justify-between text-xs text-[#6B7280] dark:text-[#9CA3AF] pt-4 border-t border-[#E5E7EB] dark:border-[#1F2937]">
-          <span>🎯 {difficultyLabels[article.difficulty_level]}</span>
-          <span>📑 {typeLabels[article.article_type] || article.article_type}</span>
+          <span className="flex items-center gap-1.5">
+            <Target className="w-3.5 h-3.5" />
+            {difficultyLabels[article.difficulty_level]}
+          </span>
+          <span className="flex items-center gap-1.5">
+            <FileText className="w-3.5 h-3.5" />
+            {typeLabels[article.article_type] || article.article_type}
+          </span>
         </div>
 
         {/* Cognitive Axes Count */}

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { api } from '@/lib/api';
 import { Button } from '@/components/ui/Button';
+import { BookOpen, Target, FileText, Clock } from 'lucide-react';
 
 interface Article {
   id: string;
@@ -118,24 +119,28 @@ export default function ArticleDetailPage() {
               </p>
             )}
           </div>
-          <span className="text-sm text-[#6B7280] dark:text-[#9CA3AF]">
-            {article.estimated_reading_minutes} min de lectura
-          </span>
+          <div className="flex items-center gap-1.5 text-sm text-[#6B7280] dark:text-[#9CA3AF]">
+            <BookOpen className="w-4 h-4" />
+            <span>{article.estimated_reading_minutes} min</span>
+          </div>
         </div>
 
         {/* Meta Info */}
         <div className="flex flex-wrap gap-6 text-sm text-[#6B7280] dark:text-[#9CA3AF] mb-6 py-4 border-t border-b border-[#E5E7EB] dark:border-[#1F2937]">
-          <span className="flex items-center">
-            <strong className="text-[#1F2937] dark:text-[#F3F4F6] mr-2">Nivel:</strong>
+          <span className="flex items-center gap-2">
+            <Target className="w-4 h-4" />
+            <strong className="text-[#1F2937] dark:text-[#F3F4F6]">Nivel:</strong>
             {article.difficulty_level}
           </span>
-          <span className="flex items-center">
-            <strong className="text-[#1F2937] dark:text-[#F3F4F6] mr-2">Tipo:</strong>
+          <span className="flex items-center gap-2">
+            <FileText className="w-4 h-4" />
+            <strong className="text-[#1F2937] dark:text-[#F3F4F6]">Tipo:</strong>
             {article.article_type}
           </span>
           {!article.pdf_processed && (
-            <span className="flex items-center text-amber-600">
-              <strong className="mr-2">Estado:</strong>
+            <span className="flex items-center gap-2 text-amber-600">
+              <Clock className="w-4 h-4" />
+              <strong>Estado:</strong>
               Procesando...
             </span>
           )}
