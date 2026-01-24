@@ -74,12 +74,6 @@ export default function DashboardLayout({
                     Artículos
                   </Link>
                   <Link
-                    href="/student/bitacora"
-                    className="!text-[#6B7280] dark:!text-[#D1D5DB] hover:!text-[#1F3A5F] dark:hover:!text-[#5B8FB9] px-3 py-2 text-sm font-medium transition-colors"
-                  >
-                    Mi Bitácora
-                  </Link>
-                  <Link
                     href="/student/profile"
                     className="!text-[#6B7280] dark:!text-[#D1D5DB] hover:!text-[#1F3A5F] dark:hover:!text-[#5B8FB9] px-3 py-2 text-sm font-medium transition-colors"
                   >

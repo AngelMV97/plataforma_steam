@@ -18,6 +18,8 @@ interface Props {
   isReadOnly: boolean;
 }
 
+const [error, setError] = useState<string | null>(null);
+
 export default function AiTutorPanel({ attemptId, currentSection, isReadOnly }: Props) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
@@ -66,7 +68,9 @@ export default function AiTutorPanel({ attemptId, currentSection, isReadOnly }: 
       ]);
     } catch (err: any) {
       console.error('Error sending message:', err);
-      alert('Error al enviar mensaje. Intenta nuevamente.');
+      setError(err.message || 'No se pudo enviar el mensaje. Por favor, verifica tu conexión e intenta nuevamente.');
+      // Clear error after 5 seconds
+      setTimeout(() => setError(null), 5000);
     } finally {
       setLoading(false);
     }
@@ -92,6 +96,13 @@ export default function AiTutorPanel({ attemptId, currentSection, isReadOnly }: 
           </div>
         </div>
       </div>
+
+      {/* Error Message */}
+      {error && (
+        <div className="mx-6 mt-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+          <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+        </div>
+      )}
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
