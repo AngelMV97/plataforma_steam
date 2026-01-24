@@ -41,45 +41,30 @@ export default function StudentDashboard() {
   return (
     <div className="space-y-8">
       {/* Welcome Section */}
-      <div className="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg shadow-lg p-8 text-white">
-        <h1 className="text-3xl font-bold mb-2">
-          ¡Bienvenido, {profile?.full_name?.split(' ')[0]}! 👋
+      <div className="bg-white dark:bg-[#1a1f26] rounded-lg shadow p-8 border border-[#E5E7EB] dark:border-[#1F2937]">
+        <h1 className="text-3xl font-bold mb-2 text-[#1F3A5F] dark:text-[#5B8FB9]">
+          Bienvenido, {profile?.full_name?.split(' ')[0]}
         </h1>
-        <p className="text-indigo-100">
+        <p className="text-[#6B7280] dark:text-[#9CA3AF]">
           Continúa desarrollando tu pensamiento científico y matemático
         </p>
       </div>
 
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white dark:bg-[#1a1f26] rounded-lg shadow p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-[#6B7280] dark:text-[#9CA3AF]">Artículos Disponibles</p>
-              <p className="text-3xl font-bold text-[#1F2937] dark:text-[#F3F4F6] mt-1">{articles.length}</p>
-            </div>
-            <div className="text-4xl">📚</div>
-          </div>
+        <div className="bg-white dark:bg-[#1a1f26] rounded-lg shadow p-6 border border-[#E5E7EB] dark:border-[#1F2937]">
+          <p className="text-sm text-[#6B7280] dark:text-[#9CA3AF] mb-2">Artículos Disponibles</p>
+          <p className="text-3xl font-bold text-[#1F3A5F] dark:text-[#5B8FB9]">{articles.length}</p>
         </div>
 
-        <div className="bg-white dark:bg-[#1a1f26] rounded-lg shadow p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-[#6B7280] dark:text-[#9CA3AF]">Sesiones esta Semana</p>
-              <p className="text-3xl font-bold text-[#1F2937] dark:text-[#F3F4F6] mt-1">2</p>
-            </div>
-            <div className="text-4xl">📅</div>
-          </div>
+        <div className="bg-white dark:bg-[#1a1f26] rounded-lg shadow p-6 border border-[#E5E7EB] dark:border-[#1F2937]">
+          <p className="text-sm text-[#6B7280] dark:text-[#9CA3AF] mb-2">Sesiones esta Semana</p>
+          <p className="text-3xl font-bold text-[#1F3A5F] dark:text-[#5B8FB9]">2</p>
         </div>
 
-        <div className="bg-white dark:bg-[#1a1f26] rounded-lg shadow p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-[#6B7280] dark:text-[#9CA3AF]">Interacciones IA</p>
-              <p className="text-3xl font-bold text-[#1F2937] dark:text-[#F3F4F6] mt-1">12</p>
-            </div>
-            <div className="text-4xl">🤖</div>
-          </div>
+        <div className="bg-white dark:bg-[#1a1f26] rounded-lg shadow p-6 border border-[#E5E7EB] dark:border-[#1F2937]">
+          <p className="text-sm text-[#6B7280] dark:text-[#9CA3AF] mb-2">Interacciones IA</p>
+          <p className="text-3xl font-bold text-[#1F3A5F] dark:text-[#5B8FB9]">12</p>
         </div>
       </div>
 
@@ -177,43 +162,6 @@ export default function StudentDashboard() {
             Ver perfil completo →
           </Link>
         </div>
-      </div>
-
-      {/* Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Link
-          href="/student/articles"
-          className="bg-indigo-50 dark:bg-indigo-900/20 border-2 border-indigo-200 dark:border-indigo-800 rounded-lg p-6 hover:border-indigo-400 transition"
-        >
-          <div className="flex items-center space-x-4">
-            <div className="text-4xl">📖</div>
-            <div>
-              <h3 className="font-semibold text-[#1F2937] dark:text-[#F3F4F6]">
-                Explorar Artículos
-              </h3>
-              <p className="text-sm text-[#6B7280] dark:text-[#9CA3AF]">
-                Descubre nuevos problemas y desafíos
-              </p>
-            </div>
-          </div>
-        </Link>
-
-        <Link
-          href="/student/bitacora"
-          className="bg-purple-50 dark:bg-purple-900/20 border-2 border-purple-200 dark:border-purple-800 rounded-lg p-6 hover:border-purple-400 transition"
-        >
-          <div className="flex items-center space-x-4">
-            <div className="text-4xl">✍️</div>
-            <div>
-              <h3 className="font-semibold text-[#1F2937] dark:text-[#F3F4F6]">
-                Continuar en Bitácora
-              </h3>
-              <p className="text-sm text-[#6B7280] dark:text-[#9CA3AF]">
-                Retoma tu trabajo en progreso
-              </p>
-            </div>
-          </div>
-        </Link>
       </div>
     </div>
   );

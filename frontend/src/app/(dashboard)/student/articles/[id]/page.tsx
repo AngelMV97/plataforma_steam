@@ -119,45 +119,27 @@ export default function ArticleDetailPage() {
             )}
           </div>
           <span className="text-sm text-[#6B7280] dark:text-[#9CA3AF]">
-            📖 {article.estimated_reading_minutes} min
+            {article.estimated_reading_minutes} min de lectura
           </span>
         </div>
 
         {/* Meta Info */}
-        <div className="flex flex-wrap gap-4 text-sm text-[#6B7280] dark:text-[#9CA3AF] mb-6">
+        <div className="flex flex-wrap gap-6 text-sm text-[#6B7280] dark:text-[#9CA3AF] mb-6 py-4 border-t border-b border-[#E5E7EB] dark:border-[#1F2937]">
           <span className="flex items-center">
-            🎯 Nivel {article.difficulty_level}
+            <strong className="text-[#1F2937] dark:text-[#F3F4F6] mr-2">Nivel:</strong>
+            {article.difficulty_level}
           </span>
           <span className="flex items-center">
-            📑 {article.article_type}
+            <strong className="text-[#1F2937] dark:text-[#F3F4F6] mr-2">Tipo:</strong>
+            {article.article_type}
           </span>
           {!article.pdf_processed && (
             <span className="flex items-center text-amber-600">
-              ⏳ Procesando PDF...
+              <strong className="mr-2">Estado:</strong>
+              Procesando...
             </span>
           )}
         </div>
-
-        {/* Summary */}
-        <div className="bg-indigo-50 dark:bg-indigo-900/20 rounded-lg p-4 mb-6">
-          <h3 className="font-semibold text-indigo-900 dark:text-indigo-300 mb-2">
-            Resumen
-          </h3>
-          <p className="text-[#4B5563] dark:text-[#D1D5DB]">
-            {article.summary}
-          </p>
-        </div>
-
-        {/* Cognitive Axes */}
-        <div className="mb-6">
-          <h3 className="font-semibold text-[#1F2937] dark:text-[#F3F4F6] mb-3">
-            Ejes Cognitivos que Desarrollarás
-          </h3>
-          <div className="flex flex-wrap gap-2">
-            {article.cognitive_axes?.map((axis, index) => (
-              <span
-                key={index}
-                className="bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-400 px-3 py-1 rounded-full text-sm"
               >
                 {axis}
               </span>
