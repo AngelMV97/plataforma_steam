@@ -184,11 +184,13 @@ export default function MentorArticleDetailPage() {
           <h2 className="text-2xl font-bold text-[#1F2937] dark:text-[#F3F4F6]">
             Problemas Asociados
           </h2>
-          <Link href={`/mentor/articles/${articleId}/problems/new`}>
-            <Button size="sm">
-              + Agregar
-            </Button>
-          </Link>
+          <button
+            disabled
+            className="px-3 py-1.5 text-sm bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 rounded cursor-not-allowed"
+            title="Funcionalidad próximamente"
+          >
+            + Agregar
+          </button>
         </div>
 
         {article.problems && article.problems.length > 0 ? (
@@ -215,11 +217,9 @@ export default function MentorArticleDetailPage() {
           <p className="text-[#6B7280] dark:text-[#9CA3AF] italic text-center py-8">
             No hay problemas asociados a este artículo.
             <br />
-            <Link href={`/mentor/articles/${articleId}/problems/new`}>
-              <span className="text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 font-medium">
-                Agregar el primero
-              </span>
-            </Link>
+            <span className="text-gray-400 dark:text-gray-500">
+              (Funcionalidad próximamente)
+            </span>
           </p>
         )}
       </div>
