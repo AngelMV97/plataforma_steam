@@ -4,6 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useEffect, useState } from 'react';
 import { api } from '@/lib/api';
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface Article {
   id: string;
@@ -41,13 +42,24 @@ export default function StudentDashboard() {
   return (
     <div className="space-y-8">
       {/* Welcome Section */}
-      <div className="bg-white dark:bg-[#1a1f26] rounded-lg shadow p-8 border border-[#E5E7EB] dark:border-[#1F2937]">
-        <h1 className="text-3xl font-bold mb-2 text-[#1F3A5F] dark:text-[#5B8FB9]">
-          Bienvenido, {profile?.full_name?.split(' ')[0]}
-        </h1>
-        <p className="text-[#6B7280] dark:text-[#9CA3AF]">
-          Continúa desarrollando tu pensamiento científico y matemático
-        </p>
+      <div className="bg-white dark:bg-[#1a1f26] rounded-lg shadow p-8 border border-[#E5E7EB] dark:border-[#1F2937] flex items-center justify_between">
+        <div>
+          <h1 className="text-3xl font-bold mb-2 text-[#1F3A5F] dark:text-[#5B8FB9]">
+            Bienvenido, {profile?.full_name?.split(' ')[0]}
+          </h1>
+          <p className="text-[#6B7280] dark:text-[#9CA3AF]">
+            Continúa desarrollando tu pensamiento científico y matemático
+          </p>
+        </div>
+        <div className="hidden sm:block">
+          <Image
+            src="/characters/isaac-newton.png"
+            alt="Isaac Newton"
+            width={64}
+            height={64}
+            className="rounded-full border border-[#E5E7EB] dark:border-[#1F2937]"
+          />
+        </div>
       </div>
 
       {/* Quick Stats */}

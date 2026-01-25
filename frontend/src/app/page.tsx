@@ -4,6 +4,7 @@ import Link from "next/link";
 import { DocumentIcon, NotebookIcon, NodeIcon, UsersIcon, ClockIcon, TargetIcon, CheckCircleIcon, ArrowRightIcon } from "@/components/icons/MinimalIcons";
 import { useDarkMode } from '@/hooks/useDarkMode';
 import { SunIcon, MoonIcon } from '@/components/icons/ThemeIcons';
+import Image from 'next/image';
 
 export default function Home() {
   const { isDark, toggle, mounted } = useDarkMode();
@@ -12,8 +13,19 @@ export default function Home() {
       {/* Header */}
       <header className="border-b border-[#E5E7EB] dark:border-[#1F2937] bg-white/80 dark:bg-[#1a1f26]/80 backdrop-blur-sm sticky top-0 z-50">
         <nav className="max-w-[1200px] mx-auto px-4 sm:px-6 md:px-8 lg:px-20 py-4 sm:py-5 flex items-center justify-between">
-          <div className="font-serif text-lg sm:text-xl md:text-2xl font-semibold text-[#1F3A5F] dark:text-[#5B8FB9] tracking-tight">
-            Gomot Science Academy
+          <div className="flex items-center">
+            <div className="block sm:hidden">
+              <Image
+                src="/logos/gomot-wordmark.png"
+                alt="Gomot Science Academy"
+                width={140}
+                height={32}
+                priority
+              />
+            </div>
+            <div className="hidden sm:block font-serif text-lg sm:text-xl md:text-2xl font-semibold text-[#1F3A5F] dark:text-[#5B8FB9] tracking-tight">
+              Gomot Science Academy
+            </div>
           </div>
           <div className="flex items-center gap-3 sm:gap-4 md:gap-6 text-[#6B7280] dark:text-[#D1D5DB] text-xs sm:text-sm">
             <Link href="/login" className="hover:text-[#1F3A5F] dark:hover:text-[#5B8FB9] transition-colors duration-200 font-medium">

@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { api } from '@/lib/api';
 import { Button } from '@/components/ui/Button';
+import Image from 'next/image';
 
 // Dynamically import heavy components to avoid memory issues during compilation
 const BitacoraEditor = dynamic(() => import('@/components/bitacora/BitacoraEditor'), {
@@ -211,6 +212,13 @@ export default function BitacoraPage() {
             </div>
 
             <div className="flex items-center space-x-4">
+              <Image
+                src="/characters/isaac-newton.png"
+                alt="Isaac Newton"
+                width={36}
+                height={36}
+                className="rounded-full border border-gray-200 dark:border-gray-700"
+              />
               {/* Auto-save indicator */}
               <div className="text-sm text-gray-500">
                 {saving ? (

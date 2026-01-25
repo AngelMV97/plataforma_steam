@@ -47,10 +47,13 @@ export default function DashboardLayout({
             {/* Logo */}
             <div className="flex items-center">
               <Link href={profile.role === 'student' ? '/student' : '/mentor'} className="flex items-center group">
-                {/* Logo placeholder - replace with actual logo image */}
-                <div className="w-8 h-8 rounded-full bg-[#1F3A5F] dark:bg-[#5B8FB9] flex items-center justify-center mr-3 group-hover:bg-[#2F6F6D] dark:group-hover:bg-[#4A9B98] transition-colors">
-                  <span className="text-white font-serif font-bold text-sm">G</span>
-                </div>
+                <Image
+                  src="/logos/gomot-seal.png"
+                  alt="Gomot Seal"
+                  width={32}
+                  height={32}
+                  className="mr-3 rounded-sm"
+                />
                 <span className="font-serif text-xl font-semibold text-[#1F3A5F] dark:text-[#5B8FB9] tracking-tight group-hover:text-[#2F6F6D] dark:group-hover:text-[#4A9B98] transition-colors">
                   Gomot Science Academy
                 </span>
