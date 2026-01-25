@@ -18,9 +18,9 @@ interface Props {
   isReadOnly: boolean;
 }
 
-const [error, setError] = useState<string | null>(null);
 
 export default function AiTutorPanel({ attemptId, currentSection, isReadOnly }: Props) {
+  const [error, setError] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
