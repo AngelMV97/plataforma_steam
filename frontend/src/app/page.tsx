@@ -18,8 +18,8 @@ export default function Home() {
               <Image
                 src="/logos/gomot-wordmark.png"
                 alt="Gomot Science Academy"
-                width={140}
-                height={32}
+                width={110}
+                height={26}
                 priority
               />
             </div>

@@ -215,8 +215,8 @@ export default function BitacoraPage() {
               <Image
                 src="/characters/isaac-newton.png"
                 alt="Isaac Newton"
-                width={36}
-                height={36}
+                width={80}
+                height={80}
                 className="rounded-full border border-gray-200 dark:border-gray-700"
               />
               {/* Auto-save indicator */}

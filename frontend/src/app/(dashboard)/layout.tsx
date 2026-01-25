@@ -50,8 +50,8 @@ export default function DashboardLayout({
                 <Image
                   src="/logos/gomot-seal.png"
                   alt="Gomot Seal"
-                  width={32}
-                  height={32}
+                  width={48}
+                  height={48}
                   className="mr-3 rounded-sm"
                 />
                 <span className="font-serif text-xl font-semibold text-[#1F3A5F] dark:text-[#5B8FB9] tracking-tight group-hover:text-[#2F6F6D] dark:group-hover:text-[#4A9B98] transition-colors">
