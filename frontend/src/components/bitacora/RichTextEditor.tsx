@@ -3,7 +3,6 @@
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Image from '@tiptap/extension-image';
-import Link from '@tiptap/extension-link';
 import { useEffect } from 'react';
 
 interface RichTextEditorProps {
@@ -19,17 +18,15 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
       StarterKit.configure({
         heading: {
           levels: [1, 2, 3]
+        },
+        link: { 
+          openOnClick: false, 
+          HTMLAttributes: { class: 'text-blue-600 underline' } 
         }
       }),
       Image.configure({
         inline: true,
         allowBase64: true
-      }),
-      Link.configure({
-        openOnClick: false,
-        HTMLAttributes: {
-          class: 'text-blue-600 underline'
-        }
       })
       // Mathematics extension removed to prevent memory issues
     ],
