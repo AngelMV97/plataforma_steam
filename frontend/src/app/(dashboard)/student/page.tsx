@@ -47,8 +47,8 @@ export default function StudentDashboard() {
           <Image
             src="/characters/isaac-newton.png"
             alt="Isaac Newton"
-            width={80}
-            height={80}
+            width={120}
+            height={120}
             className="rounded-full border border-[#E5E7EB] dark:border-[#1F2937]"
           />
         </div>

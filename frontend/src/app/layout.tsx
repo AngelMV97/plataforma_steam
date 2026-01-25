@@ -17,7 +17,7 @@ const sourceSerif = Source_Serif_4({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://gomot.academy"),
+  // metadataBase: new URL("https://gomot.academy"),
   title: "Gomot Science Academy - Formación en Pensamiento Científico",
   description: "Analizamos artículos, construimos modelos y aprendemos a pensar como científicos e ingenieros.",
 };
