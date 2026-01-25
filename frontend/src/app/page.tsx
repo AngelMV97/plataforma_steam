@@ -16,7 +16,7 @@ export default function Home() {
           <div className="flex items-center">
             <div className="block sm:hidden">
               <Image
-                src="/logos/gomot-wordmark.png"
+                src={isDark ? "/logos/gomot-wordmark-dark.png" : "/logos/gomot-wordmark.png"}
                 alt="Gomot Science Academy"
                 width={110}
                 height={26}
