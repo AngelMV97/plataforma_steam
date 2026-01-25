@@ -201,6 +201,15 @@ export default function BitacoraPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                 </svg>
               </button>
+              <div className="hidden sm:block flex-shrink-0">
+                <Image
+                src="/characters/isaac-newton.png"
+                alt="Isaac Newton"
+                width={80}
+                height={80}
+                className="rounded-full border border-gray-200 dark:border-gray-700"
+                />
+              </div>
               <div>
                 <h1 className="text-xl font-bold text-gray-900 dark:text-white">
                   Bitácora - Semana {attempt.articles.week_number}
@@ -211,14 +220,7 @@ export default function BitacoraPage() {
               </div>
             </div>
 
-            <div className="flex items-center space-x-4">
-              <Image
-                src="/characters/isaac-newton.png"
-                alt="Isaac Newton"
-                width={80}
-                height={80}
-                className="rounded-full border border-gray-200 dark:border-gray-700"
-              />
+            <div className="flex items-center space-x-4">              
               {/* Auto-save indicator */}
               <div className="text-sm text-gray-500">
                 {saving ? (
