@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { api } from '@/lib/api';
+import Image from 'next/image';
 import { AlertCircleIcon, CheckCircleIcon, BarChartIcon, BookOpenIcon } from '@/components/icons/MinimalIcons';
 
 interface Message {
@@ -82,15 +83,21 @@ export default function AiTutorPanel({ attemptId, currentSection, isReadOnly }: 
   }
 
   return (
-    <div className="bg-white dark:bg-[#111827] rounded-lg shadow flex flex-col h-[calc(100vh-200px)] sticky top-24">
+    <div className="bg-white dark:bg-[#111827] rounded-lg shadow flex flex-col h-[calc(100vh-200px)] sm:h-[calc(100vh-200px)] sticky top-24">
       {/* Header */}
       <div className="px-6 py-4 border-b border-[#E5E7EB] dark:border-[#1F2937]">
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 bg-[#2F6F6D] dark:bg-[#4A9B98] rounded-full flex items-center justify-center">
-            <BarChartIcon className="w-5 h-5 text-white" />
+          <div className="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden flex-shrink-0">
+            <Image
+              src="/characters/isaac-newton-tutor.png"
+              alt="Isaac Newton Tutor"
+              width={40}
+              height={40}
+              className="w-full h-full object-cover"
+            />
           </div>
-          <div>
-            <h3 className="font-semibold text-[#1F2937] dark:text-[#F3F4F6]">Tutor AI</h3>
+          <div className="min-w-0">
+            <h3 className="font-semibold text-[#1F2937] dark:text-[#F3F4F6] truncate">Tutor AI</h3>
             <p className="text-xs text-[#4B5563] dark:text-[#D1D5DB]">
               Aquí para guiarte
             </p>
