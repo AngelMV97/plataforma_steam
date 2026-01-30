@@ -112,7 +112,33 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
           rel: 'noopener noreferrer'
         }
       }),
-      Image.configure({
+      Image.extend({
+        addAttributes() {
+          return {
+            ...this.parent?.(),
+            width: {
+              default: null,
+              parseHTML: element => element.getAttribute('width'),
+              renderHTML: attributes => {
+                if (!attributes.width) return {};
+                return {
+                  width: attributes.width
+                };
+              }
+            },
+            height: {
+              default: null,
+              parseHTML: element => element.getAttribute('height'),
+              renderHTML: attributes => {
+                if (!attributes.height) return {};
+                return {
+                  height: attributes.height
+                };
+              }
+            }
+          };
+        }
+      }).configure({
         inline: false,
         allowBase64: true,
         HTMLAttributes: {
@@ -169,6 +195,7 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
       const startWidth = img.offsetWidth;
       const startHeight = img.offsetHeight;
       const aspectRatio = startHeight / startWidth;
+      const imgSrc = img.getAttribute('src') || '';
 
       mouseEvent.preventDefault();
       mouseEvent.stopPropagation();
@@ -183,16 +210,22 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
       };
 
       const handleMouseUp = () => {
-        // Persist dimensions to image attributes
+        // Get final dimensions
         const finalWidth = Math.round(img.offsetWidth);
         const finalHeight = Math.round(img.offsetHeight);
-        img.setAttribute('width', finalWidth.toString());
-        img.setAttribute('height', finalHeight.toString());
+        
+        // Update TipTap node with new dimensions through setImage command
+        editor.chain()
+          .focus()
+          .setImage({ 
+            src: imgSrc,
+            width: finalWidth,
+            height: finalHeight
+          })
+          .run();
         
         // Trigger onChange to save the updated content
-        if (editor) {
-          onChange(editor.getHTML());
-        }
+        onChange(editor.getHTML());
         
         document.removeEventListener('mousemove', handleMouseMove);
         document.removeEventListener('mouseup', handleMouseUp);
