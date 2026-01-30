@@ -26,11 +26,15 @@ const SECTION_LABELS: Record<string, string> = {
 };
 
 export default function BitacoraViewer({ content }: BitacoraViewerProps) {
+  // Rich text fields that contain HTML
+  const richTextFields = ['observaciones', 'hipotesis', 'experimentos', 'errores_aprendizajes', 'reflexiones', 'conclusiones'];
+  
   return (
     <div className="space-y-6">
       {Object.entries(SECTION_LABELS).map(([key, label]) => {
         const value = content[key as keyof typeof content];
         const isEmpty = Array.isArray(value) ? value.length === 0 : !value;
+        const isRichTextField = richTextFields.includes(key);
 
         return (
           <div key={key} className="border-l-4 border-blue-500 pl-4">
@@ -43,6 +47,11 @@ export default function BitacoraViewer({ content }: BitacoraViewerProps) {
                   <li key={idx} className="text-gray-700">{item}</li>
                 ))}
               </ul>
+            ) : isRichTextField ? (
+              <div 
+                className="text-gray-700 prose prose-sm max-w-none [&_p]:my-2 [&_ul]:my-2 [&_ol]:my-2 [&_li]:text-gray-700 [&_img]:max-w-full [&_img]:rounded [&_img]:border [&_img]:border-gray-300"
+                dangerouslySetInnerHTML={{ __html: value }}
+              />
             ) : (
               <p className="text-gray-700 whitespace-pre-wrap">{value}</p>
             )}

@@ -137,7 +137,7 @@ export default function BitacoraPage() {
       }
     } catch (err: any) {
       console.error('Error saving bitácora:', err);
-      setSaveError('No se pudo guardar. Revisa tu conexión a internet.');
+      setSaveError('No se pudo guardar.');
       if (!silent) {
         // Clear error after 5 seconds
         setTimeout(() => setSaveError(null), 5000);
