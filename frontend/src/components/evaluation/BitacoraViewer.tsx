@@ -37,23 +37,23 @@ export default function BitacoraViewer({ content }: BitacoraViewerProps) {
         const isRichTextField = richTextFields.includes(key);
 
         return (
-          <div key={key} className="border-l-4 border-blue-500 pl-4">
-            <h3 className="font-semibold text-gray-900 mb-2">{label}</h3>
+          <div key={key} className="border-l-4 border-[#2F6F6D] dark:border-[#4A9B98] pl-4 py-2">
+            <h3 className="font-semibold text-[#1F3A5F] dark:text-[#5B8FB9] mb-2">{label}</h3>
             {isEmpty ? (
-              <p className="text-gray-400 italic">Sin contenido</p>
+              <p className="text-gray-400 dark:text-gray-500 italic">Sin contenido</p>
             ) : Array.isArray(value) ? (
               <ul className="list-disc list-inside space-y-1">
                 {value.map((item, idx) => (
-                  <li key={idx} className="text-gray-700">{item}</li>
+                  <li key={idx} className="text-gray-700 dark:text-gray-300">{item}</li>
                 ))}
               </ul>
             ) : isRichTextField ? (
               <div 
-                className="text-gray-700 prose prose-sm max-w-none [&_p]:my-2 [&_ul]:my-2 [&_ol]:my-2 [&_li]:text-gray-700 [&_img]:max-w-full [&_img]:rounded [&_img]:border [&_img]:border-gray-300"
+                className="text-gray-700 dark:text-gray-300 prose prose-sm max-w-none [&_p]:my-2 [&_ul]:my-2 [&_ol]:my-2 [&_li]:text-gray-700 dark:[&_li]:text-gray-300 [&_img]:max-w-full [&_img]:rounded [&_img]:border [&_img]:border-gray-300 dark:[&_img]:border-gray-600"
                 dangerouslySetInnerHTML={{ __html: value }}
               />
             ) : (
-              <p className="text-gray-700 whitespace-pre-wrap">{value}</p>
+              <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap">{value}</p>
             )}
           </div>
         );
