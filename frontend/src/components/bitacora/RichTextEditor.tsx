@@ -3,6 +3,7 @@
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Image from '@tiptap/extension-image';
+import Link from '@tiptap/extension-link';
 import { useEffect, useState, useRef } from 'react';
 import {
   AlertCircleIcon,
@@ -30,6 +31,16 @@ interface DialogState {
 
 interface MathDropdownState {
   isOpen: boolean;
+}
+
+interface MathInputState {
+  isOpen: boolean;
+  input: string;
+}
+
+interface MathInputState {
+  isOpen: boolean;
+  input: string;
 }
 
 const MATH_SYMBOLS = [
@@ -75,6 +86,11 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
     isOpen: false
   });
 
+  const [mathInput, setMathInput] = useState<MathInputState>({
+    isOpen: false,
+    input: ''
+  });
+
   const mathDropdownRef = useRef<HTMLDivElement>(null);
 
   // Close dropdown when clicking outside
@@ -100,15 +116,23 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
       StarterKit.configure({
         heading: {
           levels: [1, 2, 3]
-        },
-        link: { 
-          openOnClick: false, 
-          HTMLAttributes: { class: 'text-blue-600 underline' } 
+        }
+      }),
+      Link.configure({
+        openOnClick: true,
+        HTMLAttributes: {
+          class: 'text-[#2F6F6D] dark:text-[#4A9B98] underline cursor-pointer hover:text-[#1F4A48] dark:hover:text-[#3A8A87]',
+          target: '_blank',
+          rel: 'noopener noreferrer'
         }
       }),
       Image.configure({
-        inline: true,
-        allowBase64: true
+        inline: false,
+        allowBase64: true,
+        HTMLAttributes: {
+          class: 'rounded border border-[#E5E7EB] dark:border-[#1F2937] max-w-full h-auto',
+          style: 'resize: both; overflow: auto; display: inline-block; min-width: 100px; min-height: 100px;'
+        }
       })
       // Mathematics extension removed to prevent memory issues
     ],
@@ -187,10 +211,20 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
   };
 
   const insertMathSymbol = (unicode: string) => {
-    if (editor) {
-      editor.chain().focus().insertContent(unicode).run();
-    }
+    // Close dropdown and open input dialog with the symbol pre-filled
     setMathDropdown({ isOpen: false });
+    setMathInput({ isOpen: true, input: unicode });
+  };
+
+  const handleMathInputConfirm = () => {
+    if (editor && mathInput.input.trim()) {
+      editor.chain().focus().insertContent(mathInput.input).run();
+    }
+    setMathInput({ isOpen: false, input: '' });
+  };
+
+  const handleMathInputCancel = () => {
+    setMathInput({ isOpen: false, input: '' });
   };
 
   return (
@@ -436,7 +470,7 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
               {dialogState.type === 'image' && (
                 <div className="mb-3 p-3 bg-[#EEF2FF] dark:bg-[#1F2937] rounded-lg">
                   <p className="text-xs text-[#4B5563] dark:text-[#D1D5DB]">
-                    💡 Tip: Después de insertar, puedes redimensionar la imagen arrastrando las esquinas
+                    💡 Tip: Después de insertar, arrastra la esquina inferior derecha de la imagen para redimensionarla
                   </p>
                 </div>
               )}
@@ -468,6 +502,68 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
               <button
                 onClick={handleDialogConfirm}
                 disabled={!dialogState.url.trim()}
+                className="px-4 py-2 bg-[#2F6F6D] dark:bg-[#4A9B98] text-white rounded-lg hover:bg-[#1F4A48] dark:hover:bg-[#3A8A87] disabled:opacity-50 disabled:cursor-not-allowed transition text-sm font-medium"
+              >
+                Insertar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Math Input Dialog */}
+      {mathInput.isOpen && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white dark:bg-[#111827] rounded-lg shadow-xl max-w-md w-full mx-4">
+            {/* Modal Header */}
+            <div className="px-6 py-4 border-b border-[#E5E7EB] dark:border-[#1F2937]">
+              <h3 className="font-semibold text-[#1F2937] dark:text-[#F3F4F6]">
+                Expresión Matemática
+              </h3>
+            </div>
+
+            {/* Modal Content */}
+            <div className="px-6 py-4 space-y-4">
+              <div className="mb-3 p-3 bg-[#EEF2FF] dark:bg-[#1F2937] rounded-lg">
+                <p className="text-xs text-[#4B5563] dark:text-[#D1D5DB]">
+                  💡 Edita o completa tu expresión matemática usando símbolos Unicode. Ejemplo: α + β = γ, x² + y² = r²
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-[#1F2937] dark:text-[#F3F4F6] mb-2">
+                  Expresión
+                </label>
+                <textarea
+                  value={mathInput.input}
+                  onChange={(e) => setMathInput({ ...mathInput, input: e.target.value })}
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter' && e.ctrlKey) {
+                      handleMathInputConfirm();
+                    }
+                  }}
+                  placeholder="Escribe o edita tu expresión matemática..."
+                  rows={3}
+                  className="w-full px-3 py-2 border border-[#E5E7EB] dark:border-[#1F2937] rounded-lg focus:ring-2 focus:ring-[#2F6F6D] dark:focus:ring-[#4A9B98] focus:outline-none dark:bg-[#1F2937] dark:text-[#F3F4F6] text-lg"
+                  autoFocus
+                />
+                <p className="text-xs text-[#6B7280] dark:text-[#9CA3AF] mt-1">
+                  Presiona Ctrl+Enter para insertar rápidamente
+                </p>
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="px-6 py-4 border-t border-[#E5E7EB] dark:border-[#1F2937] flex justify-end gap-3">
+              <button
+                onClick={handleMathInputCancel}
+                className="px-4 py-2 text-[#1F2937] dark:text-[#F3F4F6] border border-[#E5E7EB] dark:border-[#1F2937] rounded-lg hover:bg-[#F9FAFB] dark:hover:bg-[#1F2937] transition text-sm font-medium"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleMathInputConfirm}
+                disabled={!mathInput.input.trim()}
                 className="px-4 py-2 bg-[#2F6F6D] dark:bg-[#4A9B98] text-white rounded-lg hover:bg-[#1F4A48] dark:hover:bg-[#3A8A87] disabled:opacity-50 disabled:cursor-not-allowed transition text-sm font-medium"
               >
                 Insertar
