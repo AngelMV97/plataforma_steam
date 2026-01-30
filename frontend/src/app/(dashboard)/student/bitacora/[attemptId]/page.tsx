@@ -86,6 +86,7 @@ export default function BitacoraPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
+  const [saveError, setSaveError] = useState<string | null>(null);
   const [currentSection, setCurrentSection] = useState<string>('observaciones');
   const [aiAnalysis, setAiAnalysis] = useState<any>(null);
   const [loadingAnalysis, setLoadingAnalysis] = useState(false);
@@ -121,20 +122,24 @@ export default function BitacoraPage() {
   async function saveBitacora(content: any, silent = false) {
     try {
       if (!silent) setSaving(true);
+      setSaveError(null);
       
       await api.put(`/api/attempts/${attemptId}/bitacora`, {
         bitacora_content: content
       });
       
       setLastSaved(new Date());
+      setSaveError(null);
       
       if (!silent) {
         setAttempt(prev => prev ? { ...prev, bitacora_content: content } : null);
       }
     } catch (err: any) {
       console.error('Error saving bitácora:', err);
+      setSaveError('No se pudo guardar. Revisa tu conexión a internet.');
       if (!silent) {
-        setError('Error al guardar. Intenta nuevamente.');
+        // Clear error after 5 seconds
+        setTimeout(() => setSaveError(null), 5000);
       }
     } finally {
       if (!silent) setSaving(false);
@@ -221,6 +226,16 @@ export default function BitacoraPage() {
             </div>
 
             <div className="flex items-center space-x-4">              
+              {/* Save error notification */}
+              {saveError && (
+                <div className="flex items-center gap-2 px-4 py-2 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 rounded-lg text-sm border border-red-200 dark:border-red-800">
+                  <svg className="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                  </svg>
+                  <span>{saveError}</span>
+                </div>
+              )}
+
               {/* Auto-save indicator */}
               <div className="text-sm text-gray-500">
                 {saving ? (
@@ -232,7 +247,10 @@ export default function BitacoraPage() {
                     Guardando...
                   </span>
                 ) : lastSaved ? (
-                  <span>
+                  <span className="flex items-center gap-1 text-green-600 dark:text-green-400">
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
                     Guardado {formatTimeAgo(lastSaved)}
                   </span>
                 ) : null}
