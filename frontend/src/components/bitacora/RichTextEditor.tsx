@@ -33,11 +33,6 @@ interface MathDropdownState {
   isOpen: boolean;
 }
 
-interface MathInputState {
-  isOpen: boolean;
-  input: string;
-}
-
 const MATH_SYMBOLS = [
   { symbol: '∑', name: 'Sumatoria', unicode: '∑' },
   { symbol: '∫', name: 'Integral', unicode: '∫' },
@@ -146,6 +141,50 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
     }
   }, [content, editor]);
 
+  // Add image resize functionality
+  useEffect(() => {
+    if (!editor) return;
+    const editorElement = editor.view?.dom as HTMLElement | undefined;
+    if (!editorElement) return;
+
+    const handleMouseDown = (e: Event) => {
+      const mouseEvent = e as MouseEvent;
+      const target = mouseEvent.target as HTMLElement;
+      if (target.tagName !== 'IMG') return;
+
+      const img = target as HTMLImageElement;
+      const startX = mouseEvent.clientX;
+      const startY = mouseEvent.clientY;
+      const startWidth = img.offsetWidth;
+      const startHeight = img.offsetHeight;
+
+      const handleMouseMove = (moveEvent: MouseEvent) => {
+        const deltaX = moveEvent.clientX - startX;
+        const aspectRatio = startHeight / startWidth;
+        const newWidth = Math.max(50, startWidth + deltaX);
+        const newHeight = newWidth * aspectRatio;
+
+        img.style.width = newWidth + 'px';
+        img.style.height = newHeight + 'px';
+      };
+
+      const handleMouseUp = () => {
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+      };
+
+      if (Math.abs(startX - mouseEvent.clientX) < 50 && Math.abs(startY - mouseEvent.clientY) < 50) {
+        // Click is near the bottom-right corner
+        document.addEventListener('mousemove', handleMouseMove);
+        document.addEventListener('mouseup', handleMouseUp);
+        mouseEvent.preventDefault();
+      }
+    };
+
+    editorElement.addEventListener('mousedown', handleMouseDown as EventListener);
+    return () => editorElement.removeEventListener('mousedown', handleMouseDown as EventListener);
+  }, [editor]);
+
   if (!editor) {
     return null;
   }
@@ -209,49 +248,6 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
   const toggleMathDropdown = () => {
     setMathDropdown({ isOpen: !mathDropdown.isOpen });
   };
-
-  // Add image resize functionality
-  useEffect(() => {
-    const editorElement = document.querySelector('.ProseMirror') as HTMLElement | null;
-    if (!editorElement) return;
-
-    const handleMouseDown = (e: Event) => {
-      const mouseEvent = e as MouseEvent;
-      const target = mouseEvent.target as HTMLElement;
-      if (target.tagName !== 'IMG') return;
-
-      const img = target as HTMLImageElement;
-      const startX = mouseEvent.clientX;
-      const startY = mouseEvent.clientY;
-      const startWidth = img.offsetWidth;
-      const startHeight = img.offsetHeight;
-
-      const handleMouseMove = (moveEvent: MouseEvent) => {
-        const deltaX = moveEvent.clientX - startX;
-        const aspectRatio = startHeight / startWidth;
-        const newWidth = Math.max(50, startWidth + deltaX);
-        const newHeight = newWidth * aspectRatio;
-
-        img.style.width = newWidth + 'px';
-        img.style.height = newHeight + 'px';
-      };
-
-      const handleMouseUp = () => {
-        document.removeEventListener('mousemove', handleMouseMove);
-        document.removeEventListener('mouseup', handleMouseUp);
-      };
-
-      if (Math.abs(startX - mouseEvent.clientX) < 50 && Math.abs(startY - mouseEvent.clientY) < 50) {
-        // Click is near the bottom-right corner
-        document.addEventListener('mousemove', handleMouseMove);
-        document.addEventListener('mouseup', handleMouseUp);
-        mouseEvent.preventDefault();
-      }
-    };
-
-    editorElement.addEventListener('mousedown', handleMouseDown as EventListener);
-    return () => editorElement.removeEventListener('mousedown', handleMouseDown as EventListener);
-  }, [editor]);
 
   return (
     <div className="border border-[#E5E7EB] dark:border-[#1F2937] rounded-lg overflow-hidden">
