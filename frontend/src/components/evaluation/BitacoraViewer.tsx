@@ -1,6 +1,16 @@
 // frontend/src/components/evaluation/BitacoraViewer.tsx
 'use client';
 
+import {
+  DocumentIcon,
+  AlertCircleIcon,
+  NodeIcon,
+  BookOpenIcon,
+  BarChartIcon,
+  CheckCircleIcon,
+  ClockIcon
+} from '@/components/icons/MinimalIcons';
+
 interface BitacoraViewerProps {
   content: {
     observaciones: string;
@@ -14,15 +24,15 @@ interface BitacoraViewerProps {
   };
 }
 
-const SECTION_LABELS: Record<string, string> = {
-  observaciones: '📋 Observaciones Iniciales',
-  preguntas: '❓ Preguntas de Investigación',
-  hipotesis: '💡 Hipótesis',
-  variables: '🔬 Variables Identificadas',
-  experimentos: '⚗️ Experimentos y Métodos',
-  errores_aprendizajes: '🔄 Errores y Aprendizajes',
-  reflexiones: '💭 Reflexiones',
-  conclusiones: '✅ Conclusiones'
+const SECTION_CONFIG: Record<string, { label: string; Icon: React.ComponentType<{ className?: string }> }> = {
+  observaciones: { label: 'Observaciones Iniciales', Icon: DocumentIcon },
+  preguntas: { label: 'Preguntas de Investigación', Icon: AlertCircleIcon },
+  hipotesis: { label: 'Hipótesis', Icon: BookOpenIcon },
+  variables: { label: 'Variables Identificadas', Icon: NodeIcon },
+  experimentos: { label: 'Experimentos y Métodos', Icon: BarChartIcon },
+  errores_aprendizajes: { label: 'Errores y Aprendizajes', Icon: ClockIcon },
+  reflexiones: { label: 'Reflexiones', Icon: AlertCircleIcon },
+  conclusiones: { label: 'Conclusiones', Icon: CheckCircleIcon }
 };
 
 export default function BitacoraViewer({ content }: BitacoraViewerProps) {
@@ -31,14 +41,17 @@ export default function BitacoraViewer({ content }: BitacoraViewerProps) {
   
   return (
     <div className="space-y-6">
-      {Object.entries(SECTION_LABELS).map(([key, label]) => {
+      {Object.entries(SECTION_CONFIG).map(([key, { label, Icon }]) => {
         const value = content[key as keyof typeof content];
         const isEmpty = Array.isArray(value) ? value.length === 0 : !value;
         const isRichTextField = richTextFields.includes(key);
 
         return (
           <div key={key} className="border-l-4 border-[#2F6F6D] dark:border-[#4A9B98] pl-4 py-2">
-            <h3 className="font-semibold text-[#1F3A5F] dark:text-[#5B8FB9] mb-2">{label}</h3>
+            <h3 className="font-semibold text-[#1F3A5F] dark:text-[#5B8FB9] mb-2 flex items-center gap-2">
+              <Icon className="w-5 h-5 text-[#2F6F6D] dark:text-[#4A9B98]" />
+              {label}
+            </h3>
             {isEmpty ? (
               <p className="text-gray-400 dark:text-gray-500 italic">Sin contenido</p>
             ) : Array.isArray(value) ? (

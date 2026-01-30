@@ -3,6 +3,7 @@
 import { useAuth } from '@/contexts/AuthContext';
 import { useEffect, useState } from 'react';
 import { api } from '@/lib/api';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -17,23 +18,41 @@ interface Article {
   week_number: number;
 }
 
+interface CognitiveProfile {
+  representacion?: { level: number };
+  abstraccion?: { level: number };
+  estrategia?: { level: number };
+  argumentacion?: { level: number };
+  metacognicion?: { level: number };
+  transferencia?: { level: number };
+}
+
 export default function StudentDashboard() {
   const { profile } = useAuth();
+  const supabase = createClientComponentClient();
   const [articles, setArticles] = useState<Article[]>([]);
+  const [cognitiveProfile, setCognitiveProfile] = useState<CognitiveProfile | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchRecentArticles();
+    fetchData();
   }, []);
 
-  async function fetchRecentArticles() {
+  async function fetchData() {
     try {
-      const response = await api.get('/api/articles');
-      // Get only the 3 most recent articles
-      const recentArticles = (response.data || []).slice(0, 3);
+      // Fetch articles
+      const articlesRes = await api.get('/api/articles');
+      const recentArticles = (articlesRes.data || []).slice(0, 3);
       setArticles(recentArticles);
+
+      // Fetch cognitive profile
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const profileRes = await api.get(`/api/cognitive-profiles/${user.id}`);
+        setCognitiveProfile(profileRes.data.profile_data);
+      }
     } catch (err: any) {
-      console.error('Error fetching articles:', err);
+      console.error('Error fetching data:', err);
     } finally {
       setLoading(false);
     }
@@ -158,12 +177,20 @@ export default function StudentDashboard() {
         </div>
         <div className="p-6">
           <div className="space-y-4">
-            <DimensionBar label="Representación y Modelación" level={3} />
-            <DimensionBar label="Abstracción y Supuestos" level={2} />
-            <DimensionBar label="Estrategia y Planificación" level={3} />
-            <DimensionBar label="Argumentación" level={2} />
-            <DimensionBar label="Metacognición" level={3} />
-            <DimensionBar label="Transferencia" level={2} />
+            {cognitiveProfile ? (
+              <>
+                <DimensionBar label="Representación y Modelación" level={cognitiveProfile.representacion?.level || 0} />
+                <DimensionBar label="Abstracción y Supuestos" level={cognitiveProfile.abstraccion?.level || 0} />
+                <DimensionBar label="Estrategia y Planificación" level={cognitiveProfile.estrategia?.level || 0} />
+                <DimensionBar label="Argumentación" level={cognitiveProfile.argumentacion?.level || 0} />
+                <DimensionBar label="Metacognición" level={cognitiveProfile.metacognicion?.level || 0} />
+                <DimensionBar label="Transferencia" level={cognitiveProfile.transferencia?.level || 0} />
+              </>
+            ) : (
+              <p className="text-[#9CA3AF] dark:text-[#6B7280] text-center py-8">
+                Aún no tienes evaluaciones. Completa una bitácora para que tu perfil cognitivo se genere.
+              </p>
+            )}
           </div>
         </div>
         <div className="p-4 border-t border-[#E5E7EB] dark:border-[#1F2937]">
