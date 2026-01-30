@@ -153,19 +153,19 @@ export default function MentorArticlesPage() {
                   </th>
                   <th className="hidden lg:table-cell px-6 py-3 text-left text-xs font-medium text-[#6B7280] dark:text-[#9CA3AF] uppercase tracking-wider">
                     Semana
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-[#6B7280] dark:text-[#9CA3AF] uppercase tracking-wider">
-                  Duración
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-[#6B7280] dark:text-[#9CA3AF] uppercase tracking-wider">
-                  Acciones
-                </th>
-              </tr>
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-[#6B7280] dark:text-[#9CA3AF] uppercase tracking-wider">
+                    Duración
+                  </th>
+                  <th className="px-6 py-3 text-right text-xs font-medium text-[#6B7280] dark:text-[#9CA3AF] uppercase tracking-wider">
+                    Acciones
+                  </th>
+                </tr>
             </thead>
             <tbody className="bg-white dark:bg-[#1a1f26] divide-y divide-[#E5E7EB] dark:divide-[#1F2937]">
               {articles.map((article) => (
                 <tr key={article.id} className="hover:bg-[#FAFAF8] dark:hover:bg-[#0F1419] transition-colors">
-                  <td className="px-6 py-4">
+                  <td className="px-3 sm:px-6 py-4">
                     <div className="flex items-start">
                       <div>
                         <div className="text-sm font-medium text-[#1F3A5F] dark:text-[#5B8FB9]">
@@ -226,8 +226,9 @@ export default function MentorArticlesPage() {
           </table>
         </div>
       )}
+    </div>
 
-      {/* Delete Confirmation Modal */}
+    {/* Delete Confirmation Modal */}
       {deleteModal?.show && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white dark:bg-[#1a1f26] rounded-lg max-w-md w-full p-6 space-y-4">
