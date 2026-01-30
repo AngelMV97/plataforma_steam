@@ -38,11 +38,6 @@ interface MathInputState {
   input: string;
 }
 
-interface MathInputState {
-  isOpen: boolean;
-  input: string;
-}
-
 const MATH_SYMBOLS = [
   { symbol: '∑', name: 'Sumatoria', unicode: '∑' },
   { symbol: '∫', name: 'Integral', unicode: '∫' },
@@ -86,11 +81,6 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
     isOpen: false
   });
 
-  const [mathInput, setMathInput] = useState<MathInputState>({
-    isOpen: false,
-    input: ''
-  });
-
   const mathDropdownRef = useRef<HTMLDivElement>(null);
 
   // Close dropdown when clicking outside
@@ -130,8 +120,9 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
         inline: false,
         allowBase64: true,
         HTMLAttributes: {
-          class: 'rounded border border-[#E5E7EB] dark:border-[#1F2937] max-w-full h-auto',
-          style: 'resize: both; overflow: auto; display: inline-block; min-width: 100px; min-height: 100px;'
+          class: 'rounded border border-[#E5E7EB] dark:border-[#1F2937] max-w-full h-auto resizable-image',
+          draggable: true,
+          style: 'display: inline-block;'
         }
       })
       // Mathematics extension removed to prevent memory issues
@@ -178,10 +169,6 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
     });
   };
 
-  const toggleMathDropdown = () => {
-    setMathDropdown({ isOpen: !mathDropdown.isOpen });
-  };
-
   const handleDialogConfirm = () => {
     if (editor) {
       if (dialogState.type === 'image' && dialogState.url.trim()) {
@@ -211,21 +198,57 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
   };
 
   const insertMathSymbol = (unicode: string) => {
-    // Close dropdown and open input dialog with the symbol pre-filled
-    setMathDropdown({ isOpen: false });
-    setMathInput({ isOpen: true, input: unicode });
-  };
-
-  const handleMathInputConfirm = () => {
-    if (editor && mathInput.input.trim()) {
-      editor.chain().focus().insertContent(mathInput.input).run();
+    // Insert symbol directly into editor
+    if (editor) {
+      editor.chain().focus().insertContent(unicode).run();
     }
-    setMathInput({ isOpen: false, input: '' });
+    // Keep dropdown open for inserting multiple symbols
+  const toggleMathDropdown = () => {
+    setMathDropdown({ isOpen: !mathDropdown.isOpen });
   };
 
-  const handleMathInputCancel = () => {
-    setMathInput({ isOpen: false, input: '' });
-  };
+  // Add image resize functionality
+  useEffect(() => {
+    const editorElement = document.querySelector('.ProseMirror') as HTMLElement | null;
+    if (!editorElement) return;
+
+    const handleMouseDown = (e: Event) => {
+      const mouseEvent = e as MouseEvent;
+      const target = mouseEvent.target as HTMLElement;
+      if (target.tagName !== 'IMG') return;
+
+      const img = target as HTMLImageElement;
+      const startX = mouseEvent.clientX;
+      const startY = mouseEvent.clientY;
+      const startWidth = img.offsetWidth;
+      const startHeight = img.offsetHeight;
+
+      const handleMouseMove = (moveEvent: MouseEvent) => {
+        const deltaX = moveEvent.clientX - startX;
+        const aspectRatio = startHeight / startWidth;
+        const newWidth = Math.max(50, startWidth + deltaX);
+        const newHeight = newWidth * aspectRatio;
+
+        img.style.width = newWidth + 'px';
+        img.style.height = newHeight + 'px';
+      };
+
+      const handleMouseUp = () => {
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+      };
+
+      if (Math.abs(startX - mouseEvent.clientX) < 50 && Math.abs(startY - mouseEvent.clientY) < 50) {
+        // Click is near the bottom-right corner
+        document.addEventListener('mousemove', handleMouseMove);
+        document.addEventListener('mouseup', handleMouseUp);
+        mouseEvent.preventDefault();
+      }
+    };
+
+    editorElement.addEventListener('mousedown', handleMouseDown as EventListener);
+    return () => editorElement.removeEventListener('mousedown', handleMouseDown as EventListener);
+  }, [editor]);
 
   return (
     <div className="border border-[#E5E7EB] dark:border-[#1F2937] rounded-lg overflow-hidden">
@@ -502,68 +525,6 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
               <button
                 onClick={handleDialogConfirm}
                 disabled={!dialogState.url.trim()}
-                className="px-4 py-2 bg-[#2F6F6D] dark:bg-[#4A9B98] text-white rounded-lg hover:bg-[#1F4A48] dark:hover:bg-[#3A8A87] disabled:opacity-50 disabled:cursor-not-allowed transition text-sm font-medium"
-              >
-                Insertar
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Math Input Dialog */}
-      {mathInput.isOpen && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-[#111827] rounded-lg shadow-xl max-w-md w-full mx-4">
-            {/* Modal Header */}
-            <div className="px-6 py-4 border-b border-[#E5E7EB] dark:border-[#1F2937]">
-              <h3 className="font-semibold text-[#1F2937] dark:text-[#F3F4F6]">
-                Expresión Matemática
-              </h3>
-            </div>
-
-            {/* Modal Content */}
-            <div className="px-6 py-4 space-y-4">
-              <div className="mb-3 p-3 bg-[#EEF2FF] dark:bg-[#1F2937] rounded-lg">
-                <p className="text-xs text-[#4B5563] dark:text-[#D1D5DB]">
-                  💡 Edita o completa tu expresión matemática usando símbolos Unicode. Ejemplo: α + β = γ, x² + y² = r²
-                </p>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-[#1F2937] dark:text-[#F3F4F6] mb-2">
-                  Expresión
-                </label>
-                <textarea
-                  value={mathInput.input}
-                  onChange={(e) => setMathInput({ ...mathInput, input: e.target.value })}
-                  onKeyPress={(e) => {
-                    if (e.key === 'Enter' && e.ctrlKey) {
-                      handleMathInputConfirm();
-                    }
-                  }}
-                  placeholder="Escribe o edita tu expresión matemática..."
-                  rows={3}
-                  className="w-full px-3 py-2 border border-[#E5E7EB] dark:border-[#1F2937] rounded-lg focus:ring-2 focus:ring-[#2F6F6D] dark:focus:ring-[#4A9B98] focus:outline-none dark:bg-[#1F2937] dark:text-[#F3F4F6] text-lg"
-                  autoFocus
-                />
-                <p className="text-xs text-[#6B7280] dark:text-[#9CA3AF] mt-1">
-                  Presiona Ctrl+Enter para insertar rápidamente
-                </p>
-              </div>
-            </div>
-
-            {/* Modal Footer */}
-            <div className="px-6 py-4 border-t border-[#E5E7EB] dark:border-[#1F2937] flex justify-end gap-3">
-              <button
-                onClick={handleMathInputCancel}
-                className="px-4 py-2 text-[#1F2937] dark:text-[#F3F4F6] border border-[#E5E7EB] dark:border-[#1F2937] rounded-lg hover:bg-[#F9FAFB] dark:hover:bg-[#1F2937] transition text-sm font-medium"
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={handleMathInputConfirm}
-                disabled={!mathInput.input.trim()}
                 className="px-4 py-2 bg-[#2F6F6D] dark:bg-[#4A9B98] text-white rounded-lg hover:bg-[#1F4A48] dark:hover:bg-[#3A8A87] disabled:opacity-50 disabled:cursor-not-allowed transition text-sm font-medium"
               >
                 Insertar
