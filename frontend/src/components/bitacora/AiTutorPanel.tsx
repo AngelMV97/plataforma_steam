@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { api } from '@/lib/api';
+import { AlertCircleIcon, CheckCircleIcon, BarChartIcon, BookOpenIcon } from '@/components/icons/MinimalIcons';
 
 interface Message {
   id: string;
@@ -81,16 +82,16 @@ export default function AiTutorPanel({ attemptId, currentSection, isReadOnly }: 
   }
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow flex flex-col h-[calc(100vh-200px)] sticky top-24">
+    <div className="bg-white dark:bg-[#111827] rounded-lg shadow flex flex-col h-[calc(100vh-200px)] sticky top-24">
       {/* Header */}
-      <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+      <div className="px-6 py-4 border-b border-[#E5E7EB] dark:border-[#1F2937]">
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 bg-indigo-100 dark:bg-indigo-900 rounded-full flex items-center justify-center">
-            <span className="text-xl">🤖</span>
+          <div className="w-10 h-10 bg-[#2F6F6D] dark:bg-[#4A9B98] rounded-full flex items-center justify-center">
+            <BarChartIcon className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h3 className="font-semibold text-gray-900 dark:text-white">Tutor AI</h3>
-            <p className="text-xs text-gray-500 dark:text-gray-400">
+            <h3 className="font-semibold text-[#1F2937] dark:text-[#F3F4F6]">Tutor AI</h3>
+            <p className="text-xs text-[#4B5563] dark:text-[#D1D5DB]">
               Aquí para guiarte
             </p>
           </div>
@@ -99,8 +100,9 @@ export default function AiTutorPanel({ attemptId, currentSection, isReadOnly }: 
 
       {/* Error Message */}
       {error && (
-        <div className="mx-6 mt-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-          <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+        <div className="mx-6 mt-4 p-3 bg-[#FEF3C7] dark:bg-[#78350F] border border-[#FCD34D] dark:border-[#92400E] rounded-lg flex items-start gap-2">
+          <AlertCircleIcon className="w-4 h-4 text-[#D97706] dark:text-[#FBBF24] flex-shrink-0 mt-0.5" />
+          <p className="text-sm text-[#D97706] dark:text-[#FBBF24]">{error}</p>
         </div>
       )}
 
@@ -109,14 +111,14 @@ export default function AiTutorPanel({ attemptId, currentSection, isReadOnly }: 
         {loadingHistory ? (
           <div className="flex items-center justify-center h-full">
             <div className="text-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600 mx-auto"></div>
-              <p className="text-sm text-gray-500 mt-2">Cargando conversación...</p>
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#2F6F6D] dark:border-[#4A9B98] mx-auto"></div>
+              <p className="text-sm text-[#4B5563] dark:text-[#D1D5DB] mt-2">Cargando conversación...</p>
             </div>
           </div>
         ) : messages.length === 0 ? (
           <div className="flex items-center justify-center h-full">
-            <div className="text-center text-gray-500 dark:text-gray-400">
-              <span className="text-4xl mb-3 block">💬</span>
+            <div className="text-center text-[#4B5563] dark:text-[#D1D5DB]">
+              <BookOpenIcon className="w-12 h-12 mb-3 mx-auto text-[#2F6F6D] dark:text-[#4A9B98]" />
               <p className="text-sm">No hay mensajes aún.</p>
               <p className="text-xs mt-2">
                 ¡Pregunta algo para comenzar!
@@ -133,15 +135,15 @@ export default function AiTutorPanel({ attemptId, currentSection, isReadOnly }: 
                 <div
                   className={`max-w-[85%] rounded-lg px-4 py-3 ${
                     message.role === 'student'
-                      ? 'bg-indigo-600 text-white'
-                      : 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white'
+                      ? 'bg-[#1F3A5F] dark:bg-[#5B8FB9] text-white'
+                      : 'bg-[#F9FAFB] dark:bg-[#111827] text-[#1F2937] dark:text-[#F3F4F6]'
                   }`}
                 >
                   <p className="text-sm whitespace-pre-wrap">{message.tutor_message}</p>
-                  <div className="flex items-center justify-between mt-2 text-xs opacity-70">
+                  <div className={`flex items-center justify-between mt-2 text-xs ${message.role === 'student' ? 'opacity-70' : 'text-[#4B5563] dark:text-[#D1D5DB]'}`}>
                     <span>{new Date(message.timestamp).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}</span>
                     {message.cognitive_dimension && message.role === 'tutor' && (
-                      <span className="ml-2 px-2 py-0.5 bg-white/20 rounded">
+                      <span className={`ml-2 px-2 py-0.5 rounded bg-[#2F6F6D]/10 dark:bg-[#4A9B98]/10 text-[#2F6F6D] dark:text-[#4A9B98]`}>
                         {message.cognitive_dimension}
                       </span>
                     )}
@@ -151,11 +153,11 @@ export default function AiTutorPanel({ attemptId, currentSection, isReadOnly }: 
             ))}
             {loading && (
               <div className="flex justify-start">
-                <div className="bg-gray-100 dark:bg-gray-700 rounded-lg px-4 py-3">
+                <div className="bg-[#F9FAFB] dark:bg-[#111827] rounded-lg px-4 py-3">
                   <div className="flex space-x-2">
-                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                    <div className="w-2 h-2 bg-[#2F6F6D] dark:bg-[#4A9B98] rounded-full animate-bounce"></div>
+                    <div className="w-2 h-2 bg-[#2F6F6D] dark:bg-[#4A9B98] rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                    <div className="w-2 h-2 bg-[#2F6F6D] dark:bg-[#4A9B98] rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                   </div>
                 </div>
               </div>
@@ -167,7 +169,7 @@ export default function AiTutorPanel({ attemptId, currentSection, isReadOnly }: 
 
       {/* Input */}
       {!isReadOnly && (
-        <div className="px-6 py-4 border-t border-gray-200 dark:border-gray-700">
+        <div className="px-6 py-4 border-t border-[#E5E7EB] dark:border-[#1F2937]">
           <div className="flex space-x-2">
             <input
               type="text"
@@ -176,20 +178,21 @@ export default function AiTutorPanel({ attemptId, currentSection, isReadOnly }: 
               onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
               disabled={loading}
               placeholder="Pregunta al tutor..."
-              className="flex-1 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-indigo-500 focus:outline-none dark:bg-gray-700 dark:text-white text-sm"
+              className="flex-1 px-4 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1F2937] focus:ring-2 focus:ring-[#2F6F6D] dark:focus:ring-[#4A9B98] focus:outline-none dark:bg-[#111827] dark:text-[#F3F4F6] text-sm text-[#1F2937] placeholder-[#4B5563] dark:placeholder-[#D1D5DB]"
             />
             <button
               onClick={sendMessage}
               disabled={loading || !input.trim()}
-              className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition"
+              className="px-4 py-2 bg-[#2F6F6D] dark:bg-[#4A9B98] text-white rounded-lg hover:bg-[#1F4A48] dark:hover:bg-[#3A8A87] disabled:opacity-50 disabled:cursor-not-allowed transition"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
               </svg>
             </button>
           </div>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-            💡 Sección actual: <span className="font-medium">{currentSection}</span>
+          <p className="text-xs text-[#4B5563] dark:text-[#D1D5DB] mt-2">
+            <CheckCircleIcon className="w-4 h-4 inline-block mr-1 text-[#2F6F6D] dark:text-[#4A9B98]" />
+            Sección actual: <span className="font-medium">{currentSection}</span>
           </p>
         </div>
       )}

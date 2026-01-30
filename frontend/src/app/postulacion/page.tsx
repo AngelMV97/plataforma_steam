@@ -101,7 +101,7 @@ export default function PostulacionPage() {
                 </li>
                 <li className="flex items-start gap-3">
                   <CheckCircleIcon className="w-5 h-5 text-[#2F6F6D] dark:text-[#4A9B98] mt-1 flex-shrink-0" />
-                  <span><strong>Acceso gratuito</strong> o con inversión reducida (condiciones especiales para estudiantes piloto)</span>
+                  <span><strong>Acceso gratuito</strong> para grupo selecto (condiciones especiales para estudiantes piloto)</span>
                 </li>
               </ul>
               <p className="text-[#1F2937] dark:text-[#F3F4F6] leading-relaxed font-medium">
@@ -236,20 +236,6 @@ export default function PostulacionPage() {
                   3
                 </div>
                 <h3 className="font-serif text-lg font-semibold text-[#1F3A5F] dark:text-[#5B8FB9] mb-3 mt-2">
-                  Entrevista breve
-                </h3>
-                <p className="text-sm text-[#4B5563] dark:text-[#D1D5DB] leading-relaxed">
-                  Si tu perfil es adecuado, agendaremos una conversación virtual de 20-30 minutos.
-                </p>
-              </div>
-            </div>
-
-            <div className="relative">
-              <div className="bg-white dark:bg-[#1a1f26] p-6 border-2 border-[#1F3A5F]/30 dark:border-[#5B8FB9]/30 rounded-lg">
-                <div className="absolute -top-4 left-6 w-8 h-8 rounded-full bg-[#1F3A5F] dark:bg-[#5B8FB9] flex items-center justify-center text-white text-sm font-bold">
-                  4
-                </div>
-                <h3 className="font-serif text-lg font-semibold text-[#1F3A5F] dark:text-[#5B8FB9] mb-3 mt-2">
                   Confirmación
                 </h3>
                 <p className="text-sm text-[#4B5563] dark:text-[#D1D5DB] leading-relaxed">
@@ -286,7 +272,7 @@ export default function PostulacionPage() {
               Duración
             </h3>
             <p className="text-[#4B5563] dark:text-[#D1D5DB] leading-relaxed mb-4">
-              <strong>6 meses</strong> (febrero - julio 2026)
+              <strong>4 semanas</strong> (febrero - marzo 2026)
             </p>
             <p className="text-sm text-[#6B7280] dark:text-[#9CA3AF]">
               Con posibilidad de continuar en cohortes posteriores si el piloto es exitoso.
@@ -313,7 +299,7 @@ export default function PostulacionPage() {
               <strong>Condiciones especiales para piloto</strong>
             </p>
             <p className="text-sm text-[#6B7280] dark:text-[#9CA3AF]">
-              Acceso gratuito o con inversión simbólica. Se definirá caso por caso según posibilidades de cada familia.
+              Acceso gratuito, con restricciones en relación a cohortes posteriores. Habrá un único grupo selecto sin distinción de grado y nivel escolar.
             </p>
           </div>
         </div>
