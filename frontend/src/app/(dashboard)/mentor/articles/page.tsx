@@ -179,17 +179,17 @@ export default function MentorArticlesPage() {
                       </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="hidden sm:table-cell px-6 py-4 whitespace-nowrap">
                     <span className="text-sm text-[#4B5563] dark:text-[#D1D5DB]">
                       {getArticleTypeLabel(article.article_type)}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="hidden md:table-cell px-6 py-4 whitespace-nowrap">
                     <span className="text-sm text-[#4B5563] dark:text-[#D1D5DB]">
                       {getDifficultyLabel(article.difficulty_level)}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="hidden lg:table-cell px-6 py-4 whitespace-nowrap">
                     <span className="text-sm text-[#4B5563] dark:text-[#D1D5DB]">
                       {article.week_number ? `Semana ${article.week_number}` : '—'}
                     </span>
