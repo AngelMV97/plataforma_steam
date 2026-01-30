@@ -116,9 +116,9 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
         inline: false,
         allowBase64: true,
         HTMLAttributes: {
-          class: 'rounded border border-[#E5E7EB] dark:border-[#1F2937] max-w-full h-auto resizable-image',
-          draggable: true,
-          style: 'display: inline-block;'
+          class: 'rounded border border-[#E5E7EB] dark:border-[#1F2937] max-w-full h-auto resizable-image cursor-grab hover:cursor-grab',
+          draggable: false,
+          style: 'display: inline-block; position: relative;'
         }
       })
       // Mathematics extension removed to prevent memory issues
@@ -153,14 +153,28 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
       if (target.tagName !== 'IMG') return;
 
       const img = target as HTMLImageElement;
+      const rect = img.getBoundingClientRect();
+      const mouseX = mouseEvent.clientX;
+      const mouseY = mouseEvent.clientY;
+
+      // Check if click is in bottom-right corner (20px area)
+      const isInBottomRightCorner = 
+        mouseX > rect.right - 20 && 
+        mouseY > rect.bottom - 20;
+
+      if (!isInBottomRightCorner) return;
+
       const startX = mouseEvent.clientX;
       const startY = mouseEvent.clientY;
       const startWidth = img.offsetWidth;
       const startHeight = img.offsetHeight;
+      const aspectRatio = startHeight / startWidth;
+
+      mouseEvent.preventDefault();
+      mouseEvent.stopPropagation();
 
       const handleMouseMove = (moveEvent: MouseEvent) => {
         const deltaX = moveEvent.clientX - startX;
-        const aspectRatio = startHeight / startWidth;
         const newWidth = Math.max(50, startWidth + deltaX);
         const newHeight = newWidth * aspectRatio;
 
@@ -173,12 +187,8 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
         document.removeEventListener('mouseup', handleMouseUp);
       };
 
-      if (Math.abs(startX - mouseEvent.clientX) < 50 && Math.abs(startY - mouseEvent.clientY) < 50) {
-        // Click is near the bottom-right corner
-        document.addEventListener('mousemove', handleMouseMove);
-        document.addEventListener('mouseup', handleMouseUp);
-        mouseEvent.preventDefault();
-      }
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
     };
 
     editorElement.addEventListener('mousedown', handleMouseDown as EventListener);
@@ -250,7 +260,33 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
   };
 
   return (
-    <div className="border border-[#E5E7EB] dark:border-[#1F2937] rounded-lg overflow-hidden">
+    <>
+      <style>{`
+        .resizable-image {
+          position: relative;
+        }
+        .resizable-image::after {
+          content: '';
+          position: absolute;
+          bottom: 0;
+          right: 0;
+          width: 20px;
+          height: 20px;
+          background: linear-gradient(135deg, transparent 50%, #2F6F6D 50%);
+          cursor: nwse-resize;
+          opacity: 0;
+          transition: opacity 0.2s;
+        }
+        .resizable-image:hover::after {
+          opacity: 1;
+        }
+        @media (prefers-color-scheme: dark) {
+          .resizable-image::after {
+            background: linear-gradient(135deg, transparent 50%, #4A9B98 50%);
+          }
+        }
+      `}</style>
+      <div className="border border-[#E5E7EB] dark:border-[#1F2937] rounded-lg overflow-hidden">
       {/* Toolbar */}
       <div className="bg-[#F9FAFB] dark:bg-[#111827] border-b border-[#E5E7EB] dark:border-[#1F2937] p-2 flex flex-wrap gap-1">
         {/* Text Formatting */}
@@ -532,6 +568,7 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
           </div>
         </div>
       )}
-    </div>
+      </div>
+    </>
   );
 }
