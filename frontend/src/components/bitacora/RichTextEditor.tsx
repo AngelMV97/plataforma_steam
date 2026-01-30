@@ -189,6 +189,11 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
         img.setAttribute('width', finalWidth.toString());
         img.setAttribute('height', finalHeight.toString());
         
+        // Trigger onChange to save the updated content
+        if (editor) {
+          onChange(editor.getHTML());
+        }
+        
         document.removeEventListener('mousemove', handleMouseMove);
         document.removeEventListener('mouseup', handleMouseUp);
       };
