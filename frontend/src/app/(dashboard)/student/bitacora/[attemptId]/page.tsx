@@ -90,6 +90,7 @@ export default function BitacoraPage() {
   const [currentSection, setCurrentSection] = useState<string>('observaciones');
   const [aiAnalysis, setAiAnalysis] = useState<any>(null);
   const [loadingAnalysis, setLoadingAnalysis] = useState(false);
+  const [submitConfirmOpen, setSubmitConfirmOpen] = useState(false);
 
   useEffect(() => {
     fetchAttempt();
@@ -147,18 +148,17 @@ export default function BitacoraPage() {
   }
 
   async function handleSubmit() {
-    if (!confirm('¿Estás seguro de enviar tu bitácora para evaluación? No podrás editarla después.')) {
-      return;
-    }
-
     try {
       setSaving(true);
       await api.put(`/api/attempts/${attemptId}/submit`, {});
-      alert('Bitácora enviada exitosamente. Espera la evaluación de tu mentor.');
+      setSubmitConfirmOpen(false);
+      // Success message and redirect
+      await new Promise(resolve => setTimeout(resolve, 500));
       router.push('/student/articles');
     } catch (err: any) {
       console.error('Error submitting:', err);
       setError('Error al enviar bitácora');
+      setSubmitConfirmOpen(false);
     } finally {
       setSaving(false);
     }
@@ -259,7 +259,7 @@ export default function BitacoraPage() {
               {/* Submit button */}
               {!isSubmitted && (
                 <Button
-                  onClick={handleSubmit}
+                  onClick={() => setSubmitConfirmOpen(true)}
                   disabled={saving}
                 >
                   Enviar para Evaluación
@@ -419,6 +419,57 @@ export default function BitacoraPage() {
           </div>
         </div>
       </div>
+
+      {/* Submit Confirmation Modal */}
+      {submitConfirmOpen && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-[#1a1f26] rounded-lg shadow-xl max-w-md w-full p-6 border border-[#E5E7EB] dark:border-[#1F2937]">
+            <div className="flex items-start gap-4 mb-4">
+              <div className="flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-full bg-[#FEF3C7] dark:bg-[#92400E]">
+                <svg className="h-6 w-6 text-[#D97706] dark:text-[#FCD34D]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4v2m0 0a9 9 0 11-18 0 9 9 0 0118 0" />
+                </svg>
+              </div>
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold text-[#1F2937] dark:text-[#F3F4F6]">
+                  Enviar Bitácora
+                </h3>
+              </div>
+            </div>
+
+            <p className="text-[#4B5563] dark:text-[#D1D5DB] mb-6">
+              ¿Estás seguro de enviar tu bitácora para evaluación? No podrás editarla después.
+            </p>
+
+            <div className="flex gap-3 justify-end">
+              <button
+                onClick={() => setSubmitConfirmOpen(false)}
+                disabled={saving}
+                className="px-4 py-2 text-[#1F2937] dark:text-[#F3F4F6] border border-[#E5E7EB] dark:border-[#1F2937] rounded-lg hover:bg-[#F9FAFB] dark:hover:bg-[#111827] transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleSubmit}
+                disabled={saving}
+                className="px-4 py-2 bg-[#2F6F6D] dark:bg-[#4A9B98] hover:bg-[#1F4A48] dark:hover:bg-[#3A8A87] text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium flex items-center gap-2"
+              >
+                {saving ? (
+                  <>
+                    <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Enviando...
+                  </>
+                ) : (
+                  'Enviar'
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

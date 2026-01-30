@@ -183,6 +183,12 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
       };
 
       const handleMouseUp = () => {
+        // Persist dimensions to image attributes
+        const finalWidth = Math.round(img.offsetWidth);
+        const finalHeight = Math.round(img.offsetHeight);
+        img.setAttribute('width', finalWidth.toString());
+        img.setAttribute('height', finalHeight.toString());
+        
         document.removeEventListener('mousemove', handleMouseMove);
         document.removeEventListener('mouseup', handleMouseUp);
       };
