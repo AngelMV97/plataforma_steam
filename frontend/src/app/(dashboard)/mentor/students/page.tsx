@@ -131,58 +131,58 @@ export default function MentorStudentsPage() {
     <div className="min-h-screen bg-[#FAFAF8] dark:bg-[#0F1419]">
       {/* Header */}
       <div className="bg-white dark:bg-[#1a1f26] border-b border-[#E5E7EB] dark:border-[#1F2937]">
-        <div className="max-w-7xl mx-auto px-4 py-6">
-          <h1 className="font-serif text-4xl font-semibold text-[#1F3A5F] dark:text-[#5B8FB9]">Estudiantes</h1>
-          <p className="text-[#6B7280] dark:text-[#9CA3AF] mt-2">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
+          <h1 className="font-serif text-2xl sm:text-4xl font-semibold text-[#1F3A5F] dark:text-[#5B8FB9]">Estudiantes</h1>
+          <p className="text-xs sm:text-sm text-[#6B7280] dark:text-[#9CA3AF] mt-2">
             Gestiona y evalúa las bitácoras de tus estudiantes
           </p>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
         {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white border border-[#E5E7EB] rounded-lg shadow-sm p-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
+          <div className="bg-white border border-[#E5E7EB] dark:border-[#1F2937] dark:bg-[#1a1f26] rounded-lg shadow-sm p-4 sm:p-6">
             <div className="flex items-center justify-between mb-3">
-              <UsersIcon className="w-8 h-8 text-[#1F3A5F]" />
+              <UsersIcon className="w-6 sm:w-8 h-6 sm:h-8 text-[#1F3A5F] dark:text-[#5B8FB9]" />
             </div>
-            <div className="text-3xl font-bold text-[#1F3A5F]">{students.length}</div>
-            <div className="text-sm text-[#6B7280]">Total Estudiantes</div>
+            <div className="text-2xl sm:text-3xl font-bold text-[#1F3A5F] dark:text-[#5B8FB9]">{students.length}</div>
+            <div className="text-xs sm:text-sm text-[#6B7280] dark:text-[#9CA3AF]">Total Estudiantes</div>
           </div>
-          <div className="bg-white border border-[#E5E7EB] rounded-lg shadow-sm p-6">
+          <div className="bg-white border border-[#E5E7EB] dark:border-[#1F2937] dark:bg-[#1a1f26] rounded-lg shadow-sm p-4 sm:p-6">
             <div className="flex items-center justify-between mb-3">
-              <NotebookIcon className="w-8 h-8 text-[#2F6F6D]" />
+              <NotebookIcon className="w-6 sm:w-8 h-6 sm:h-8 text-[#2F6F6D] dark:text-[#4A9B98]" />
             </div>
-            <div className="text-3xl font-bold text-[#2F6F6D]">
+            <div className="text-2xl sm:text-3xl font-bold text-[#2F6F6D] dark:text-[#4A9B98]">
               {students.reduce((sum, s) => sum + s.attempts.length, 0)}
             </div>
-            <div className="text-sm text-[#6B7280]">Bitácoras Iniciadas</div>
+            <div className="text-xs sm:text-sm text-[#6B7280] dark:text-[#9CA3AF]">Bitácoras Iniciadas</div>
           </div>
-          <div className="bg-white border border-[#E5E7EB] rounded-lg shadow-sm p-6">
+          <div className="bg-white border border-[#E5E7EB] dark:border-[#1F2937] dark:bg-[#1a1f26] rounded-lg shadow-sm p-4 sm:p-6">
             <div className="flex items-center justify-between mb-3">
-              <BarChartIcon className="w-8 h-8 text-[#2F6F6D]" />
+              <BarChartIcon className="w-6 sm:w-8 h-6 sm:h-8 text-[#2F6F6D] dark:text-[#4A9B98]" />
             </div>
-            <div className="text-3xl font-bold text-[#2F6F6D]">{completedAttempts}</div>
-            <div className="text-sm text-[#6B7280]">Bitácoras Completadas</div>
+            <div className="text-2xl sm:text-3xl font-bold text-[#2F6F6D] dark:text-[#4A9B98]">{completedAttempts}</div>
+            <div className="text-xs sm:text-sm text-[#6B7280] dark:text-[#9CA3AF]">Bitácoras Completadas</div>
           </div>
-          <div className="bg-white border border-[#E5E7EB] rounded-lg shadow-sm p-6">
+          <div className="bg-white border border-[#E5E7EB] dark:border-[#1F2937] dark:bg-[#1a1f26] rounded-lg shadow-sm p-4 sm:p-6">
             <div className="flex items-center justify-between mb-3">
-              <CheckCircleIcon className="w-8 h-8 text-[#2F6F6D]" />
+              <CheckCircleIcon className="w-6 sm:w-8 h-6 sm:h-8 text-[#2F6F6D] dark:text-[#4A9B98]" />
             </div>
-            <div className="text-3xl font-bold text-[#2F6F6D]">{totalEvaluated}</div>
-            <div className="text-sm text-[#6B7280]">Bitácoras Evaluadas</div>
+            <div className="text-2xl sm:text-3xl font-bold text-[#2F6F6D] dark:text-[#4A9B98]">{totalEvaluated}</div>
+            <div className="text-xs sm:text-sm text-[#6B7280] dark:text-[#9CA3AF]">Bitácoras Evaluadas</div>
           </div>
         </div>
 
         {/* Filter */}
-        <div className="bg-white dark:bg-[#1a1f26] border border-[#E5E7EB] dark:border-[#1F2937] rounded-lg shadow-sm p-4 mb-6">
-          <label className="text-sm font-medium text-[#1F2937] dark:text-[#F3F4F6] mr-4">
+        <div className="bg-white dark:bg-[#1a1f26] border border-[#E5E7EB] dark:border-[#1F2937] rounded-lg shadow-sm p-4 sm:p-6 mb-6">
+          <label className="text-xs sm:text-sm font-medium text-[#1F2937] dark:text-[#F3F4F6] mr-4">
             Filtrar por grado:
           </label>
           <select
             value={selectedGrade}
             onChange={(e) => setSelectedGrade(e.target.value)}
-            className="border border-[#E5E7EB] dark:border-[#1F2937] rounded-sm px-4 py-2 focus:border-[#2F6F6D] focus:ring-2 focus:ring-[#2F6F6D]/20 focus:outline-none transition-all text-[#1F2937] dark:text-[#F3F4F6] bg-white dark:bg-[#1a1f26]"
+            className="mt-2 sm:mt-0 sm:inline-block border border-[#E5E7EB] dark:border-[#1F2937] rounded-sm px-4 py-2 focus:border-[#2F6F6D] focus:ring-2 focus:ring-[#2F6F6D]/20 focus:outline-none transition-all text-sm text-[#1F2937] dark:text-[#F3F4F6] bg-white dark:bg-[#1a1f26] w-full sm:w-auto"
           >
             <option value="all">Todos los grados</option>
             <option value="9">9°</option>

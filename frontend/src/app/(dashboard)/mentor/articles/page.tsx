@@ -86,68 +86,73 @@ export default function MentorArticlesPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="min-h-screen bg-[#FAFAF8] dark:bg-[#0F1419]">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-[#1F3A5F] dark:text-[#5B8FB9]">
-            Gestión de Artículos
-          </h1>
-          <p className="text-[#6B7280] dark:text-[#9CA3AF] mt-2">
-            Administra el contenido de la academia
-          </p>
+      <div className="bg-white dark:bg-[#1a1f26] border-b border-[#E5E7EB] dark:border-[#1F2937]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-bold text-[#1F3A5F] dark:text-[#5B8FB9]">
+                Gestión de Artículos
+              </h1>
+              <p className="text-xs sm:text-sm text-[#6B7280] dark:text-[#9CA3AF] mt-2">
+                Administra el contenido de la academia
+              </p>
+            </div>
+            <Link
+              href="/mentor/articles/new"
+              className="inline-flex items-center justify-center sm:justify-start px-4 sm:px-6 py-2 sm:py-3 !bg-[#2F6F6D] !text-white font-medium text-sm rounded-lg hover:!bg-[#1F3A5F] transition-colors whitespace-nowrap"
+            >
+              + Nuevo Artículo
+            </Link>
+          </div>
         </div>
-        <Link
-          href="/mentor/articles/new"
-          className="inline-flex items-center px-6 py-3 !bg-[#2F6F6D] !text-white font-medium rounded-lg hover:!bg-[#1F3A5F] transition-colors"
-        >
-          + Nuevo Artículo
-        </Link>
       </div>
 
-      {error && (
-        <div className="bg-red-50 dark:bg-red-900/20 border border-[#DC2626] dark:border-red-800 rounded-lg p-4">
-          <p className="text-[#DC2626] dark:text-red-400">{error}</p>
-        </div>
-      )}
-
-      {/* Articles List */}
-      {articles.length === 0 ? (
-        <div className="bg-white dark:bg-[#1a1f26] rounded-lg border-2 border-[#E5E7EB] dark:border-[#1F2937] p-12 text-center">
-          <div className="flex justify-center mb-4">
-            <div className="w-24 h-24 rounded-full bg-[#F3F4F6] dark:bg-[#1F2937] flex items-center justify-center">
-              <BookOpenIcon className="w-12 h-12 text-[#6B7280] dark:text-[#9CA3AF]" />
-            </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+        {error && (
+          <div className="bg-red-50 dark:bg-red-900/20 border border-[#DC2626] dark:border-red-800 rounded-lg p-4">
+            <p className="text-xs sm:text-sm text-[#DC2626] dark:text-red-400">{error}</p>
           </div>
-          <h3 className="text-xl font-semibold text-[#1F3A5F] dark:text-[#5B8FB9] mb-2">
-            No hay artículos creados
-          </h3>
-          <p className="text-[#6B7280] dark:text-[#9CA3AF] mb-6">
-            Comienza creando tu primer artículo científico
-          </p>
-          <Link
-            href="/mentor/articles/new"
-            className="inline-flex items-center px-6 py-3 !bg-[#2F6F6D] !text-white font-medium rounded-lg hover:!bg-[#1F3A5F] transition-colors"
-          >
-            Crear Primer Artículo
-          </Link>
-        </div>
-      ) : (
-        <div className="bg-white dark:bg-[#1a1f26] rounded-lg border border-[#E5E7EB] dark:border-[#1F2937] overflow-hidden">
-          <table className="min-w-full divide-y divide-[#E5E7EB] dark:divide-[#1F2937]">
-            <thead className="bg-[#F9FAFB] dark:bg-[#0F1419]">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-[#6B7280] dark:text-[#9CA3AF] uppercase tracking-wider">
-                  Artículo
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-[#6B7280] dark:text-[#9CA3AF] uppercase tracking-wider">
-                  Tipo
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-[#6B7280] dark:text-[#9CA3AF] uppercase tracking-wider">
-                  Nivel
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-[#6B7280] dark:text-[#9CA3AF] uppercase tracking-wider">
-                  Semana
+        )}
+
+        {/* Articles List */}
+        {articles.length === 0 ? (
+          <div className="bg-white dark:bg-[#1a1f26] rounded-lg border-2 border-[#E5E7EB] dark:border-[#1F2937] p-8 sm:p-12 text-center">
+            <div className="flex justify-center mb-4">
+              <div className="w-16 sm:w-24 h-16 sm:h-24 rounded-full bg-[#F3F4F6] dark:bg-[#1F2937] flex items-center justify-center">
+                <BookOpenIcon className="w-8 sm:w-12 h-8 sm:h-12 text-[#6B7280] dark:text-[#9CA3AF]" />
+              </div>
+            </div>
+            <h3 className="text-lg sm:text-xl font-semibold text-[#1F3A5F] dark:text-[#5B8FB9] mb-2">
+              No hay artículos creados
+            </h3>
+            <p className="text-xs sm:text-sm text-[#6B7280] dark:text-[#9CA3AF] mb-6">
+              Comienza creando tu primer artículo científico
+            </p>
+            <Link
+              href="/mentor/articles/new"
+              className="inline-flex items-center px-4 sm:px-6 py-2 sm:py-3 !bg-[#2F6F6D] !text-white font-medium text-sm rounded-lg hover:!bg-[#1F3A5F] transition-colors"
+            >
+              Crear Primer Artículo
+            </Link>
+          </div>
+        ) : (
+          <div className="bg-white dark:bg-[#1a1f26] rounded-lg border border-[#E5E7EB] dark:border-[#1F2937] overflow-x-auto">
+            <table className="min-w-full divide-y divide-[#E5E7EB] dark:divide-[#1F2937]">
+              <thead className="bg-[#F9FAFB] dark:bg-[#0F1419]">
+                <tr>
+                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-[#6B7280] dark:text-[#9CA3AF] uppercase tracking-wider">
+                    Artículo
+                  </th>
+                  <th className="hidden sm:table-cell px-6 py-3 text-left text-xs font-medium text-[#6B7280] dark:text-[#9CA3AF] uppercase tracking-wider">
+                    Tipo
+                  </th>
+                  <th className="hidden md:table-cell px-6 py-3 text-left text-xs font-medium text-[#6B7280] dark:text-[#9CA3AF] uppercase tracking-wider">
+                    Nivel
+                  </th>
+                  <th className="hidden lg:table-cell px-6 py-3 text-left text-xs font-medium text-[#6B7280] dark:text-[#9CA3AF] uppercase tracking-wider">
+                    Semana
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-[#6B7280] dark:text-[#9CA3AF] uppercase tracking-wider">
                   Duración

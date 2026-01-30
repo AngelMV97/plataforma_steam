@@ -85,89 +85,93 @@ export default function StudentArticlesPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="min-h-screen bg-[#FAFAF8] dark:bg-[#0F1419]">
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-[#1F2937] dark:text-[#F3F4F6]">
-          Artículos Científicos
-        </h1>
-        <p className="text-[#6B7280] dark:text-[#9CA3AF] mt-2">
-          Explora artículos y desarrolla tu pensamiento científico
-        </p>
-      </div>
-
-      {/* Filters */}
-      <div className="bg-white dark:bg-[#1a1f26] rounded-lg shadow p-4 space-y-4">
-        {/* Current Week Toggle */}
-        <div className="flex items-center">
-          <label className="flex items-center cursor-pointer">
-            <input
-              type="checkbox"
-              checked={showCurrentWeek}
-              onChange={(e) => setShowCurrentWeek(e.target.checked)}
-              className="w-4 h-4 text-indigo-600 focus:ring-indigo-500 border-[#E5E7EB] dark:border-[#1F2937] rounded"
-            />
-            <span className="ml-3 text-sm font-medium text-[#4B5563] dark:text-[#D1D5DB]">
-              📅 Mostrar solo artículo de la semana actual
-            </span>
-          </label>
-        </div>
-
-        {/* Difficulty Filter */}
-        <div className="flex items-center space-x-4">
-          <span className="text-sm font-medium text-[#4B5563] dark:text-[#D1D5DB]">
-            Filtrar por dificultad:
-          </span>
-          <div className="flex space-x-2">
-            <FilterButton
-              active={difficultyFilter === 'all'}
-              onClick={() => setDifficultyFilter('all')}
-              label="Todos"
-            />
-            <FilterButton
-              active={difficultyFilter === '1'}
-              onClick={() => setDifficultyFilter('1')}
-              label="Básico"
-            />
-            <FilterButton
-              active={difficultyFilter === '2'}
-              onClick={() => setDifficultyFilter('2')}
-              label="Intermedio"
-            />
-            <FilterButton
-              active={difficultyFilter === '3'}
-              onClick={() => setDifficultyFilter('3')}
-              label="Avanzado"
-            />
-            <FilterButton
-              active={difficultyFilter === '4'}
-              onClick={() => setDifficultyFilter('4')}
-              label="Experto"
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Articles Grid */}
-      {filteredArticles.length === 0 ? (
-        <div className="bg-[#FAFAF8] dark:bg-[#1a1f26] rounded-lg p-12 text-center">
-          <BookOpen className="w-16 h-16 mx-auto mb-4 text-[#6B7280] dark:text-[#9CA3AF]" />
-          <h3 className="text-xl font-semibold text-[#1F2937] dark:text-[#F3F4F6] mb-2">
-            No hay artículos disponibles
-          </h3>
-          <p className="text-[#6B7280] dark:text-[#9CA3AF]">
-            {showCurrentWeek 
-              ? 'No hay artículo para la semana actual aún'
-              : 'Pronto habrá nuevos artículos para explorar'}
+      <div className="bg-white dark:bg-[#1a1f26] border-b border-[#E5E7EB] dark:border-[#1F2937]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
+          <h1 className="text-2xl sm:text-3xl font-bold text-[#1F2937] dark:text-[#F3F4F6]">
+            Artículos Científicos
+          </h1>
+          <p className="text-xs sm:text-sm text-[#6B7280] dark:text-[#9CA3AF] mt-2">
+            Explora artículos y desarrolla tu pensamiento científico
           </p>
         </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredArticles.map((article) => (
-            <ArticleCard key={article.id} article={article} />
-          ))}
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+        {/* Filters */}
+        <div className="bg-white dark:bg-[#1a1f26] rounded-lg shadow p-4 sm:p-6 space-y-4">
+          {/* Current Week Toggle */}
+          <div className="flex items-center">
+            <label className="flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                checked={showCurrentWeek}
+                onChange={(e) => setShowCurrentWeek(e.target.checked)}
+                className="w-4 h-4 text-indigo-600 focus:ring-indigo-500 border-[#E5E7EB] dark:border-[#1F2937] rounded"
+              />
+              <span className="ml-3 text-xs sm:text-sm font-medium text-[#4B5563] dark:text-[#D1D5DB]">
+                📅 Mostrar solo artículo de la semana actual
+              </span>
+            </label>
+          </div>
+
+          {/* Difficulty Filter */}
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+            <span className="text-xs sm:text-sm font-medium text-[#4B5563] dark:text-[#D1D5DB]">
+              Filtrar por dificultad:
+            </span>
+            <div className="flex flex-wrap gap-2">
+              <FilterButton
+                active={difficultyFilter === 'all'}
+                onClick={() => setDifficultyFilter('all')}
+                label="Todos"
+              />
+              <FilterButton
+                active={difficultyFilter === '1'}
+                onClick={() => setDifficultyFilter('1')}
+                label="Básico"
+              />
+              <FilterButton
+                active={difficultyFilter === '2'}
+                onClick={() => setDifficultyFilter('2')}
+                label="Intermedio"
+              />
+              <FilterButton
+                active={difficultyFilter === '3'}
+                onClick={() => setDifficultyFilter('3')}
+                label="Avanzado"
+              />
+              <FilterButton
+                active={difficultyFilter === '4'}
+                onClick={() => setDifficultyFilter('4')}
+                label="Experto"
+              />
+            </div>
+          </div>
         </div>
-      )}
+
+        {/* Articles Grid */}
+        {filteredArticles.length === 0 ? (
+          <div className="bg-white dark:bg-[#1a1f26] rounded-lg p-8 sm:p-12 text-center">
+            <BookOpen className="w-12 sm:w-16 h-12 sm:h-16 mx-auto mb-4 text-[#6B7280] dark:text-[#9CA3AF]" />
+            <h3 className="text-lg sm:text-xl font-semibold text-[#1F2937] dark:text-[#F3F4F6] mb-2">
+              No hay artículos disponibles
+            </h3>
+            <p className="text-xs sm:text-sm text-[#6B7280] dark:text-[#9CA3AF]">
+              {showCurrentWeek 
+                ? 'No hay artículo para la semana actual aún'
+                : 'Pronto habrá nuevos artículos para explorar'}
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+            {filteredArticles.map((article) => (
+              <ArticleCard key={article.id} article={article} />
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
