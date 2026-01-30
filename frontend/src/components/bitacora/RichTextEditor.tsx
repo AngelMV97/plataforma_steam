@@ -106,7 +106,8 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
       StarterKit.configure({
         heading: {
           levels: [1, 2, 3]
-        }
+        },
+        link: false
       }),
       Link.configure({
         openOnClick: true,
@@ -203,6 +204,8 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
       editor.chain().focus().insertContent(unicode).run();
     }
     // Keep dropdown open for inserting multiple symbols
+  };
+
   const toggleMathDropdown = () => {
     setMathDropdown({ isOpen: !mathDropdown.isOpen });
   };
