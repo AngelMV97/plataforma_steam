@@ -214,15 +214,12 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
         const finalWidth = Math.round(img.offsetWidth);
         const finalHeight = Math.round(img.offsetHeight);
         
-        // Update TipTap node with new dimensions through setImage command
-        editor.chain()
-          .focus()
-          .setImage({ 
-            src: imgSrc,
-            width: finalWidth,
-            height: finalHeight
-          })
-          .run();
+        // Update image attributes directly on the DOM element
+        img.setAttribute('width', finalWidth.toString());
+        img.setAttribute('height', finalHeight.toString());
+        // Keep the style for visual consistency
+        img.style.width = finalWidth + 'px';
+        img.style.height = finalHeight + 'px';
         
         // Trigger onChange to save the updated content
         onChange(editor.getHTML());
