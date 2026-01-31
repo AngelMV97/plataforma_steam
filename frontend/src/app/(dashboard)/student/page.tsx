@@ -33,6 +33,46 @@ export default function StudentDashboard() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [cognitiveProfile, setCognitiveProfile] = useState<CognitiveProfile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [sessions, setSessions] = useState<any[]>([]);
+  const [registeredIds, setRegisteredIds] = useState<Set<string>>(new Set());
+  const [sessionsLoading, setSessionsLoading] = useState(true);
+
+  useEffect(() => {
+    fetchData();
+    fetchSessions();
+  }, []);
+
+  async function fetchSessions() {
+    setSessionsLoading(true);
+    try {
+      const res = await api.get('/api/sessions?upcoming=true');
+      const now = new Date();
+      const upcoming = (res.data || []).filter((s: any) => new Date(s.session_date) >= now);
+      setSessions(upcoming);
+
+      // Get user's registered sessions
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const registered = new Set<string>();
+        for (const session of res.data) {
+          try {
+            const checkRes = await api.get(`/api/sessions/${session.id}`);
+            const isRegistered = checkRes.data.participants.some(
+              (p: any) => p.student.id === user.id
+            );
+            if (isRegistered) {
+              registered.add(session.id);
+            }
+          } catch {}
+        }
+        setRegisteredIds(registered);
+      }
+    } catch (err) {
+      console.error('Error fetching sessions:', err);
+    } finally {
+      setSessionsLoading(false);
+    }
+  }
 
   useEffect(() => {
     fetchData();
@@ -143,16 +183,48 @@ export default function StudentDashboard() {
             </h2>
           </div>
           <div className="p-6 space-y-4">
-            <SessionCard
-              title="Sesión Guiada: Análisis de Artículos"
-              date="Lunes, 20 Ene - 4:00 PM"
-              type="Virtual"
-            />
-            <SessionCard
-              title="Discusión Colectiva"
-              date="Miércoles, 22 Ene - 5:30 PM"
-              type="Virtual"
-            />
+            {sessionsLoading ? (
+              <p className="text-[#6B7280] dark:text-[#9CA3AF]">Cargando sesiones...</p>
+            ) : sessions.length === 0 ? (
+              <p className="text-[#6B7280] dark:text-[#9CA3AF]">No hay sesiones programadas próximamente</p>
+            ) : (
+              sessions.map((session) => {
+                const isRegistered = registeredIds.has(session.id);
+                return (
+                  <div key={session.id} className="border border-[#E5E7EB] dark:border-[#1F2937] rounded-lg p-4">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <h3 className="font-medium text-[#1F2937] dark:text-[#F3F4F6] text-sm mb-1">
+                          {session.article ? `Semana ${session.article.week_number} - ${session.article.title}` : 'Sesión General'}
+                        </h3>
+                        <p className="text-xs text-[#6B7280] dark:text-[#9CA3AF]">
+                          {new Date(session.session_date).toLocaleDateString('es-ES', {
+                            weekday: 'long', month: 'long', day: 'numeric'
+                          })}
+                          {' '}
+                          {new Date(session.session_date).toLocaleTimeString('es-ES', {
+                            hour: '2-digit', minute: '2-digit'
+                          })}
+                        </p>
+                      </div>
+                      <span className="text-xs bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-400 px-2 py-1 rounded">
+                        {session.duration_minutes} min
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2 mt-2">
+                      <span className="text-xs text-[#2F6F6D] dark:text-[#4A9B98]">
+                        {session.facilitator?.full_name}
+                      </span>
+                      {isRegistered && (
+                        <span className="px-2 py-1 bg-green-100 dark:bg-emerald-900/30 text-green-800 dark:text-emerald-400 rounded-full text-xs font-medium">
+                          ✓ Registrado
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                );
+              })
+            )}
           </div>
           <div className="p-4 border-t border-[#E5E7EB] dark:border-[#1F2937]">
             <Link

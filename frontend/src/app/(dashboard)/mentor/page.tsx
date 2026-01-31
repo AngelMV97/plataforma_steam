@@ -15,9 +15,12 @@ export default function MentorDashboard() {
     pendingEvaluations: 0
   });
   const [loading, setLoading] = useState(true);
+  const [sessionRequests, setSessionRequests] = useState<any[]>([]);
+  const [requestsLoading, setRequestsLoading] = useState(true);
 
   useEffect(() => {
     loadStats();
+    fetchSessionRequests();
   }, []);
 
   async function loadStats() {
@@ -55,6 +58,18 @@ export default function MentorDashboard() {
       console.error('Load stats error:', err);
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function fetchSessionRequests() {
+    setRequestsLoading(true);
+    try {
+      const res = await api.get('/api/session-requests');
+      setSessionRequests(res.data || res || []);
+    } catch (err) {
+      console.error('Error fetching session requests:', err);
+    } finally {
+      setRequestsLoading(false);
     }
   }
 
@@ -106,6 +121,29 @@ export default function MentorDashboard() {
             </div>
             <div className="text-sm text-[#6B7280] dark:text-[#9CA3AF] mt-1">Pendientes de Evaluar</div>
           </div>
+        </div>
+        
+        {/* Student Session Requests Section */}
+        <div className="bg-white dark:bg-[#1a1f26] rounded-lg shadow p-6 border border-[#E5E7EB] dark:border-[#1F2937] mb-8">
+          <h2 className="text-xl font-semibold text-[#1F2937] dark:text-[#F3F4F6] mb-4">Solicitudes de Sesiones Individuales</h2>
+          {requestsLoading ? (
+            <div className="text-center text-[#6B7280] dark:text-[#9CA3AF] py-8">Cargando...</div>
+          ) : sessionRequests.length === 0 ? (
+            <div className="text-center text-[#6B7280] dark:text-[#9CA3AF] py-8">No hay solicitudes pendientes.</div>
+          ) : (
+            <ul className="space-y-4">
+              {sessionRequests.map((r) => (
+                <li key={r.id} className="border-b border-[#E5E7EB] dark:border-[#1F2937] pb-4 mb-4">
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold text-[#1F3A5F] dark:text-[#5B8FB9]">{r.topic}</span>
+                    <span className={`text-xs px-2 py-1 rounded-full font-medium ${r.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : r.status === 'scheduled' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'}`}>{r.status}</span>
+                  </div>
+                  <div className="text-[#4B5563] dark:text-[#D1D5DB] text-sm mt-1">{r.notes}</div>
+                  <div className="text-xs text-[#6B7280] dark:text-[#9CA3AF] mt-1">Solicitado el {new Date(r.created_at).toLocaleDateString()} por {r.student?.full_name || 'Estudiante'}</div>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
 
         {/* Quick Actions */}
