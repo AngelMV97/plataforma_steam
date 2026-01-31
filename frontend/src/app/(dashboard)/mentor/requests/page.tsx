@@ -30,8 +30,9 @@ export default function MentorRequestsPage() {
   async function fetchRequests() {
     setLoading(true);
     try {
-      const data = await api.get('/api/session-requests');
-      setRequests(data);
+      // Fetch all sessions of type 'individual' and status 'pending' or 'scheduled'
+      const res = await api.get('/api/sessions?type=individual');
+      setRequests(res.data || []);
     } catch {}
     setLoading(false);
   }
@@ -40,7 +41,7 @@ export default function MentorRequestsPage() {
     setActionLoading(id + status);
     setActionError("");
     try {
-      await api.put(`/api/session-requests/${id}/status`, { status });
+      await api.put(`/api/sessions/${id}`, { status });
       fetchRequests();
     } catch (err: any) {
       setActionError(err.message || 'Error al actualizar estado');

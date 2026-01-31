@@ -55,10 +55,14 @@ export default function StudentSessionsPage() {
     setError("");
     setSuccess(false);
     try {
-      await api.post('/api/session-requests', {
+      // Adapt: create a new session as a request (status: 'pending', type: 'individual')
+      await api.post('/api/sessions', {
+        session_type: 'individual',
+        session_date: new Date().toISOString(), // Placeholder, backend requires it
+        notes,
         topic,
         preferred_dates: preferredDates,
-        notes,
+        status: 'pending',
       });
       setSuccess(true);
       setTopic("");
@@ -75,8 +79,9 @@ export default function StudentSessionsPage() {
   async function fetchMyRequests() {
     setRequestsLoading(true);
     try {
-      const data = await api.get('/api/session-requests/mine');
-      setMyRequests(data);
+      // Fetch sessions where user is requester and type is 'individual'
+      const res = await api.get('/api/sessions?type=individual&mine=true');
+      setMyRequests(res.data || []);
     } catch {
       // ignore for now
     } finally {
