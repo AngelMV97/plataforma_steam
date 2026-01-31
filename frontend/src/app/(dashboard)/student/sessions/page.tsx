@@ -22,11 +22,24 @@ interface Session {
   };
 }
 
+interface SessionRequest {
+  id: string;
+  topic: string;
+  preferred_dates: string;
+  notes: string;
+  status: string;
+  created_at: string;
+}
+
 export default function StudentSessionsPage() {
   const supabase = createClientComponentClient();
   const [sessions, setSessions] = useState<Session[]>([]);
   const [registeredIds, setRegisteredIds] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
+  const [registerMessage, setRegisterMessage] = useState<string>("");
+  const [registerSuccess, setRegisterSuccess] = useState<boolean | null>(null);
+  const [myRequests, setMyRequests] = useState<SessionRequest[]>([]);
+  const [requestsLoading, setRequestsLoading] = useState(true);
 
   // Individual session request form state
   const [topic, setTopic] = useState("");
@@ -41,18 +54,39 @@ export default function StudentSessionsPage() {
     setSubmitting(true);
     setError("");
     setSuccess(false);
-    // TODO: Replace with API call
-    setTimeout(() => {
-      setSubmitting(false);
+    try {
+      await api.post('/api/session-requests', {
+        topic,
+        preferred_dates: preferredDates,
+        notes,
+      });
       setSuccess(true);
       setTopic("");
       setPreferredDates("");
       setNotes("");
-    }, 1000);
+      fetchMyRequests();
+    } catch (err: any) {
+      setError(err.message || 'Error al enviar solicitud');
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  async function fetchMyRequests() {
+    setRequestsLoading(true);
+    try {
+      const data = await api.get('/api/session-requests/mine');
+      setMyRequests(data);
+    } catch {
+      // ignore for now
+    } finally {
+      setRequestsLoading(false);
+    }
   }
 
   useEffect(() => {
     loadSessions();
+    fetchMyRequests();
   }, []);
 
   async function loadSessions() {
@@ -61,7 +95,10 @@ export default function StudentSessionsPage() {
       
       // Get upcoming sessions
       const res = await api.get('/api/sessions?upcoming=true');
-      setSessions(res.data);
+      // Filter out past sessions (fallback if backend doesn't do it)
+      const now = new Date();
+      const upcoming = (res.data || []).filter((s: Session) => new Date(s.session_date) >= now);
+      setSessions(upcoming);
 
       // Get user's registered sessions
       const { data: { user } } = await supabase.auth.getUser();
@@ -93,20 +130,28 @@ export default function StudentSessionsPage() {
   async function handleRegister(sessionId: string) {
     try {
       await api.post(`/api/sessions/${sessionId}/register`, {});
-      alert('¡Registrado exitosamente!');
+      setRegisterMessage('¡Registrado exitosamente!');
+      setRegisterSuccess(true);
+      setTimeout(() => setRegisterMessage(""), 3000);
       await loadSessions();
     } catch (err: any) {
-      alert('Error al registrarse: ' + err.message);
+      setRegisterMessage('Error al registrarse: ' + (err.message || 'Intenta de nuevo.'));
+      setRegisterSuccess(false);
+      setTimeout(() => setRegisterMessage(""), 4000);
     }
   }
 
   async function handleUnregister(sessionId: string) {
     try {
       await api.delete(`/api/sessions/${sessionId}/register`);
-      alert('Registro cancelado');
+      setRegisterMessage('Registro cancelado');
+      setRegisterSuccess(true);
+      setTimeout(() => setRegisterMessage(""), 3000);
       await loadSessions();
     } catch (err: any) {
-      alert('Error al cancelar registro: ' + err.message);
+      setRegisterMessage('Error al cancelar registro: ' + (err.message || 'Intenta de nuevo.'));
+      setRegisterSuccess(false);
+      setTimeout(() => setRegisterMessage(""), 4000);
     }
   }
 
@@ -120,59 +165,16 @@ export default function StudentSessionsPage() {
 
   return (
     <div className="min-h-screen bg-[#FAFAF8] dark:bg-[#0F1419]">
-      <div className="max-w-2xl mx-auto px-4 sm:px-6 py-10">
-        <h1 className="text-2xl sm:text-3xl font-bold text-[#1F3A5F] dark:text-[#5B8FB9] mb-2">
-          Solicitar Sesión Individual
-        </h1>
-        <p className="text-sm text-[#6B7280] dark:text-[#9CA3AF] mb-6">
-          Solicita una sesión individual con un mentor. Describe el tema y tus preferencias de horario.
-        </p>
-        <form onSubmit={handleRequestSubmit} className="bg-white dark:bg-[#1a1f26] rounded-lg shadow p-6 space-y-6 border border-[#E5E7EB] dark:border-[#1F2937]">
-          <div>
-            <label className="block text-sm font-medium text-[#1F3A5F] dark:text-[#5B8FB9] mb-1">Tema</label>
-            <input
-              type="text"
-              value={topic}
-              onChange={e => setTopic(e.target.value)}
-              className="w-full px-4 py-2 border border-[#E5E7EB] dark:border-[#1F2937] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2F6F6D] dark:focus:ring-[#4A9B98] bg-[#F9FAFB] dark:bg-[#0F1419] text-[#1F3A5F] dark:text-[#5B8FB9]"
-              placeholder="Ejemplo: Ecuaciones diferenciales"
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-[#1F3A5F] dark:text-[#5B8FB9] mb-1">Fechas Preferidas</label>
-            <input
-              type="text"
-              value={preferredDates}
-              onChange={e => setPreferredDates(e.target.value)}
-              className="w-full px-4 py-2 border border-[#E5E7EB] dark:border-[#1F2937] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2F6F6D] dark:focus:ring-[#4A9B98] bg-[#F9FAFB] dark:bg-[#0F1419] text-[#1F3A5F] dark:text-[#5B8FB9]"
-              placeholder="Ejemplo: Lunes o miércoles por la tarde"
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-[#1F3A5F] dark:text-[#5B8FB9] mb-1">Notas Adicionales</label>
-            <textarea
-              value={notes}
-              onChange={e => setNotes(e.target.value)}
-              className="w-full px-4 py-2 border border-[#E5E7EB] dark:border-[#1F2937] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2F6F6D] dark:focus:ring-[#4A9B98] bg-[#F9FAFB] dark:bg-[#0F1419] text-[#1F3A5F] dark:text-[#5B8FB9]"
-              rows={3}
-              placeholder="¿Hay algo más que debamos saber?"
-            />
-          </div>
-          {error && <p className="text-sm text-[#DC2626] dark:text-red-400">{error}</p>}
-          {success && <p className="text-sm text-[#2F6F6D] dark:text-[#4A9B98]">¡Solicitud enviada!</p>}
-          <button
-            type="submit"
-            disabled={submitting}
-            className="w-full py-2 px-4 bg-[#2F6F6D] text-white font-semibold rounded-lg hover:bg-[#1F3A5F] transition-colors disabled:opacity-60"
-          >
-            {submitting ? "Enviando..." : "Enviar Solicitud"}
-          </button>
-        </form>
-      </div>
+      {/* Notification for registration/unregistration */}
+      {registerMessage && (
+        <div className={`fixed top-4 left-1/2 transform -translate-x-1/2 z-50 px-6 py-3 rounded-lg shadow-lg text-sm font-medium transition-all duration-300
+          ${registerSuccess === true ? 'bg-green-100 text-green-800 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'}`}
+        >
+          {registerMessage}
+        </div>
+      )}
 
-      {/* ...existing group sessions code below... */}
+      {/* Session list at top */}
       <div className="bg-white dark:bg-[#1a1f26] shadow-sm border-b border-[#E5E7EB] dark:border-[#1F2937]">
         <div className="max-w-7xl mx-auto px-4 py-6">
           <h1 className="text-3xl font-bold text-[#1F2937] dark:text-[#F3F4F6]">Sesiones Disponibles</h1>
@@ -272,6 +274,79 @@ export default function StudentSessionsPage() {
               );
             })}
           </div>
+        )}
+      </div>
+
+      {/* Request form at bottom */}
+      <div className="max-w-2xl mx-auto px-4 sm:px-6 py-10">
+        <h1 className="text-2xl sm:text-3xl font-bold text-[#1F3A5F] dark:text-[#5B8FB9] mb-2">
+          Solicitar Sesión Individual
+        </h1>
+        <p className="text-sm text-[#6B7280] dark:text-[#9CA3AF] mb-6">
+          Solicita una sesión individual con un mentor. Describe el tema y tus preferencias de horario.
+        </p>
+        <form onSubmit={handleRequestSubmit} className="bg-white dark:bg-[#1a1f26] rounded-lg shadow p-6 space-y-6 border border-[#E5E7EB] dark:border-[#1F2937]">
+          <div>
+            <label className="block text-sm font-medium text-[#1F3A5F] dark:text-[#5B8FB9] mb-1">Tema</label>
+            <input
+              type="text"
+              value={topic}
+              onChange={e => setTopic(e.target.value)}
+              className="w-full px-4 py-2 border border-[#E5E7EB] dark:border-[#1F2937] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2F6F6D] dark:focus:ring-[#4A9B98] bg-[#F9FAFB] dark:bg-[#0F1419] text-[#1F3A5F] dark:text-[#5B8FB9]"
+              placeholder="Ejemplo: Ecuaciones diferenciales"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-[#1F3A5F] dark:text-[#5B8FB9] mb-1">Fechas Preferidas</label>
+            <input
+              type="text"
+              value={preferredDates}
+              onChange={e => setPreferredDates(e.target.value)}
+              className="w-full px-4 py-2 border border-[#E5E7EB] dark:border-[#1F2937] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2F6F6D] dark:focus:ring-[#4A9B98] bg-[#F9FAFB] dark:bg-[#0F1419] text-[#1F3A5F] dark:text-[#5B8FB9]"
+              placeholder="Ejemplo: Lunes o miércoles por la tarde"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-[#1F3A5F] dark:text-[#5B8FB9] mb-1">Notas Adicionales</label>
+            <textarea
+              value={notes}
+              onChange={e => setNotes(e.target.value)}
+              className="w-full px-4 py-2 border border-[#E5E7EB] dark:border-[#1F2937] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2F6F6D] dark:focus:ring-[#4A9B98] bg-[#F9FAFB] dark:bg-[#0F1419] text-[#1F3A5F] dark:text-[#5B8FB9]"
+              rows={3}
+              placeholder="¿Hay algo más que debamos saber?"
+            />
+          </div>
+          {error && <p className="text-sm text-[#DC2626] dark:text-red-400">{error}</p>}
+          {success && <p className="text-sm text-[#2F6F6D] dark:text-[#4A9B98]">¡Solicitud enviada!</p>}
+          <button
+            type="submit"
+            disabled={submitting}
+            className="w-full py-2 px-4 bg-[#2F6F6D] text-white font-semibold rounded-lg hover:bg-[#1F3A5F] transition-colors disabled:opacity-60"
+          >
+            {submitting ? "Enviando..." : "Enviar Solicitud"}
+          </button>
+        </form>
+
+        <h2 className="text-xl font-bold text-[#1F3A5F] dark:text-[#5B8FB9] mb-4 mt-8">Mis Solicitudes</h2>
+        {requestsLoading ? (
+          <div className="text-center text-[#6B7280] dark:text-[#9CA3AF] py-8">Cargando...</div>
+        ) : myRequests.length === 0 ? (
+          <div className="text-center text-[#6B7280] dark:text-[#9CA3AF] py-8">No has enviado solicitudes.</div>
+        ) : (
+          <ul className="space-y-4">
+            {myRequests.map((r) => (
+              <li key={r.id} className="bg-white dark:bg-[#1a1f26] rounded-lg border border-[#E5E7EB] dark:border-[#1F2937] p-4 flex flex-col gap-2">
+                <div className="flex items-center justify-between">
+                  <span className="font-semibold text-[#1F3A5F] dark:text-[#5B8FB9]">{r.topic}</span>
+                  <span className={`text-xs px-2 py-1 rounded-full font-medium ${r.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : r.status === 'scheduled' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'}`}>{r.status}</span>
+                </div>
+                <div className="text-[#4B5563] dark:text-[#D1D5DB] text-sm">{r.notes}</div>
+                <div className="text-xs text-[#6B7280] dark:text-[#9CA3AF]">Solicitado el {new Date(r.created_at).toLocaleDateString()}</div>
+              </li>
+            ))}
+          </ul>
         )}
       </div>
     </div>
