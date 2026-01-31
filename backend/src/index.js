@@ -26,6 +26,7 @@ app.use('/api/profiles', require('./routes/profiles'));
 app.use('/api/cognitive-profiles', require('./routes/cognitive-profiles'));
 app.use('/api/sessions', require('./routes/sessions'));
 app.use('/api/problems', require('./routes/problems'));
+app.use('/api/session-requests', require('./routes/session-requests'));
 
 // Health check
 app.get('/health', (req, res) => {
