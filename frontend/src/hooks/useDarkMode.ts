@@ -8,14 +8,13 @@ export function useDarkMode() {
 
   // Initialize from localStorage and sync with DOM
   useEffect(() => {
-    // Start with light mode by default
+    // Start with light mode by default - always remove dark class first
+    document.documentElement.classList.remove('dark');
+    
     const stored = localStorage.getItem('theme');
     const shouldBeDark = stored === 'dark' ? true : false;
     
-    // Always start with removing dark class to ensure light mode is default
-    document.documentElement.classList.remove('dark');
-    
-    // Then add it back only if dark mode is stored
+    // Then add it back only if dark mode is explicitly stored
     if (shouldBeDark) {
       document.documentElement.classList.add('dark');
     }
