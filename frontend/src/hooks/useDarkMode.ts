@@ -8,14 +8,16 @@ export function useDarkMode() {
 
   // Initialize from localStorage and sync with DOM
   useEffect(() => {
+    // Start with light mode by default
     const stored = localStorage.getItem('theme');
-    const shouldBeDark = stored === 'dark';
+    const shouldBeDark = stored === 'dark' ? true : false;
     
-    // Apply theme to DOM immediately
+    // Always start with removing dark class to ensure light mode is default
+    document.documentElement.classList.remove('dark');
+    
+    // Then add it back only if dark mode is stored
     if (shouldBeDark) {
       document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
     }
     
     setIsDark(shouldBeDark);
@@ -36,7 +38,7 @@ export function useDarkMode() {
   }, [isDark]);
 
   const toggle = () => {
-    setIsDark(prev => !prev);
+    setIsDark(prev => prev === null ? false : !prev);
   };
 
   return { isDark: isDark ?? false, toggle, mounted };
