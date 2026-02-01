@@ -17,7 +17,7 @@ export default function Home() {
             <div className="block sm:hidden">
               {mounted ? (
                 <Image
-                  src={!isDark ? "/logos/gomot-wordmark-dark.png" : "/logos/gomot-wordmark.png"}
+                  src={isDark ? "/logos/gomot-wordmark.png" : "/logos/gomot-wordmark-dark.png"}
                   alt="Gomot Science Academy"
                   width={110}
                   height={26}
