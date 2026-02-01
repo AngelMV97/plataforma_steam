@@ -456,7 +456,8 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
         >
           " Cita
         </button>
-        <button
+        {/* Code block button disabled - toggleCodeBlock not available in TipTap */}
+        {/* <button
           type="button"
           onClick={() => editor.chain().focus().toggleCodeBlock().run()}
           className={`p-2 rounded transition ${
@@ -467,7 +468,7 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
           title="Bloque de código"
         >
           {'</>'}
-        </button>
+        </button> */}
 
         <div className="w-px bg-[#E5E7EB] dark:bg-[#1F2937] mx-1"></div>
 
