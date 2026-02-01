@@ -124,7 +124,10 @@ export default function MentorDashboard() {
         </div>
         
         {/* Student Session Requests Section */}
-        <div className="bg-white dark:bg-[#1a1f26] rounded-lg shadow p-6 border border-[#E5E7EB] dark:border-[#1F2937] mb-8">
+        <button
+          onClick={() => router.push('/mentor/requests')}
+          className="w-full bg-white dark:bg-[#1a1f26] rounded-lg shadow p-6 border border-[#E5E7EB] dark:border-[#1F2937] mb-8 hover:border-[#2F6F6D]/30 hover:shadow-lg transition-all text-left"
+        >
           <h2 className="text-xl font-semibold text-[#1F2937] dark:text-[#F3F4F6] mb-4">Solicitudes de Sesiones Individuales</h2>
           {requestsLoading ? (
             <div className="text-center text-[#6B7280] dark:text-[#9CA3AF] py-8">Cargando...</div>
@@ -144,7 +147,7 @@ export default function MentorDashboard() {
               ))}
             </ul>
           )}
-        </div>
+        </button>
 
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

@@ -1,7 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { useAuth } from '@/contexts/AuthContext';
 import { api } from '@/lib/api';
 
 interface Article {
@@ -12,6 +14,15 @@ interface Article {
 
 export default function CreateSessionPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const supabase = createClientComponentClient();
+  const { user } = useAuth();
+
+  const requestId = searchParams.get('requestId');
+  const requestTopic = searchParams.get('topic') || '';
+  const requestStudentId = searchParams.get('studentId') || '';
+  const requestStudentName = searchParams.get('studentName') || '';
+
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -29,6 +40,16 @@ export default function CreateSessionPage() {
   useEffect(() => {
     loadArticles();
   }, []);
+
+  useEffect(() => {
+    if (requestId && requestTopic) {
+      setFormData(prev => ({
+        ...prev,
+        session_type: 'reinforcement',
+        notes: `Solicitud de sesión individual\nTema: ${requestTopic}\nEstudiante: ${requestStudentName || requestStudentId}\nID Solicitud: ${requestId}`
+      }));
+    }
+  }, [requestId, requestTopic, requestStudentId, requestStudentName]);
 
   async function loadArticles() {
     try {
@@ -56,6 +77,23 @@ export default function CreateSessionPage() {
         meeting_link: formData.meeting_link,
         notes: formData.notes
       });
+
+      // If this was created from a request, update the request status
+      if (requestId) {
+        const { error: updateError } = await supabase
+          .from('session_requests')
+          .update({
+            status: 'scheduled',
+            mentor_id: user?.id ?? null,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', requestId);
+
+        if (updateError) {
+          console.error('Error updating request:', updateError);
+          setError('Sesión creada, pero no se pudo actualizar la solicitud.');
+        }
+      }
 
       setSuccessMessage('Sesión creada exitosamente');
       

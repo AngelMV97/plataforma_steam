@@ -106,7 +106,7 @@ export default function MentorProposalsPage() {
                   </p>
 
                   <div className="flex flex-wrap gap-4 text-xs text-[#6B7280] dark:text-[#9CA3AF] mb-4">
-                    <div>Propuesto por: <span className="font-medium">{proposal.student_name}</span></div>
+                    <div>Propuesto por: <span className="font-medium">{proposal.student_name?.trim() ? proposal.student_name : 'Estudiante'}</span></div>
                     <div>Fecha: {new Date(proposal.created_at).toLocaleDateString('es-ES')}</div>
                   </div>
 

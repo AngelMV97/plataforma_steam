@@ -234,7 +234,7 @@ export default function TopicSuggestionsPage() {
                         {p.topic}
                       </h3>
                       <p className="text-sm text-[#6B7280] dark:text-[#9CA3AF] mb-3">
-                        Propuesto por <span className="font-medium">{p.student_name}</span>
+                        Propuesto por <span className="font-medium">{p.student_name?.trim() ? p.student_name : 'Estudiante'}</span>
                       </p>
                       <p className="text-[#4B5563] dark:text-[#D1D5DB] leading-relaxed">
                         {p.description}

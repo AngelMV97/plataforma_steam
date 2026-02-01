@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useAuth } from '@/contexts/AuthContext';
 import { CheckCircleIcon, AlertCircleIcon, ClockIcon, UsersIcon, DocumentIcon, BookOpenIcon } from '@/components/icons/MinimalIcons';
@@ -26,8 +27,8 @@ interface SessionRequest {
 
 export default function MentorRequestsPage() {
   const { user } = useAuth();
+  const router = useRouter();
   const supabase = createClientComponentClient();
-  
   const [requests, setRequests] = useState<SessionRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
@@ -67,6 +68,16 @@ export default function MentorRequestsPage() {
     } finally {
       setLoading(false);
     }
+  }
+
+  function handleSchedule(request: SessionRequest) {
+    const params = new URLSearchParams({
+      requestId: request.id,
+      topic: request.topic || '',
+      studentId: request.student_id,
+      studentName: request.student?.full_name || '',
+    });
+    router.push(`/mentor/sessions/new?${params.toString()}`);
   }
 
   async function handleStatusChange(requestId: string, newStatus: 'scheduled' | 'completed' | 'cancelled') {
@@ -321,12 +332,11 @@ export default function MentorRequestsPage() {
                     {request.status === 'pending' && (
                       <>
                         <button
-                          onClick={() => handleStatusChange(request.id, 'scheduled')}
-                          disabled={actionLoading === request.id + 'scheduled'}
-                          className="px-4 py-2 bg-[#2F6F6D] text-white rounded-lg font-medium text-sm hover:bg-[#1F3A5F] transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-2"
+                          onClick={() => handleSchedule(request)}
+                          className="px-4 py-2 bg-[#2F6F6D] text-white rounded-lg font-medium text-sm hover:bg-[#1F3A5F] transition-colors flex items-center gap-2"
                         >
                           <ClockIcon className="w-4 h-4" />
-                          {actionLoading === request.id + 'scheduled' ? 'Agendando...' : 'Agendar Sesión'}
+                          Agendar Sesión
                         </button>
                         <button
                           onClick={() => handleStatusChange(request.id, 'cancelled')}
