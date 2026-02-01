@@ -119,6 +119,24 @@ export default function DashboardLayout({
                     href="/mentor/sessions"
                     className="!text-[#6B7280] dark:!text-[#D1D5DB] hover:!text-[#1F3A5F] dark:hover:!text-[#5B8FB9] px-3 py-2 text-sm font-medium transition-colors"
                   >
+                    Solicitudes
+                  </Link>
+                  <Link
+                    href="/mentor/proposals"
+                    className="!text-[#6B7280] dark:!text-[#D1D5DB] hover:!text-[#1F3A5F] dark:hover:!text-[#5B8FB9] px-3 py-2 text-sm font-medium transition-colors"
+                  >
+                    Propuestas
+                  </Link>
+                  <Link
+                    href="/mentor/materials"
+                    className="!text-[#6B7280] dark:!text-[#D1D5DB] hover:!text-[#1F3A5F] dark:hover:!text-[#5B8FB9] px-3 py-2 text-sm font-medium transition-colors"
+                  >
+                    Materiales
+                  </Link>
+                  <Link
+                    href="/mentor/sessions"
+                    className="!text-[#6B7280] dark:!text-[#D1D5DB] hover:!text-[#1F3A5F] dark:hover:!text-[#5B8FB9] px-3 py-2 text-sm font-medium transition-colors"
+                  >
                     Sesiones
                   </Link>
                 </>

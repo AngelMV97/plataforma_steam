@@ -838,3 +838,53 @@ ORDER BY policyname;
 -- ============================================
 -- END OF MIGRATION
 -- ============================================
+
+-- ============================================
+-- FIX PERFORMANCE ISSUES IN RLS POLICIES
+-- ============================================
+
+-- 1. FIX profiles INSERT policies - consolidate into one optimized policy
+DROP POLICY IF EXISTS "Users can create their own profile" ON public.profiles;
+DROP POLICY IF EXISTS profiles_insert ON public.profiles;
+
+CREATE POLICY "profiles_insert" ON public.profiles
+    FOR INSERT
+    TO authenticated
+    WITH CHECK (auth.uid() = id);
+
+-- 2. FIX session_requests UPDATE policies - consolidate into one
+DROP POLICY IF EXISTS session_requests_update_student ON public.session_requests;
+DROP POLICY IF EXISTS session_requests_update_mentor ON public.session_requests;
+
+CREATE POLICY "session_requests_update" ON public.session_requests
+    FOR UPDATE
+    TO authenticated
+    USING (
+        student_id = (SELECT auth.uid())
+        OR EXISTS (
+            SELECT 1 FROM public.profiles
+            WHERE id = (SELECT auth.uid()) AND role IN ('mentor', 'admin')
+        )
+    )
+    WITH CHECK (
+        student_id = (SELECT auth.uid())
+        OR EXISTS (
+            SELECT 1 FROM public.profiles
+            WHERE id = (SELECT auth.uid()) AND role IN ('mentor', 'admin')
+        )
+    );
+
+-- Verify the fixes
+SELECT policyname, cmd, qual
+FROM pg_policies
+WHERE schemaname = 'public'
+AND tablename IN ('profiles', 'session_requests')
+ORDER BY tablename, policyname;
+
+-- Fix profiles_insert policy to use optimized auth.uid() check
+DROP POLICY IF EXISTS profiles_insert ON public.profiles;
+
+CREATE POLICY "profiles_insert" ON public.profiles
+    FOR INSERT
+    TO authenticated
+    WITH CHECK (id = (SELECT auth.uid()));
