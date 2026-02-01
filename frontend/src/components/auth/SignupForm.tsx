@@ -93,7 +93,7 @@ export function SignupForm() {
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Full Name */}
             <div>
-              <label htmlFor="fullName" className="block text-sm font-medium text-[#1F2937] mb-2">
+              <label htmlFor="fullName" className="block text-sm font-medium text-[#1F2937] dark:text-[#F3F4F6] mb-2">
                 Nombre completo
               </label>
               <input
@@ -110,7 +110,7 @@ export function SignupForm() {
 
             {/* Email */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-[#1F2937] mb-2">
+              <label htmlFor="email" className="block text-sm font-medium text-[#1F2937] dark:text-[#F3F4F6] mb-2">
                 Correo electrónico
               </label>
               <input
@@ -127,7 +127,7 @@ export function SignupForm() {
 
             {/* Role */}
             <div>
-              <label htmlFor="role" className="block text-sm font-medium text-[#1F2937] mb-2">
+              <label htmlFor="role" className="block text-sm font-medium text-[#1F2937] dark:text-[#F3F4F6] mb-2">
                 Rol
               </label>
               <select
@@ -146,7 +146,7 @@ export function SignupForm() {
             {/* Grade Level - only for students */}
             {formData.role === 'student' && (
               <div>
-                <label htmlFor="gradeLevel" className="block text-sm font-medium text-[#1F2937] mb-2">
+                <label htmlFor="gradeLevel" className="block text-sm font-medium text-[#1F2937] dark:text-[#F3F4F6] mb-2">
                   Grado escolar
                 </label>
                 <select
@@ -168,7 +168,7 @@ export function SignupForm() {
 
             {/* Password */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-[#1F2937] mb-2">
+              <label htmlFor="password" className="block text-sm font-medium text-[#1F2937] dark:text-[#F3F4F6] mb-2">
                 Contraseña
               </label>
               <div className="relative">
