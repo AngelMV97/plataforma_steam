@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { api } from '@/lib/api';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { Calendar, Clock, User } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface Session {
   id: string;
@@ -33,6 +34,7 @@ interface SessionRequest {
 
 export default function StudentSessionsPage() {
   const supabase = createClientComponentClient();
+  const { user } = useAuth();
   const [sessions, setSessions] = useState<Session[]>([]);
   const [registeredIds, setRegisteredIds] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
@@ -55,11 +57,26 @@ export default function StudentSessionsPage() {
     setError("");
     setSuccess(false);
     try {
-      await api.post('/api/session-requests', {
-        topic,
-        preferred_dates: preferredDates,
-        notes,
-      });
+      if (!topic.trim() || !preferredDates.trim()) {
+        setError('Por favor completa el tema y fechas preferidas');
+        return;
+      }
+
+      const { error } = await supabase
+        .from('session_requests')
+        .insert({
+          student_id: user?.id,
+          topic: topic.trim(),
+          description: '', // Empty since this form is simpler
+          preferred_dates: preferredDates
+            .split(',')
+            .map(d => d.trim())
+            .filter(d => d),
+          notes: notes.trim(),
+        });
+
+      if (error) throw error;
+
       setSuccess(true);
       setTopic("");
       setPreferredDates("");
@@ -75,10 +92,16 @@ export default function StudentSessionsPage() {
   async function fetchMyRequests() {
     setRequestsLoading(true);
     try {
-      const res = await api.get('/api/session-requests/mine');
-      setMyRequests(res.data || res || []);
-    } catch {
-      // ignore for now
+      const { data, error } = await supabase
+        .from('session_requests')
+        .select('*')
+        .eq('student_id', user?.id)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setMyRequests(data || []);
+    } catch (err: any) {
+      console.error('Error fetching requests:', err);
     } finally {
       setRequestsLoading(false);
     }

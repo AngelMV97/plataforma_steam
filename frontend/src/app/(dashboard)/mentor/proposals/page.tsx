@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { api } from '@/lib/api';
+import { AlertCircleIcon, TrashIcon } from "@/components/icons/MinimalIcons";
 
 interface TopicProposal {
   id: string;
@@ -10,6 +10,8 @@ interface TopicProposal {
   description: string;
   likes: number;
   created_at: string;
+  student_id: string;
+  student_name: string;
 }
 
 export default function MentorProposalsPage() {
@@ -22,71 +24,106 @@ export default function MentorProposalsPage() {
     fetchProposals();
   }, []);
 
-  async function fetchProposals() {
+  function fetchProposals() {
     setLoading(true);
     try {
-      const data = await api.get('/api/topic-proposals');
-      setProposals(data);
-    } catch {}
-    setLoading(false);
+      const stored = localStorage.getItem('topic_proposals');
+      if (stored) {
+        const data: TopicProposal[] = JSON.parse(stored);
+        data.sort((a, b) => b.likes - a.likes);
+        setProposals(data);
+      }
+    } catch (err) {
+      console.error('Error loading proposals:', err);
+    } finally {
+      setLoading(false);
+    }
   }
 
-  async function handleDelete(id: string) {
+  function handleDelete(id: string) {
     setActionLoading(id);
     setActionError("");
     try {
-      await api.delete(`/api/topic-proposals/${id}`);
+      const stored = localStorage.getItem('topic_proposals');
+      if (!stored) return;
+      
+      const data: TopicProposal[] = JSON.parse(stored);
+      const filtered = data.filter(p => p.id !== id);
+      localStorage.setItem('topic_proposals', JSON.stringify(filtered));
+      
       fetchProposals();
     } catch (err: any) {
       setActionError(err.message || 'Error al eliminar propuesta');
-    }
-    setActionLoading(null);
+    } finally {
+      setActionLoading(null);
+    }   
   }
 
   return (
     <div className="min-h-screen bg-[#FAFAF8] dark:bg-[#0F1419]">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10">
-        <h1 className="text-2xl sm:text-3xl font-bold text-[#1F3A5F] dark:text-[#5B8FB9] mb-2">
-          Propuestas de Temas de Refuerzo
-        </h1>
-        <p className="text-sm text-[#6B7280] dark:text-[#9CA3AF] mb-6">
-          Revisa y prioriza los temas sugeridos por los estudiantes para próximas sesiones de refuerzo.
-        </p>
-        <div className="bg-white dark:bg-[#1a1f26] rounded-lg shadow p-6 border border-[#E5E7EB] dark:border-[#1F2937]">
+        <div className="mb-8">
+          <h1 className="font-serif text-3xl sm:text-4xl font-semibold text-[#1F3A5F] dark:text-[#5B8FB9] mb-2">
+            Propuestas de Temas
+          </h1>
+          <p className="text-[#6B7280] dark:text-[#9CA3AF]">
+            Revisa y prioriza los temas sugeridos por los estudiantes para próximas sesiones de refuerzo.
+          </p>
+        </div>
+
+        <div className="bg-white dark:bg-[#1a1f26] rounded-lg shadow-sm border border-[#E5E7EB] dark:border-[#1F2937]">
           {actionError && (
-            <div className="mb-4 text-sm text-[#DC2626] dark:text-red-400">{actionError}</div>
+            <div className="mb-4 p-3 bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300 rounded text-sm flex gap-2">
+              <AlertCircleIcon className="w-5 h-5 flex-shrink-0 mt-0.5" />
+              <span>{actionError}</span>
+            </div>
           )}
+
           {loading ? (
-            <div className="text-center text-[#6B7280] dark:text-[#9CA3AF] py-8">Cargando...</div>
+            <div className="text-center text-[#6B7280] dark:text-[#9CA3AF] py-12">
+              Cargando propuestas...
+            </div>
           ) : proposals.length === 0 ? (
-            <div className="text-center text-[#6B7280] dark:text-[#9CA3AF] py-8">No hay propuestas aún.</div>
+            <div className="text-center text-[#6B7280] dark:text-[#9CA3AF] py-12">
+              <AlertCircleIcon className="w-12 h-12 text-[#D1D5DB] dark:text-[#6B7280] mx-auto mb-3" />
+              No hay propuestas aún.
+            </div>
           ) : (
-            <ul className="space-y-4">
-              {proposals.map((p) => (
-                <li key={p.id} className="border-b border-[#E5E7EB] dark:border-[#1F2937] pb-4 mb-4">
-                  <div className="flex items-center justify-between">
-                    <span className="font-semibold text-[#1F3A5F] dark:text-[#5B8FB9]">{p.topic}</span>
-                    <span className="text-xs px-2 py-1 rounded-full bg-[#F3F4F6] dark:bg-[#1F2937] text-[#2F6F6D] dark:text-[#4A9B98]">👍 {p.likes}</span>
+            <div className="divide-y divide-[#E5E7EB] dark:divide-[#1F2937]">
+              {proposals.map((proposal) => (
+                <div key={proposal.id} className="p-6 hover:bg-[#F9FAFB] dark:hover:bg-[#111618] transition-colors">
+                  <div className="flex items-start justify-between gap-4 mb-3">
+                    <h3 className="font-semibold text-lg text-[#1F3A5F] dark:text-[#5B8FB9]">
+                      {proposal.topic}
+                    </h3>
+                    <span className="px-3 py-1 rounded-full text-sm font-medium bg-[#F3F4F6] dark:bg-[#1F2937] text-[#2F6F6D] dark:text-[#4A9B98] whitespace-nowrap">
+                      {proposal.likes}
+                    </span>
                   </div>
-                  <div className="text-[#4B5563] dark:text-[#D1D5DB] text-sm mt-1">{p.description}</div>
-                  <div className="text-xs text-[#6B7280] dark:text-[#9CA3AF] mt-1">Propuesto el {new Date(p.created_at).toLocaleDateString()}</div>
-                  <div className="flex gap-2 mt-3">
-                    <button
-                      onClick={() => handleDelete(p.id)}
-                      disabled={actionLoading === p.id}
-                      className="px-4 py-1 bg-[#DC2626] text-white rounded-lg font-medium hover:bg-[#991B1B] transition-colors disabled:opacity-60"
-                    >
-                      {actionLoading === p.id ? 'Eliminando...' : 'Eliminar'}
-                    </button>
+
+                  <p className="text-sm text-[#4B5563] dark:text-[#D1D5DB] mb-3">
+                    {proposal.description}
+                  </p>
+
+                  <div className="flex flex-wrap gap-4 text-xs text-[#6B7280] dark:text-[#9CA3AF] mb-4">
+                    <div>Propuesto por: <span className="font-medium">{proposal.student_name}</span></div>
+                    <div>Fecha: {new Date(proposal.created_at).toLocaleDateString('es-ES')}</div>
                   </div>
-                </li>
+
+                  <button
+                    onClick={() => handleDelete(proposal.id)}
+                    disabled={actionLoading === proposal.id}
+                    className="px-4 py-2 bg-[#DC2626] text-white rounded-lg font-medium text-sm hover:bg-[#991B1B] transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-2"
+                  >
+                    <TrashIcon className="w-4 h-4" />
+                    {actionLoading === proposal.id ? 'Eliminando...' : 'Eliminar'}
+                  </button>
+                </div>
               ))}
-            </ul>
+            </div>
           )}
         </div>
-        <div className="mt-8 text-xs text-[#6B7280] dark:text-[#9CA3AF]">
-          <Link href="/mentor" className="underline">Volver al Dashboard</Link>
-        </div>
+
       </div>
     </div>
   );
