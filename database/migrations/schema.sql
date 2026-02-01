@@ -701,3 +701,140 @@ ORDER BY column_name;
 -- ============================================
 -- END OF MIGRATION
 -- ============================================
+
+-- ============================================
+-- MIGRATION: Fix Security Issues & Add Session Requests
+-- Date: 2026-02-01
+-- Purpose:
+--   1. Create session_requests table with RLS enabled
+--   2. Fix cognitive_profiles INSERT policy to allow new users to create their profile
+-- ============================================
+
+-- ============================================
+-- ISSUE 1: CREATE SESSION_REQUESTS TABLE WITH RLS
+-- ============================================
+
+-- Create the session_requests table
+CREATE TABLE IF NOT EXISTS public.session_requests (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    student_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+    mentor_id UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
+    topic VARCHAR(255) NOT NULL,
+    description TEXT,
+    preferred_dates TEXT[], -- Array of preferred dates
+    notes TEXT,
+    status VARCHAR(20) NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'scheduled', 'completed', 'cancelled')),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Create indexes for performance
+CREATE INDEX IF NOT EXISTS idx_session_requests_student 
+    ON public.session_requests(student_id);
+CREATE INDEX IF NOT EXISTS idx_session_requests_mentor 
+    ON public.session_requests(mentor_id);
+CREATE INDEX IF NOT EXISTS idx_session_requests_status 
+    ON public.session_requests(status);
+
+-- ============================================
+-- ENABLE RLS ON SESSION_REQUESTS
+-- ============================================
+
+ALTER TABLE public.session_requests ENABLE ROW LEVEL SECURITY;
+
+-- Students can view their own requests and requests from mentors
+CREATE POLICY session_requests_select ON public.session_requests
+    FOR SELECT
+    TO authenticated
+    USING (
+        student_id = (SELECT auth.uid())
+        OR mentor_id = (SELECT auth.uid())
+        OR EXISTS (
+            SELECT 1 FROM public.profiles
+            WHERE id = (SELECT auth.uid()) AND role IN ('mentor', 'admin')
+        )
+    );
+
+-- Students can create session requests
+CREATE POLICY session_requests_insert ON public.session_requests
+    FOR INSERT
+    TO authenticated
+    WITH CHECK (student_id = (SELECT auth.uid()));
+
+-- Students can update their own requests (if pending)
+CREATE POLICY session_requests_update_student ON public.session_requests
+    FOR UPDATE
+    TO authenticated
+    USING (student_id = (SELECT auth.uid()))
+    WITH CHECK (student_id = (SELECT auth.uid()));
+
+-- Mentors can update status
+CREATE POLICY session_requests_update_mentor ON public.session_requests
+    FOR UPDATE
+    TO authenticated
+    USING (
+        EXISTS (
+            SELECT 1 FROM public.profiles
+            WHERE id = (SELECT auth.uid()) AND role IN ('mentor', 'admin')
+        )
+    )
+    WITH CHECK (
+        EXISTS (
+            SELECT 1 FROM public.profiles
+            WHERE id = (SELECT auth.uid()) AND role IN ('mentor', 'admin')
+        )
+    );
+
+-- ============================================
+-- ISSUE 2: FIX COGNITIVE_PROFILES INSERT POLICY
+-- IMPORTANT: try to create new users before running this
+-- ============================================
+
+-- Drop the overly restrictive cognitive_insert policy
+DROP POLICY IF EXISTS cognitive_insert ON public.cognitive_profiles;
+
+-- Create new policy that allows users to insert their own profile
+CREATE POLICY cognitive_insert ON public.cognitive_profiles
+    FOR INSERT
+    TO authenticated
+    WITH CHECK (
+        student_id = (SELECT auth.uid())
+        OR EXISTS (
+            SELECT 1 FROM public.profiles
+            WHERE id = (SELECT auth.uid()) AND role IN ('mentor', 'admin')
+        )
+    );
+
+-- ============================================
+-- VERIFY CHANGES
+-- ============================================
+
+-- Verify session_requests table
+SELECT table_name
+FROM information_schema.tables
+WHERE table_schema = 'public'
+AND table_name = 'session_requests';
+
+-- Verify RLS is enabled on session_requests
+SELECT tablename, rowsecurity
+FROM pg_tables
+WHERE schemaname = 'public'
+AND tablename = 'session_requests';
+
+-- Verify policies on session_requests
+SELECT policyname, cmd
+FROM pg_policies
+WHERE schemaname = 'public'
+AND tablename = 'session_requests'
+ORDER BY policyname;
+
+-- Verify cognitive_profiles policies
+SELECT policyname, cmd
+FROM pg_policies
+WHERE schemaname = 'public'
+AND tablename = 'cognitive_profiles'
+ORDER BY policyname;
+
+-- ============================================
+-- END OF MIGRATION
+-- ============================================
