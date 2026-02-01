@@ -6,18 +6,23 @@ export function useDarkMode() {
   const [isDark, setIsDark] = useState<boolean | null>(null);
   const [mounted, setMounted] = useState(false);
 
-  // Initialize from localStorage
+  // Initialize from localStorage and sync with DOM
   useEffect(() => {
     const stored = localStorage.getItem('theme');
-    if (stored === 'dark') {
-      setIsDark(true);
+    const shouldBeDark = stored === 'dark';
+    
+    // Apply theme to DOM immediately
+    if (shouldBeDark) {
+      document.documentElement.classList.add('dark');
     } else {
-      setIsDark(false);
+      document.documentElement.classList.remove('dark');
     }
+    
+    setIsDark(shouldBeDark);
     setMounted(true);
   }, []);
 
-  // Apply theme to DOM
+  // Update DOM and localStorage when isDark changes
   useEffect(() => {
     if (isDark === null) return; // Wait for initialization
 
