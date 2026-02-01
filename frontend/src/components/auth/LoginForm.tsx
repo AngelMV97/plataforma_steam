@@ -59,7 +59,7 @@ export function LoginForm() {
                 placeholder="tu@email.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 rounded-sm border border-[#E5E7EB] focus:border-[#2F6F6D] focus:ring-2 focus:ring-[#2F6F6D]/20 focus:outline-none transition-all text-[#1F2937] placeholder:text-[#9CA3AF]"
+                className="w-full px-4 py-3 rounded-sm border border-[#E5E7EB] dark:border-[#1F2937] bg-white dark:bg-[#0F1419] text-[#1F2937] dark:text-[#F3F4F6] placeholder:text-[#9CA3AF] dark:placeholder:text-[#6B7280] focus:border-[#2F6F6D] focus:ring-2 focus:ring-[#2F6F6D]/20 focus:outline-none transition-all"
                 required
               />
             </div>
@@ -76,7 +76,7 @@ export function LoginForm() {
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-4 py-3 pr-12 rounded-sm border border-[#E5E7EB] focus:border-[#2F6F6D] focus:ring-2 focus:ring-[#2F6F6D]/20 focus:outline-none transition-all text-[#1F2937] placeholder:text-[#9CA3AF]"
+                  className="w-full px-4 py-3 pr-12 rounded-sm border border-[#E5E7EB] dark:border-[#1F2937] bg-white dark:bg-[#0F1419] text-[#1F2937] dark:text-[#F3F4F6] placeholder:text-[#9CA3AF] dark:placeholder:text-[#6B7280] focus:border-[#2F6F6D] focus:ring-2 focus:ring-[#2F6F6D]/20 focus:outline-none transition-all"
                   required
                 />
                 <button

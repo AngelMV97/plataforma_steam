@@ -103,7 +103,7 @@ export function SignupForm() {
                 placeholder="Juan Pérez"
                 value={formData.fullName}
                 onChange={handleChange}
-                className="w-full px-4 py-3 rounded-sm border border-[#E5E7EB] focus:border-[#2F6F6D] focus:ring-2 focus:ring-[#2F6F6D]/20 focus:outline-none transition-all text-[#1F2937] placeholder:text-[#9CA3AF]"
+                className="w-full px-4 py-3 rounded-sm border border-[#E5E7EB] dark:border-[#1F2937] bg-white dark:bg-[#0F1419] text-[#1F2937] dark:text-[#F3F4F6] placeholder:text-[#9CA3AF] dark:placeholder:text-[#6B7280] focus:border-[#2F6F6D] focus:ring-2 focus:ring-[#2F6F6D]/20 focus:outline-none transition-all"
                 required
               />
             </div>
@@ -120,7 +120,7 @@ export function SignupForm() {
                 placeholder="tu@email.com"
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full px-4 py-3 rounded-sm border border-[#E5E7EB] focus:border-[#2F6F6D] focus:ring-2 focus:ring-[#2F6F6D]/20 focus:outline-none transition-all text-[#1F2937] placeholder:text-[#9CA3AF]"
+                className="w-full px-4 py-3 rounded-sm border border-[#E5E7EB] dark:border-[#1F2937] bg-white dark:bg-[#0F1419] text-[#1F2937] dark:text-[#F3F4F6] placeholder:text-[#9CA3AF] dark:placeholder:text-[#6B7280] focus:border-[#2F6F6D] focus:ring-2 focus:ring-[#2F6F6D]/20 focus:outline-none transition-all"
                 required
               />
             </div>
@@ -135,7 +135,7 @@ export function SignupForm() {
                 name="role"
                 value={formData.role}
                 onChange={handleChange}
-                className="w-full px-4 py-3 rounded-sm border border-[#E5E7EB] focus:border-[#2F6F6D] focus:ring-2 focus:ring-[#2F6F6D]/20 focus:outline-none transition-all text-[#1F2937] bg-white"
+                className="w-full px-4 py-3 rounded-sm border border-[#E5E7EB] dark:border-[#1F2937] bg-white dark:bg-[#0F1419] text-[#1F2937] dark:text-[#F3F4F6] focus:border-[#2F6F6D] focus:ring-2 focus:ring-[#2F6F6D]/20 focus:outline-none transition-all"
                 required
               >
                 <option value="student">Estudiante</option>
@@ -179,13 +179,13 @@ export function SignupForm() {
                   placeholder="••••••••"
                   value={formData.password}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 pr-12 rounded-sm border border-[#E5E7EB] focus:border-[#2F6F6D] focus:ring-2 focus:ring-[#2F6F6D]/20 focus:outline-none transition-all text-[#1F2937] placeholder:text-[#9CA3AF]"
+                  className="w-full px-4 py-3 pr-12 rounded-sm border border-[#E5E7EB] dark:border-[#1F2937] bg-white dark:bg-[#0F1419] text-[#1F2937] dark:text-[#F3F4F6] placeholder:text-[#9CA3AF] dark:placeholder:text-[#6B7280] focus:border-[#2F6F6D] focus:ring-2 focus:ring-[#2F6F6D]/20 focus:outline-none transition-all"
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6B7280] hover:text-[#1F3A5F] transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6B7280] dark:text-[#9CA3AF] hover:text-[#1F3A5F] dark:hover:text-[#5B8FB9] transition-colors"
                   aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
                 >
                   {showPassword ? (
@@ -202,7 +202,7 @@ export function SignupForm() {
 
             {/* Confirm Password */}
             <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-[#1F2937] mb-2">
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-[#1F2937] dark:text-[#F3F4F6] mb-2">
                 Confirmar contraseña
               </label>
               <div className="relative">
@@ -213,13 +213,13 @@ export function SignupForm() {
                   placeholder="••••••••"
                   value={formData.confirmPassword}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 pr-12 rounded-sm border border-[#E5E7EB] focus:border-[#2F6F6D] focus:ring-2 focus:ring-[#2F6F6D]/20 focus:outline-none transition-all text-[#1F2937] placeholder:text-[#9CA3AF]"
+                  className="w-full px-4 py-3 pr-12 rounded-sm border border-[#E5E7EB] dark:border-[#1F2937] bg-white dark:bg-[#0F1419] text-[#1F2937] dark:text-[#F3F4F6] placeholder:text-[#9CA3AF] dark:placeholder:text-[#6B7280] focus:border-[#2F6F6D] focus:ring-2 focus:ring-[#2F6F6D]/20 focus:outline-none transition-all"
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6B7280] hover:text-[#1F3A5F] transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6B7280] dark:text-[#9CA3AF] hover:text-[#1F3A5F] dark:hover:text-[#5B8FB9] transition-colors"
                   aria-label={showConfirmPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
                 >
                   {showConfirmPassword ? (

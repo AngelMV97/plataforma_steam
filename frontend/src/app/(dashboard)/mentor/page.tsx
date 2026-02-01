@@ -114,9 +114,9 @@ export default function MentorDashboard() {
           
           <div className="bg-white dark:bg-[#1a1f26] border border-[#E5E7EB] dark:border-[#1F2937] rounded-lg shadow-sm p-6">
             <div className="flex items-center justify-between mb-3">
-              <AlertCircleIcon className="w-8 h-8 text-[#DC2626] dark:bg-red-600" />
+              <AlertCircleIcon className="w-8 h-8 text-[#DC2626] dark:text-red-500" />
             </div>
-            <div className="text-3xl font-bold text-[#DC2626] dark:bg-red-600">
+            <div className="text-3xl font-bold text-[#DC2626] dark:text-red-500">
               {loading ? '...' : stats.pendingEvaluations}
             </div>
             <div className="text-sm text-[#6B7280] dark:text-[#9CA3AF] mt-1">Pendientes de Evaluar</div>
