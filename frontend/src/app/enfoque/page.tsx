@@ -78,7 +78,7 @@ export default function EnfoquePage() {
             <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl font-semibold text-[#1F3A5F] dark:text-[#5B8FB9] mb-6 sm:mb-8">
               Por qué es diferente
             </h2>
-            <div className="prose prose-lg max-w-none">
+            <div>
               <p className="text-[#1F2937] dark:text-[#F3F4F6] leading-relaxed mb-6">
                 La mayoría de programas de preparación universitaria se centran en <strong>entrenar para exámenes</strong>: 
                 resolver ejercicios repetitivos, memorizar fórmulas, responder preguntas tipo test.

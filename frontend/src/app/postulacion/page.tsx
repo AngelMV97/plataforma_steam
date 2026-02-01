@@ -78,7 +78,7 @@ export default function PostulacionPage() {
             <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl font-semibold text-[#1F3A5F] dark:text-[#5B8FB9] mb-4 sm:mb-6">
               ¿Qué significa ser parte de la cohorte piloto?
             </h2>
-            <div className="prose prose-lg max-w-none">
+            <div>
               <p className="text-[#1F2937] dark:text-[#F3F4F6] leading-relaxed mb-6">
                 Esta <strong>no es una inscripción abierta</strong>. Es un proceso de selección para conformar 
                 el primer grupo de estudiantes que experimentará un modelo educativo único en Latinoamérica.

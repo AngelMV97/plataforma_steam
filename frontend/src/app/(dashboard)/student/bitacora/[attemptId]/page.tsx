@@ -464,42 +464,6 @@ export default function BitacoraPage() {
         </div>
       )}
 
-      {/* Main Content - Split Layout */}
-      <div className="max-w-[1800px] mx-auto px-4 sm:px-6 py-6">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Left: Bitácora Editor (full width on mobile, 2/3 on desktop) */}
-          <div className="lg:col-span-2">
-            <BitacoraEditor
-              bitacora_content={attempt.bitacora_content}
-              onSave={saveBitacora}
-              currentSection={currentSection}
-            />
-          </div>
-
-          {/* Right: AI Tutor Panel (hidden on mobile, visible on lg) */}
-          <div className="hidden lg:block lg:col-span-1">
-            <AiTutorPanel
-              attemptId={attemptId}
-              currentSection={currentSection}
-              isReadOnly={isSubmitted}
-            />
-          </div>
-
-          {/* Mobile: Floating Tutor Button */}
-          <div className="fixed bottom-6 right-6 lg:hidden z-40">
-            <button
-              onClick={() => setTutorDialogOpen(true)}
-              className="w-14 h-14 bg-[#2F6F6D] dark:bg-[#4A9B98] text-white rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all flex items-center justify-center border-2 border-white dark:border-[#111827]"
-            >
-              <svg className="w-7 h-7" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M2 5a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V5z" />
-                <path fillOpacity="0.5" d="M2 5a2 2 0 012-2h12a2 2 0 012 2v1h-4a3 3 0 00-3 3v2a3 3 0 00-3 3H4a2 2 0 01-2-2V5z" />
-              </svg>
-            </button>
-          </div>
-        </div>
-      </div>
-
       {/* Submit Confirmation Modal */}
       {submitConfirmOpen && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">

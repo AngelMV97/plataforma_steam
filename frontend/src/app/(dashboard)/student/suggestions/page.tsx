@@ -33,7 +33,8 @@ export default function TopicSuggestionsPage() {
       const data = await api.get('/api/topic-proposals');
       setProposals(data);
     } catch (err: any) {
-      setError('Error al cargar propuestas');
+      // API endpoint not available yet - feature coming soon
+      setError('');
     } finally {
       setLoading(false);
     }
@@ -75,6 +76,35 @@ export default function TopicSuggestionsPage() {
         <p className="text-sm text-[#6B7280] dark:text-[#9CA3AF] mb-6">
           Sugiere un tema para una sesión de refuerzo. Otros estudiantes podrán votar por los temas que les interesen.
         </p>
+        
+        {/* Coming Soon Notice */}
+        <div className="bg-[#FEF3C7] dark:bg-[#92400E]/20 border-l-4 border-[#D97706] dark:border-[#FCD34D] rounded-lg p-6 mb-8">
+          <div className="flex items-start gap-3">
+            <svg className="w-6 h-6 text-[#D97706] dark:text-[#FCD34D] flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <div>
+              <h3 className="font-semibold text-[#92400E] dark:text-[#FCD34D] mb-2">Funcionalidad en desarrollo</h3>
+              <p className="text-sm text-[#78350F] dark:text-[#FDE68A] leading-relaxed">
+                La funcionalidad de propuestas de temas estará disponible próximamente. Por ahora, puedes comunicar tus sugerencias directamente a tu mentor durante las sesiones.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="text-center py-8">
+          <Link 
+            href="/student" 
+            className="inline-flex items-center gap-2 px-6 py-3 bg-[#2F6F6D] dark:bg-[#4A9B98] text-white font-semibold rounded-lg hover:bg-[#1F3A5F] dark:hover:bg-[#5B8FB9] transition-colors"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Volver al Dashboard
+          </Link>
+        </div>
+        
+        {/* Commented out form until backend is ready
         <form onSubmit={handleSubmit} className="bg-white dark:bg-[#1a1f26] rounded-lg shadow p-6 space-y-6 border border-[#E5E7EB] dark:border-[#1F2937]">
           <div>
             <label className="block text-sm font-medium text-[#1F3A5F] dark:text-[#5B8FB9] mb-1">Tema</label>
@@ -107,11 +137,9 @@ export default function TopicSuggestionsPage() {
           >
             {submitting ? "Enviando..." : "Enviar Propuesta"}
           </button>
-        </form>
-        <div className="mt-8 text-xs text-[#6B7280] dark:text-[#9CA3AF]">
-          <Link href="/student" className="underline">Volver al Dashboard</Link>
-        </div>
+        </form> */}
       </div>
+      {/* Commented out proposals list until backend is ready
       <div className="max-w-2xl mx-auto px-4 sm:px-6 pb-10">
         <h2 className="text-xl font-bold text-[#1F3A5F] dark:text-[#5B8FB9] mb-4 mt-8">Temas Propuestos</h2>
         {loading ? (
@@ -138,7 +166,7 @@ export default function TopicSuggestionsPage() {
             ))}
           </ul>
         )}
-      </div>
+      </div> */}
     </div>
   );
 }
