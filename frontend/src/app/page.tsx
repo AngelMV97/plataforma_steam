@@ -15,13 +15,17 @@ export default function Home() {
         <nav className="max-w-[1200px] mx-auto px-4 sm:px-6 md:px-8 lg:px-20 py-4 sm:py-5 flex items-center justify-between">
           <div className="flex items-center">
             <div className="block sm:hidden">
-              <Image
-                src={isDark ? "/logos/gomot-wordmark-dark.png" : "/logos/gomot-wordmark.png"}
-                alt="Gomot Science Academy"
-                width={110}
-                height={26}
-                priority
-              />
+              {mounted ? (
+                <Image
+                  src={isDark ? "/logos/gomot-wordmark-dark.png" : "/logos/gomot-wordmark.png"}
+                  alt="Gomot Science Academy"
+                  width={110}
+                  height={26}
+                  priority
+                />
+              ) : (
+                <div className="w-[110px] h-[26px] bg-gray-200 dark:bg-gray-700 rounded" />
+              )}
             </div>
             <div className="hidden sm:block font-serif text-lg sm:text-xl md:text-2xl font-semibold text-[#1F3A5F] dark:text-[#5B8FB9] tracking-tight">
               Gomot Science Academy

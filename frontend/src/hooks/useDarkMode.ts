@@ -3,24 +3,23 @@
 import { useEffect, useState } from 'react';
 
 export function useDarkMode() {
-  const [isDark, setIsDark] = useState(false);
+  const [isDark, setIsDark] = useState<boolean | null>(null);
   const [mounted, setMounted] = useState(false);
 
+  // Initialize from localStorage
   useEffect(() => {
-    setMounted(true);
-    // Check localStorage first, default to light mode
     const stored = localStorage.getItem('theme');
-    if (stored) {
-      setIsDark(stored === 'dark');
+    if (stored === 'dark') {
+      setIsDark(true);
     } else {
-      // Default to light mode instead of system preference
       setIsDark(false);
-      localStorage.setItem('theme', 'light');
     }
+    setMounted(true);
   }, []);
 
+  // Apply theme to DOM
   useEffect(() => {
-    if (!mounted) return;
+    if (isDark === null) return; // Wait for initialization
 
     if (isDark) {
       document.documentElement.classList.add('dark');
@@ -29,9 +28,11 @@ export function useDarkMode() {
       document.documentElement.classList.remove('dark');
       localStorage.setItem('theme', 'light');
     }
-  }, [isDark, mounted]);
+  }, [isDark]);
 
-  const toggle = () => setIsDark(!isDark);
+  const toggle = () => {
+    setIsDark(prev => !prev);
+  };
 
-  return { isDark, toggle, mounted };
+  return { isDark: isDark ?? false, toggle, mounted };
 }
