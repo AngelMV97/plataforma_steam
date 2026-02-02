@@ -248,7 +248,7 @@ export default function StudentSessionsPage() {
               </form>
             </div>
 
-            <h3 className="text-lg font-semibold text-[#1F3A5F] dark:text-[#5B8FB9] mt-8 mb-4">
+            <h3 className="text-lg font-semibold text-[#1F3A5F] dark:text-[#5B8FB9] mt-16 mb-4">
               Mis Solicitudes
             </h3>
             {requestsLoading ? (
