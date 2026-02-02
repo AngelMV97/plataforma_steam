@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useAuth } from '@/contexts/AuthContext';
-import { CheckCircleIcon, AlertCircleIcon, ClockIcon, UsersIcon, DocumentIcon, BookOpenIcon } from '@/components/icons/MinimalIcons';
+import { CheckCircleIcon, AlertCircleIcon, ClockIcon, UsersIcon, DocumentIcon, BookOpenIcon, TrashIcon } from '@/components/icons/MinimalIcons';
 
 interface SessionRequest {
   id: string;
@@ -35,6 +35,7 @@ export default function MentorRequestsPage() {
   const [actionError, setActionError] = useState('');
   const [actionSuccess, setActionSuccess] = useState('');
   const [filterStatus, setFilterStatus] = useState<'all' | 'pending' | 'scheduled' | 'completed' | 'cancelled'>('all');
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
   useEffect(() => {
     if (user?.id) {
@@ -104,6 +105,30 @@ export default function MentorRequestsPage() {
       setActionError(err.message || 'Error al actualizar estado');
     } finally {
       setActionLoading(null);
+    }
+  }
+
+  async function handleDelete(requestId: string) {
+    setActionLoading(requestId + 'delete');
+    setActionError('');
+    setActionSuccess('');
+
+    try {
+      const { error } = await supabase
+        .from('session_requests')
+        .delete()
+        .eq('id', requestId);
+
+      if (error) throw error;
+
+      setActionSuccess('Solicitud eliminada');
+      await fetchRequests();
+      setTimeout(() => setActionSuccess(''), 3000);
+    } catch (err: any) {
+      setActionError(err.message || 'Error al eliminar solicitud');
+    } finally {
+      setActionLoading(null);
+      setConfirmDeleteId(null);
     }
   }
 
@@ -379,6 +404,40 @@ export default function MentorRequestsPage() {
                       <span className="text-xs text-red-600 dark:text-red-400 font-medium flex items-center gap-1">
                         ✕ Solicitud rechazada
                       </span>
+                    )}
+
+                    {/* Delete confirmation or button */}
+                    {confirmDeleteId === request.id ? (
+                      <div className="w-full mt-2 flex flex-wrap items-center gap-3 rounded-lg border border-[#F3D1D1] dark:border-red-900/40 bg-[#FFF5F5] dark:bg-red-900/20 px-4 py-3 text-sm">
+                        <AlertCircleIcon className="w-5 h-5 text-[#DC2626] dark:text-red-300 flex-shrink-0" />
+                        <span className="text-[#7F1D1D] dark:text-red-200">
+                          ¿Eliminar esta solicitud? Esta acción no se puede deshacer.
+                        </span>
+                        <div className="ml-auto flex gap-2">
+                          <button
+                            onClick={() => setConfirmDeleteId(null)}
+                            className="px-3 py-1.5 border border-[#E5E7EB] dark:border-[#1F2937] rounded-lg text-[#1F3A5F] dark:text-[#D1D5DB] hover:bg-white/60 dark:hover:bg-[#1a1f26] transition-colors"
+                          >
+                            Cancelar
+                          </button>
+                          <button
+                            onClick={() => handleDelete(request.id)}
+                            disabled={actionLoading === request.id + 'delete'}
+                            className="px-3 py-1.5 bg-[#DC2626] text-white rounded-lg hover:bg-[#991B1B] transition-colors disabled:opacity-60"
+                          >
+                            {actionLoading === request.id + 'delete' ? 'Eliminando...' : 'Eliminar'}
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => setConfirmDeleteId(request.id)}
+                        className="ml-auto px-3 py-2 border border-[#E5E7EB] dark:border-[#1F2937] rounded-lg text-sm text-[#DC2626] dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors flex items-center gap-2"
+                        title="Eliminar solicitud"
+                      >
+                        <TrashIcon className="w-4 h-4" />
+                        Eliminar
+                      </button>
                     )}
                   </div>
                 </div>

@@ -19,6 +19,7 @@ export default function MentorProposalsPage() {
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [actionError, setActionError] = useState("");
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchProposals();
@@ -56,6 +57,7 @@ export default function MentorProposalsPage() {
       setActionError(err.message || 'Error al eliminar propuesta');
     } finally {
       setActionLoading(null);
+      setConfirmDeleteId(null);
     }   
   }
 
@@ -110,14 +112,37 @@ export default function MentorProposalsPage() {
                     <div>Fecha: {new Date(proposal.created_at).toLocaleDateString('es-ES')}</div>
                   </div>
 
-                  <button
-                    onClick={() => handleDelete(proposal.id)}
-                    disabled={actionLoading === proposal.id}
-                    className="px-4 py-2 bg-[#DC2626] text-white rounded-lg font-medium text-sm hover:bg-[#991B1B] transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-2"
-                  >
-                    <TrashIcon className="w-4 h-4" />
-                    {actionLoading === proposal.id ? 'Eliminando...' : 'Eliminar'}
-                  </button>
+                  {confirmDeleteId === proposal.id ? (
+                    <div className="mt-2 flex flex-wrap items-center gap-3 rounded-lg border border-[#F3D1D1] dark:border-red-900/40 bg-[#FFF5F5] dark:bg-red-900/20 px-4 py-3 text-sm">
+                      <AlertCircleIcon className="w-5 h-5 text-[#DC2626] dark:text-red-300" />
+                      <span className="text-[#7F1D1D] dark:text-red-200">
+                        ¿Eliminar esta propuesta? Esta acción no se puede deshacer.
+                      </span>
+                      <div className="ml-auto flex gap-2">
+                        <button
+                          onClick={() => setConfirmDeleteId(null)}
+                          className="px-3 py-1.5 border border-[#E5E7EB] dark:border-[#1F2937] rounded-lg text-[#1F3A5F] dark:text-[#D1D5DB] hover:bg-white/60 dark:hover:bg-[#1a1f26] transition-colors"
+                        >
+                          Cancelar
+                        </button>
+                        <button
+                          onClick={() => handleDelete(proposal.id)}
+                          disabled={actionLoading === proposal.id}
+                          className="px-3 py-1.5 bg-[#DC2626] text-white rounded-lg hover:bg-[#991B1B] transition-colors disabled:opacity-60"
+                        >
+                          {actionLoading === proposal.id ? 'Eliminando...' : 'Eliminar'}
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => setConfirmDeleteId(proposal.id)}
+                      className="px-4 py-2 bg-[#DC2626] text-white rounded-lg font-medium text-sm hover:bg-[#991B1B] transition-colors flex items-center gap-2"
+                    >
+                      <TrashIcon className="w-4 h-4" />
+                      Eliminar
+                    </button>
+                  )}
                 </div>
               ))}
             </div>

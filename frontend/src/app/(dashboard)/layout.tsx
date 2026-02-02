@@ -171,7 +171,7 @@ export default function DashboardLayout({
       <footer className="bg-white dark:bg-[#1a1f26] border-t border-[#E5E7EB] dark:border-[#1F2937] mt-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <p className="text-center text-sm text-[#6B7280] dark:text-[#D1D5DB]">
-            © 2026 Gomot Science Academy. Formación en pensamiento científico.
+            © 2026 Gomot Science Academy – Formación en pensamiento científico.
           </p>
         </div>
       </footer>
