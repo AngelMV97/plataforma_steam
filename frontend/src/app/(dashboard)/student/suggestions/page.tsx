@@ -17,7 +17,7 @@ interface TopicProposal {
 }
 
 export default function TopicSuggestionsPage() {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const [topic, setTopic] = useState("");
   const [description, setDescription] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -65,7 +65,7 @@ export default function TopicSuggestionsPage() {
         likes: 0,
         created_at: new Date().toISOString(),
         student_id: user?.id || 'anonymous',
-        student_name: user?.user_metadata?.full_name || 'Estudiante',
+        student_name: profile?.full_name || 'Estudiante',
         liked_by: []
       };
 
@@ -234,7 +234,7 @@ export default function TopicSuggestionsPage() {
                         {p.topic}
                       </h3>
                       <p className="text-sm text-[#6B7280] dark:text-[#9CA3AF] mb-3">
-                        Propuesto por <span className="font-medium">{p.student_name?.trim() ? p.student_name : 'Estudiante'}</span>
+                        Propuesto por: <span className="font-medium">{p.student_name?.trim() ? p.student_name : 'Estudiante'}</span>
                       </p>
                       <p className="text-[#4B5563] dark:text-[#D1D5DB] leading-relaxed">
                         {p.description}

@@ -248,9 +248,11 @@ export default function StudentSessionsPage() {
               </form>
             </div>
 
-            <h3 className="text-lg font-semibold text-[#1F3A5F] dark:text-[#5B8FB9] mt-16 mb-4">
-              Mis Solicitudes
-            </h3>
+            <div className="mt-12 pt-8 border-t border-[#E5E7EB] dark:border-[#1F2937]">
+              <h3 className="text-lg font-semibold text-[#1F3A5F] dark:text-[#5B8FB9] mb-4">
+                Mis Solicitudes
+              </h3>
+            </div>
             {requestsLoading ? (
               <div className="text-center text-[#6B7280] dark:text-[#9CA3AF] py-6">
                 Cargando...
