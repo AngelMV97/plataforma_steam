@@ -5,6 +5,30 @@ const { supabase } = require('../config/supabase');
 const problemGenerator = require('../services/problemGeneratorService');
 
 /**
+ * GET /api/problems/test
+ * Test endpoint to verify service configuration
+ */
+router.get('/test', authenticateUser, async (req, res) => {
+  try {
+    const hasOpenAiKey = !!process.env.OPENAI_API_KEY;
+    const hasSupabase = !!process.env.SUPABASE_URL;
+    
+    res.json({
+      success: true,
+      status: 'Service is running',
+      config: {
+        openai_configured: hasOpenAiKey,
+        supabase_configured: hasSupabase,
+        user_id: req.user.id,
+        profile_role: req.profile.role
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
  * POST /api/problems/generate
  * Generate a new problem for the student
  */
@@ -16,12 +40,20 @@ router.post('/generate', authenticateUser, async (req, res) => {
       cognitive_target 
     } = req.body;
 
+    console.log('Generating problem with params:', {
+      user_id: req.user.id,
+      problem_type,
+      cognitive_target
+    });
+
     // Get student's cognitive profile
     const { data: profile } = await supabase
       .from('cognitive_profiles')
       .select('*')
       .eq('student_id', req.user.id)
       .single();
+
+    console.log('Student profile:', profile ? 'found' : 'not found');
 
     // Get article context if provided
     let articleContext = null;
@@ -40,6 +72,8 @@ router.post('/generate', authenticateUser, async (req, res) => {
       : 2;
     const difficulty = Math.ceil(avgLevel);
 
+    console.log('About to call generateProblem...');
+
     // Generate problem
     const problem = await problemGenerator.generateProblem({
       studentProfile: {
@@ -51,6 +85,8 @@ router.post('/generate', authenticateUser, async (req, res) => {
       difficulty,
       cognitiveTarget: cognitive_target || 'representacion'
     });
+
+    console.log('Problem generated successfully');
 
     // Create attempt for this problem
     const { data: attempt, error } = await supabase
@@ -75,7 +111,12 @@ router.post('/generate', authenticateUser, async (req, res) => {
       .select()
       .single();
 
-    if (error) throw error;
+    if (error) {
+      console.error('Supabase insert error:', error);
+      throw error;
+    }
+
+    console.log('Attempt created:', attempt.id);
 
     res.json({ 
       success: true, 
@@ -87,11 +128,18 @@ router.post('/generate', authenticateUser, async (req, res) => {
   } catch (error) {
     console.error('Generate problem error:', error);
     console.error('Error details:', {
-      message: error.message,
-      stack: error.stack,
-      name: error.name
+      message: error?.message,
+      status: error?.status,
+      code: error?.code,
+      name: error?.name,
+      stack: error?.stack
     });
-    res.status(500).json({ error: 'Failed to generate problem', details: error.message });
+    
+    const errorMessage = error?.message || 'Unknown error occurred';
+    res.status(500).json({ 
+      error: 'Failed to generate problem', 
+      details: errorMessage
+    });
   }
 });
 

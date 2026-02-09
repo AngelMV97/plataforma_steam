@@ -1,4 +1,4 @@
-const { openai } = require('../config/openai');
+const openai = require('../config/openai');
 const RUBRICS = require('../config/rubrics');
 
 /**
