@@ -43,7 +43,7 @@ router.post('/generate', authenticateUser, async (req, res) => {
     // Generate problem
     const problem = await problemGenerator.generateProblem({
       studentProfile: {
-        grade_level: req.profile.grade_level,
+        grade_level: req.profile.grade_level || '9',
         profile_data: profile?.profile_data
       },
       articleContext,
