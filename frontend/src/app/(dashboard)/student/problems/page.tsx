@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { api } from '@/lib/api';
+import { Notification } from '@/components/Notification';
 import { AlertCircle, Zap, Globe, Lightbulb } from 'lucide-react';
 
 const PROBLEM_TYPES = [
@@ -40,10 +41,12 @@ export default function ProblemsPage() {
   const [generating, setGenerating] = useState(false);
   const [selectedType, setSelectedType] = useState('integrado');
   const [selectedDimension, setSelectedDimension] = useState('');
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   async function handleGenerate() {
     try {
       setGenerating(true);
+      setErrorMessage(null);
       
       const res = await api.post('/api/problems/generate', {
         problem_type: selectedType,
@@ -53,9 +56,9 @@ export default function ProblemsPage() {
       // Navigate to bitácora with generated problem
       router.push(`/student/bitacora/${res.data.attempt_id}`);
     } catch (err: any) {
-      const errorMsg = err.response?.data?.details || err.message || 'Error desconocido';
+      const errorMsg = err.response?.data?.details || err.response?.data?.error || err.message || 'Error desconocido';
       console.error('Problem generation error:', err);
-      alert('Error al generar problema: ' + errorMsg);
+      setErrorMessage(errorMsg);
     } finally {
       setGenerating(false);
     }
@@ -63,6 +66,16 @@ export default function ProblemsPage() {
 
   return (
     <div className="min-h-screen bg-[#FAFAF8] dark:bg-[#0F1419]">
+      {/* Error Notification */}
+      {errorMessage && (
+        <Notification
+          message={`Error al generar problema: ${errorMessage}`}
+          type="error"
+          duration={6000}
+          onClose={() => setErrorMessage(null)}
+        />
+      )}
+
       {/* Header */}
       <div className="bg-white dark:bg-[#1a1f26] shadow-sm border-b border-[#E5E7EB] dark:border-[#1F2937]">
         <div className="max-w-4xl mx-auto px-4 py-6">

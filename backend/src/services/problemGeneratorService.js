@@ -11,16 +11,25 @@ async function generateProblem({
   difficulty, // 1-4
   cognitiveTarget // which dimension to target
 }) {
-  
-  const gradeLevel = studentProfile.grade_level || '9';
-  const rubric = RUBRICS[gradeLevel];
-  
-  if (!rubric) {
-    throw new Error(`No rubric found for grade level: ${gradeLevel}`);
-  }
-  
-  // Get student's cognitive profile
-  const weakDimensions = identifyWeakDimensions(studentProfile);
+  try {
+    if (!openai) {
+      throw new Error('OpenAI client not initialized - check OPENAI_API_KEY environment variable');
+    }
+    
+    const gradeLevel = studentProfile.grade_level || '9';
+    const rubric = RUBRICS[gradeLevel];
+    
+    if (!rubric) {
+      throw new Error(`No rubric found for grade level: ${gradeLevel}`);
+    }
+
+    const targetDimension = cognitiveTarget || 'representacion';
+    if (!rubric.dimensions[targetDimension]) {
+      throw new Error(`Invalid cognitive target: ${targetDimension}`);
+    }
+    
+    // Get student's cognitive profile
+    const weakDimensions = identifyWeakDimensions(studentProfile);
   
   const prompt = `
 Eres un diseñador experto de problemas STEM no rutinarios para estudiantes colombianos de grado ${gradeLevel}°.
@@ -42,8 +51,8 @@ ${problemType === 'integrado' ? `
 
 NIVEL DE DIFICULTAD: ${difficulty}/4
 
-DIMENSIÓN COGNITIVA OBJETIVO: ${cognitiveTarget}
-- Descriptor: ${rubric.dimensions[cognitiveTarget]?.name}
+DIMENSIÓN COGNITIVA OBJETIVO: ${targetDimension}
+- Descriptor: ${rubric.dimensions[targetDimension].name}
 
 INSTRUCCIONES:
 1. Crea un problema NO RUTINARIO (sin algoritmo directo de solución)
@@ -66,34 +75,45 @@ FORMATO DE RESPUESTA (JSON):
     "intermedio": "Pista para nivel intermedio",
     "avanzado": "Extensión para nivel avanzado"
   },
-  "cognitive_target": "${cognitiveTarget}",
+  "cognitive_target": "${targetDimension}",
   "expected_approaches": ["Enfoque 1", "Enfoque 2", "Enfoque 3"],
   "metacognitive_prompts": ["Pregunta reflexiva 1", "Pregunta reflexiva 2"]
 }
 `;
 
-  const response = await openai.chat.completions.create({
-    model: 'gpt-4o',
-    messages: [
-      { role: 'system', content: 'Eres un diseñador experto de problemas STEM no rutinarios.' },
-      { role: 'user', content: prompt }
-    ],
-    response_format: { type: 'json_object' },
-    temperature: 0.8 // Higher creativity
-  });
+    const response = await openai.chat.completions.create({
+      model: 'gpt-4o',
+      messages: [
+        { role: 'system', content: 'Eres un diseñador experto de problemas STEM no rutinarios.' },
+        { role: 'user', content: prompt }
+      ],
+      response_format: { type: 'json_object' },
+      temperature: 0.8 // Higher creativity
+    });
 
-  const problem = JSON.parse(response.choices[0].message.content);
-  
-  return {
-    ...problem,
-    generated_at: new Date().toISOString(),
-    problem_type: problemType,
-    difficulty_level: difficulty,
-    student_profile: {
-      grade_level: gradeLevel,
-      weak_dimensions: weakDimensions
+    const problem = JSON.parse(response.choices[0].message.content);
+    
+    return {
+      ...problem,
+      generated_at: new Date().toISOString(),
+      problem_type: problemType,
+      difficulty_level: difficulty,
+      student_profile: {
+        grade_level: gradeLevel,
+        weak_dimensions: weakDimensions
+      }
+    };
+  } catch (error) {
+    // Re-throw with context
+    if (error.status === 401) {
+      throw new Error('OpenAI API key is invalid or missing');
+    } else if (error.status === 429) {
+      throw new Error('OpenAI API rate limit exceeded - please try again later');
+    } else if (error.status === 500) {
+      throw new Error('OpenAI service error - please try again');
     }
-  };
+    throw error;
+  }
 }
 
 /**
