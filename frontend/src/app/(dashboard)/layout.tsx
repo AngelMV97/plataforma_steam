@@ -61,6 +61,9 @@ export default function DashboardLayout({
                 <span className="sm:hidden font-serif text-lg font-semibold text-[#1F3A5F] dark:text-[#5B8FB9]">
                   Gomot
                 </span>
+                {/* <span className="font-serif text-xl font-semibold text-[#1F3A5F] dark:text-[#5B8FB9] tracking-tight group-hover:text-[#2F6F6D] dark:group-hover:text-[#4A9B98] transition-colors">
+                  Gomot Science Academy
+                </span> */}
               </Link>
             </div>
 

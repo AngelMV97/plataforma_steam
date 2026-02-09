@@ -7,7 +7,20 @@ const PORT = process.env.PORT || 3001;
 
 // Middleware
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  origin: function (origin, callback) {
+    const allowedOrigins = [
+      'https://www.gomot.academy',
+      'https://gomot.academy',
+      'https://plataforma-steam-vercel.vercel.app',
+      'http://localhost:3000'
+    ];
+    
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true
 }));
 app.use(express.json());
