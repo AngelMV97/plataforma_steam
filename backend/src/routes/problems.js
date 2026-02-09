@@ -74,8 +74,8 @@ router.post('/generate', authenticateUser, async (req, res) => {
 
     console.log('About to call generateProblem...');
 
-    // Generate problem
-    const problem = await problemGenerator.generateProblem({
+    // Generate problem (with fallback if OpenAI unavailable)
+    const problem = await problemGenerator.generateProblemWithFallback({
       studentProfile: {
         grade_level: req.profile.grade_level || '9',
         profile_data: profile?.profile_data

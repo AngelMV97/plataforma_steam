@@ -1,5 +1,6 @@
 const openai = require('../config/openai');
 const RUBRICS = require('../config/rubrics');
+const { generateFallbackProblem } = require('./fallbackProblemGenerator');
 
 /**
  * Generate a non-routine problem based on context
@@ -117,6 +118,35 @@ FORMATO DE RESPUESTA (JSON):
 }
 
 /**
+ * Generate problem with fallback to template if OpenAI fails
+ */
+async function generateProblemWithFallback({
+  studentProfile,
+  articleContext,
+  problemType,
+  difficulty,
+  cognitiveTarget
+}) {
+  try {
+    return await generateProblem({
+      studentProfile,
+      articleContext,
+      problemType,
+      difficulty,
+      cognitiveTarget
+    });
+  } catch (error) {
+    console.warn('OpenAI generation failed, using fallback:', error.message);
+    // Use template-based fallback
+    return generateFallbackProblem({
+      problemType: problemType || 'integrado',
+      difficulty: difficulty || 2,
+      cognitiveTarget: cognitiveTarget || 'representacion'
+    });
+  }
+}
+
+/**
  * Identify student's weak cognitive dimensions
  */
 function identifyWeakDimensions(profile) {
@@ -181,5 +211,6 @@ Responde en 2-3 oraciones máximo.
 
 module.exports = {
   generateProblem,
+  generateProblemWithFallback,
   generateHint
 };
