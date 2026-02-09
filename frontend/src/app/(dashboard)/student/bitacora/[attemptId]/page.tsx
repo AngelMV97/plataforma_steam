@@ -73,7 +73,7 @@ interface Attempt {
   };
   started_at: string;
   last_updated: string;
-  articles: Article;
+  articles?: Article | null;
 }
 
 export default function BitacoraPage() {
@@ -218,10 +218,10 @@ export default function BitacoraPage() {
               </div>
               <div className="min-w-0">
                 <h1 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white truncate">
-                  Bitácora - Semana {attempt.articles.week_number}
+                  Bitácora{attempt.articles?.week_number ? ` - Semana ${attempt.articles.week_number}` : ''}
                 </h1>
                 <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 truncate">
-                  {attempt.articles.title}
+                  {attempt.articles?.title || (attempt.bitacora_content.generated_problem ? 'Problema personalizado' : 'Bitácora del estudiante')}
                 </p>
               </div>
             </div>

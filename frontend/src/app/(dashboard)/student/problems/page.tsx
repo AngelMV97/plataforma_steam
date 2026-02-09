@@ -42,6 +42,8 @@ export default function ProblemsPage() {
   const [selectedType, setSelectedType] = useState('integrado');
   const [selectedDimension, setSelectedDimension] = useState('');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [generatedProblem, setGeneratedProblem] = useState<any | null>(null);
+  const [generatedAttemptId, setGeneratedAttemptId] = useState<string | null>(null);
 
   async function handleGenerate() {
     try {
@@ -53,8 +55,9 @@ export default function ProblemsPage() {
         cognitive_target: selectedDimension || undefined
       });
 
-      // Navigate to bitácora with generated problem
-      router.push(`/student/bitacora/${res.data.attempt_id}`);
+      // Show generated problem inline (do not redirect)
+      setGeneratedAttemptId(res.data.attempt_id || null);
+      setGeneratedProblem(res.data.problem || null);
     } catch (err: any) {
       console.error('Full error object:', err);
       console.error('Response data:', err.response?.data);
@@ -200,6 +203,42 @@ export default function ProblemsPage() {
           </div>
         </div>
       </div>
+      {/* Generated Problem Preview (inline) */}
+      {generatedProblem && (
+        <div className="max-w-4xl mx-auto px-4 py-8">
+          <div className="bg-white dark:bg-[#1a1f26] rounded-lg shadow p-6 space-y-4">
+            <div className="flex items-start justify-between">
+              <h2 className="text-xl font-bold text-[#1F3A5F] dark:text-[#F3F4F6]">{generatedProblem.title}</h2>
+              <span className="text-sm px-2 py-1 bg-[#2F6F6D]/10 text-[#2F6F6D] rounded">{generatedProblem.problem_type || 'Generado'}</span>
+            </div>
+            <div className="prose max-w-none text-sm sm:text-base text-[#1F3A5F] dark:text-[#DCEFF0]">
+              <h3 className="font-semibold">Contexto</h3>
+              <p className="whitespace-pre-wrap">{generatedProblem.context}</p>
+              <h3 className="font-semibold mt-3">Desafío</h3>
+              <p className="font-medium">{generatedProblem.challenge}</p>
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={() => {
+                  // open bitácora in new tab to continue working if user wants
+                  if (generatedAttemptId) window.open(`/student/bitacora/${generatedAttemptId}`, '_blank');
+                }}
+                className="px-4 py-2 bg-[#2F6F6D] text-white rounded-lg"
+              >
+                Abrir en Bitácora
+              </button>
+              <button
+                onClick={() => {
+                  setGeneratedProblem(null);
+                }}
+                className="px-4 py-2 border border-[#2F6F6D] text-[#2F6F6D] rounded-lg"
+              >
+                Cerrar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
