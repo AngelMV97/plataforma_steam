@@ -53,7 +53,9 @@ export default function ProblemsPage() {
       // Navigate to bitácora with generated problem
       router.push(`/student/bitacora/${res.data.attempt_id}`);
     } catch (err: any) {
-      alert('Error al generar problema: ' + err.message);
+      const errorMsg = err.response?.data?.details || err.message || 'Error desconocido';
+      console.error('Problem generation error:', err);
+      alert('Error al generar problema: ' + errorMsg);
     } finally {
       setGenerating(false);
     }

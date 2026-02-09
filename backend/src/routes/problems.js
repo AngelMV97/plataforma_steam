@@ -86,7 +86,12 @@ router.post('/generate', authenticateUser, async (req, res) => {
     });
   } catch (error) {
     console.error('Generate problem error:', error);
-    res.status(500).json({ error: 'Failed to generate problem' });
+    console.error('Error details:', {
+      message: error.message,
+      stack: error.stack,
+      name: error.name
+    });
+    res.status(500).json({ error: 'Failed to generate problem', details: error.message });
   }
 });
 

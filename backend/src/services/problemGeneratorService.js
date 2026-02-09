@@ -12,8 +12,12 @@ async function generateProblem({
   cognitiveTarget // which dimension to target
 }) {
   
-  const gradeLevel = studentProfile.grade_level;
+  const gradeLevel = studentProfile.grade_level || '9';
   const rubric = RUBRICS[gradeLevel];
+  
+  if (!rubric) {
+    throw new Error(`No rubric found for grade level: ${gradeLevel}`);
+  }
   
   // Get student's cognitive profile
   const weakDimensions = identifyWeakDimensions(studentProfile);
