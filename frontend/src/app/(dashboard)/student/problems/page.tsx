@@ -56,8 +56,18 @@ export default function ProblemsPage() {
       // Navigate to bitácora with generated problem
       router.push(`/student/bitacora/${res.data.attempt_id}`);
     } catch (err: any) {
-      const errorMsg = err.response?.data?.details || err.response?.data?.error || err.message || 'Error desconocido';
-      console.error('Problem generation error:', err);
+      console.error('Full error object:', err);
+      console.error('Response data:', err.response?.data);
+      console.error('Response status:', err.response?.status);
+      let errorMsg = 'Error desconocido';
+      if (err.response?.data?.details) {
+        errorMsg = err.response.data.details;
+      } else if (err.response?.data?.error) {
+        errorMsg = err.response.data.error;
+      } else if (err.message) {
+        errorMsg = err.message;
+      }
+      console.error('Final error message:', errorMsg);
       setErrorMessage(errorMsg);
     } finally {
       setGenerating(false);
