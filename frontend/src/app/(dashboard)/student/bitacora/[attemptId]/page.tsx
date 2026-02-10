@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { api } from '@/lib/api';
 import { Button } from '@/components/ui/Button';
+import { HintModal } from '@/components/bitacora/HintModal';
 import Image from 'next/image';
 
 // Dynamically import heavy components to avoid memory issues during compilation
@@ -92,6 +93,9 @@ export default function BitacoraPage() {
   const [loadingAnalysis, setLoadingAnalysis] = useState(false);
   const [submitConfirmOpen, setSubmitConfirmOpen] = useState(false);
   const [tutorDialogOpen, setTutorDialogOpen] = useState(false);
+  const [hintModalOpen, setHintModalOpen] = useState(false);
+  const [hintText, setHintText] = useState<string>('');
+  const [hintLevel, setHintLevel] = useState<'light' | 'medium' | 'strong'>('light');
 
   useEffect(() => {
     fetchAttempt();
@@ -192,8 +196,26 @@ export default function BitacoraPage() {
 
   const isSubmitted = attempt.status === 'completed';
 
+  function formatTimeAgo(date: Date): string {
+    const seconds = Math.floor((new Date().getTime() - date.getTime()) / 1000);
+    
+    if (seconds < 10) return 'ahora';
+    if (seconds < 60) return `hace ${seconds}s`;
+    if (seconds < 3600) return `hace ${Math.floor(seconds / 60)}m`;
+    return `hace ${Math.floor(seconds / 3600)}h`;
+  }
+
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <>
+      {/* Hint Modal */}
+      <HintModal
+        isOpen={hintModalOpen}
+        hint={hintText}
+        hintLevel={hintLevel}
+        onClose={() => setHintModalOpen(false)}
+      />
+
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Header */}
       <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-10">
         <div className="max-w-[1800px] mx-auto px-4 sm:px-6 py-4">
@@ -305,20 +327,28 @@ export default function BitacoraPage() {
 
             <button
               onClick={async () => {
-              const hint = await api.post('/api/problems/hint', {
-                attempt_id: attemptId,
-                hint_level: 'light'
-              });
-              alert(hint.data.hint);
-            }}
-            className="px-4 py-2 bg-yellow-100 hover:bg-yellow-200 text-yellow-800 rounded-lg text-xs sm:text-sm font-medium"
+                try {
+                  const hint = await api.post('/api/problems/hint', {
+                    attempt_id: attemptId,
+                    hint_level: 'light'
+                  });
+                  setHintText(hint.data.hint);
+                  setHintLevel('light');
+                  setHintModalOpen(true);
+                } catch (err: any) {
+                  console.error('Error fetching hint:', err);
+                  setHintText('No se pudo obtener la pista. Intenta más tarde.');
+                  setHintModalOpen(true);
+                }
+              }}
+              className="px-4 py-2 bg-yellow-100 hover:bg-yellow-200 text-yellow-800 rounded-lg text-xs sm:text-sm font-medium transition-colors"
             >
               💡 Solicitar Pista
             </button>
           </div>
         </div>
       )}
-      
+
       {/* Problem Reflection after submission */}
       {isSubmitted && attempt.bitacora_content.generated_problem && (
         <div className="max-w-[1800px] mx-auto px-4 sm:px-6">
@@ -347,15 +377,9 @@ export default function BitacoraPage() {
               className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold py-3 rounded-lg disabled:opacity-50 flex items-center justify-center gap-2 text-sm sm:text-base"
             >
               {loadingAnalysis ? (
-                <>
-                  <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  Analizando tu proceso...
-                </>
+                "Analizando..."
               ) : (
-                '✨ Ver Análisis de tu Proceso de Pensamiento'
+                "✨ Ver Análisis de tu Proceso de Pensamiento"
               )}
             </button>
           </div>
@@ -499,15 +523,9 @@ export default function BitacoraPage() {
                 className="px-4 py-2 bg-[#2F6F6D] dark:bg-[#4A9B98] hover:bg-[#1F4A48] dark:hover:bg-[#3A8A87] text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium flex items-center gap-2"
               >
                 {saving ? (
-                  <>
-                    <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Enviando...
-                  </>
+                  "Enviando..."
                 ) : (
-                  'Enviar'
+                  "Enviar"
                 )}
               </button>
             </div>
@@ -515,14 +533,6 @@ export default function BitacoraPage() {
         </div>
       )}
     </div>
+    </>
   );
-}
-
-function formatTimeAgo(date: Date): string {
-  const seconds = Math.floor((new Date().getTime() - date.getTime()) / 1000);
-  
-  if (seconds < 10) return 'ahora';
-  if (seconds < 60) return `hace ${seconds}s`;
-  if (seconds < 3600) return `hace ${Math.floor(seconds / 60)}m`;
-  return `hace ${Math.floor(seconds / 3600)}h`;
 }
