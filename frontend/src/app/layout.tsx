@@ -20,6 +20,9 @@ export const metadata: Metadata = {
   // metadataBase: new URL("https://gomot.academy"),
   title: "Gomot Science Academy - Formación en Pensamiento Científico",
   description: "Analizamos artículos, construimos modelos y aprendemos a pensar como científicos e ingenieros.",
+  icons: {
+    icon: "/logos/gomot-symbol.png",
+  },
 };
 
 export default function RootLayout({
