@@ -18,7 +18,8 @@ export default function Home() {
     if (!el) return;
     const obs = new IntersectionObserver(
       entries => setShowCard(!entries[0].isIntersecting),
-      { rootMargin: "0px 0px -80% 0px" }
+      // element considered visible as soon as any pixel enters viewport
+      { rootMargin: "0px" }
     );
     obs.observe(el);
     return () => obs.disconnect();
@@ -98,7 +99,7 @@ export default function Home() {
             href="https://docs.google.com/forms/d/e/1FAIpQLSeyauR_JGwEPTRvgnnl6HcyvBcvUe0PhqHYwNwTF3TEJQbAxQ/viewform?usp=dialog"
             target="_blank"
             rel="noopener noreferrer"
-            className="block bg-[#1F3A5F] dark:bg-[#5B8FB9] text-white px-4 py-2 rounded-sm text-sm font-medium hover:bg-[#2F6F6D] dark:hover:bg-[#4A9B98] transition-colors text-center"
+            className="block bg-[#1F3A5F] dark:bg-[#5B8FB9] !text-white px-4 py-2 rounded-sm text-sm font-medium hover:bg-[#2F6F6D] dark:hover:bg-[#4A9B98] transition-colors text-center"
           >
             Postulación piloto
           </a>
