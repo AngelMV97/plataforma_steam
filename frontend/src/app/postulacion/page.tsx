@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRightIcon, CheckCircleIcon, DocumentIcon } from "@/components/icons/MinimalIcons";
@@ -8,6 +9,27 @@ import { SunIcon, MoonIcon } from '@/components/icons/ThemeIcons';
 
 export default function PostulacionPage() {
   const { isDark, toggle, mounted } = useDarkMode();
+  const heroRef = useRef<HTMLDivElement>(null);
+  const [showSticky, setShowSticky] = useState(false);
+  const formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSeyauR_JGwEPTRvgnnl6HcyvBcvUe0PhqHYwNwTF3TEJQbAxQ/viewform?usp=dialog";
+
+  useEffect(() => {
+    const el = heroRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setShowSticky(false);
+        } else {
+          setShowSticky(true);
+        }
+      },
+      { rootMargin: "-10px 0px 0px 0px" }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <div className="min-h-screen bg-[#FAFAF8] dark:bg-[#0F1419]">
       {/* Header */}
@@ -57,7 +79,7 @@ export default function PostulacionPage() {
       </header>
 
       {/* Hero */}
-      <section className="max-w-[1200px] mx-auto px-4 sm:px-6 md:px-8 lg:px-20 py-12 sm:py-16 md:py-20 lg:py-24">
+      <section ref={heroRef} className="max-w-[1200px] mx-auto px-4 sm:px-6 md:px-8 lg:px-20 py-12 sm:py-16 md:py-20 lg:py-24">
         <div className="max-w-3xl">
           <div className="inline-block mb-3 sm:mb-4 px-3 sm:px-4 py-1.5 bg-[#2F6F6D]/5 dark:bg-[#4A9B98]/10 border border-[#2F6F6D]/20 dark:border-[#4A9B98]/30 rounded-full">
             <span className="text-xs sm:text-sm text-[#2F6F6D] dark:text-[#4A9B98] font-medium">Cohorte Piloto 2026</span>
@@ -211,7 +233,7 @@ export default function PostulacionPage() {
                 <div className="absolute -top-4 left-6 w-8 h-8 rounded-full bg-[#2F6F6D] dark:bg-[#4A9B98] flex items-center justify-center text-white text-sm font-bold">
                   1
                 </div>
-                <h3 className="font-serif text-lg font-semibold text-[#1F3A5F] dark:text-[#5B8FB9] mb-3 mt-2">
+                <h3 className="font-serif text-lg font-semibold text-[#1F3A5F] dark:text-[#5B8FB9] mb-4 mt-2">
                   Completa el formulario
                 </h3>
                 <p className="text-sm text-[#4B5563] dark:text-[#D1D5DB] leading-relaxed">
@@ -225,7 +247,7 @@ export default function PostulacionPage() {
                 <div className="absolute -top-4 left-6 w-8 h-8 rounded-full bg-[#1F3A5F] dark:bg-[#5B8FB9] flex items-center justify-center text-white text-sm font-bold">
                   2
                 </div>
-                <h3 className="font-serif text-lg font-semibold text-[#1F3A5F] dark:text-[#5B8FB9] mb-3 mt-2">
+                <h3 className="font-serif text-lg font-semibold text-[#1F3A5F] dark:text-[#5B8FB9] mb-4 mt-2">
                   Revisión de perfil
                 </h3>
                 <p className="text-sm text-[#4B5563] dark:text-[#D1D5DB] leading-relaxed">
@@ -239,7 +261,7 @@ export default function PostulacionPage() {
                 <div className="absolute -top-4 left-6 w-8 h-8 rounded-full bg-[#1F3A5F] dark:bg-[#5B8FB9] flex items-center justify-center text-white text-sm font-bold">
                   3
                 </div>
-                <h3 className="font-serif text-lg font-semibold text-[#1F3A5F] dark:text-[#5B8FB9] mb-3 mt-2">
+                <h3 className="font-serif text-lg font-semibold text-[#1F3A5F] dark:text-[#5B8FB9] mb-4 mt-2">
                   Confirmación
                 </h3>
                 <p className="text-sm text-[#4B5563] dark:text-[#D1D5DB] leading-relaxed">
@@ -276,7 +298,7 @@ export default function PostulacionPage() {
               Duración
             </h3>
             <p className="text-[#4B5563] dark:text-[#D1D5DB] leading-relaxed mb-4">
-              <strong>4 semanas</strong> (febrero - marzo 2026)
+              <strong>4 semanas</strong> (marzo - abril 2026)
             </p>
             <p className="text-sm text-[#6B7280] dark:text-[#9CA3AF]">
               Con posibilidad de continuar en cohortes posteriores si el piloto es exitoso.
@@ -355,6 +377,23 @@ export default function PostulacionPage() {
           </div>
         </div>
       </section>
+
+      {/* sticky CTA for scrolling */}
+      {showSticky && (
+        <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-[#1a1f26] border-t border-[#E5E7EB] dark:border-[#1F2937] py-3 px-6 z-50 flex flex-col sm:flex-row items-center justify-between gap-2">
+          <span className="text-sm text-[#1F2937] dark:text-[#D1D5DB]">
+            Gomot está iniciando su primera cohorte piloto. Buscamos estudiantes comprometidos con aprender a pensar.
+          </span>
+          <a
+            href={formUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-1 sm:mt-0 bg-[#1F3A5F] dark:bg-[#5B8FB9] text-white px-4 py-2 rounded-sm text-sm font-medium hover:bg-[#2F6F6D] dark:hover:bg-[#4A9B98] transition-colors"
+          >
+            Postulación piloto
+          </a>
+        </div>
+      )}
 
       {/* Footer */}
       <footer className="bg-white dark:bg-[#1a1f26] border-t border-[#E5E7EB] dark:border-[#1F2937]">

@@ -314,7 +314,7 @@ export default function EnfoquePage() {
             ¿Listo para entrenar tu pensamiento científico?
           </h2>
           <p className="text-base sm:text-lg md:text-xl text-[#4B5563] dark:text-[#D1D5DB] leading-relaxed mb-6 sm:mb-8">
-            La cohorte piloto inicia en febrero 2026. Los cupos son limitados.
+            La cohorte piloto inicia en marzo 2026. Los cupos son limitados.
           </p>
           <Link 
             href="/postulacion" 
