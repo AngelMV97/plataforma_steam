@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { DocumentIcon, NotebookIcon, NodeIcon, UsersIcon, ClockIcon, TargetIcon, CheckCircleIcon, ArrowRightIcon } from "@/components/icons/MinimalIcons";
 import { useDarkMode } from '@/hooks/useDarkMode';
@@ -10,6 +10,19 @@ import Image from 'next/image';
 export default function Home() {
   const { isDark, toggle, mounted } = useDarkMode();
   const [showIntro, setShowIntro] = useState(true);
+  const [showCard, setShowCard] = useState(true);
+  const ctaRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = ctaRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      entries => setShowCard(!entries[0].isIntersecting),
+      { rootMargin: "0px 0px -80% 0px" }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
 
   /* display fullscreen video until it finishes */
   if (showIntro) {
@@ -17,7 +30,7 @@ export default function Home() {
       <video
         src="/media/intro.mp4"
         poster="/media/static_intro.png"
-        className="fixed inset-0 w-full h-full object-cover z-50"
+        className="fixed inset-0 w-full h-full object-contain sm:object-cover z-50"
         autoPlay
         muted
         playsInline
@@ -75,7 +88,8 @@ export default function Home() {
       </header>
 
       {/* Floating CTA Card */}
-      <div className="fixed bottom-6 right-6 z-40 max-w-xs">
+      {showCard && (
+        <div className="fixed bottom-6 right-6 z-40 max-w-xs">
         <div className="bg-white dark:bg-[#1a1f26] border border-[#E5E7EB] dark:border-[#1F2937] rounded-lg shadow-lg p-4 md:p-5">
           <p className="text-sm md:text-base text-[#1F2937] dark:text-[#D1D5DB] mb-3 leading-relaxed">
             Gomot está iniciando su primera cohorte piloto. Buscamos estudiantes comprometidos con aprender a pensar.
@@ -90,6 +104,7 @@ export default function Home() {
           </a>
         </div>
       </div>
+      )}
 
       {/* Main Content */}
 
@@ -228,7 +243,7 @@ export default function Home() {
             <div className="hidden md:block absolute top-20 left-0 right-0 h-0.5 bg-gradient-to-r from-[#2F6F6D]/20 via-[#2F6F6D]/40 to-[#2F6F6D]/20 dark:from-[#4A9B98]/20 dark:via-[#4A9B98]/40 dark:to-[#4A9B98]/20"></div>
             
             <div className="relative">
-              <div className="bg-white dark:bg-[#1a1f26] p-8 border-2 border-[#2F6F6D] dark:border-[#4A9B98] rounded-lg">
+              <div className="bg-white dark:bg-[#1a1f26] p-8 border-2 border-[#2F6F6D] dark:border-[#4A9B98] rounded-lg relative h-full">
                 <div className="absolute -top-4 left-8 w-8 h-8 rounded-full bg-[#2F6F6D] dark:bg-[#4A9B98] flex items-center justify-center text-white text-sm font-bold">
                   1
                 </div>
@@ -246,7 +261,7 @@ export default function Home() {
             </div>
 
             <div className="relative">
-              <div className="bg-white dark:bg-[#1a1f26] p-8 border-2 border-[#1F3A5F]/30 dark:border-[#5B8FB9]/30 rounded-lg">
+              <div className="bg-white dark:bg-[#1a1f26] p-8 border-2 border-[#1F3A5F]/30 dark:border-[#5B8FB9]/30 rounded-lg relative h-full">
                 <div className="absolute -top-4 left-8 w-8 h-8 rounded-full bg-[#1F3A5F] dark:bg-[#5B8FB9] flex items-center justify-center text-white text-sm font-bold">
                   2
                 </div>
@@ -264,7 +279,7 @@ export default function Home() {
             </div>
 
             <div className="relative">
-              <div className="bg-white dark:bg-[#1a1f26] p-8 border-2 border-[#1F3A5F]/30 dark:border-[#5B8FB9]/30 rounded-lg">
+              <div className="bg-white dark:bg-[#1a1f26] p-8 border-2 border-[#1F3A5F]/30 dark:border-[#5B8FB9]/30 rounded-lg relative h-full">
                 <div className="absolute -top-4 left-8 w-8 h-8 rounded-full bg-[#1F3A5F] dark:bg-[#5B8FB9] flex items-center justify-center text-white text-sm font-bold">
                   3
                 </div>
@@ -318,7 +333,7 @@ export default function Home() {
       </section>
 
       {/* Final CTA */}
-      <section className="bg-gradient-to-br from-[#1F3A5F]/5 dark:from-[#5B8FB9]/5 to-[#2F6F6D]/5 dark:to-[#4A9B98]/5 border-y border-[#E5E7EB] dark:border-[#1F2937]">
+      <section ref={ctaRef} className="bg-gradient-to-br from-[#1F3A5F]/5 dark:from-[#5B8FB9]/5 to-[#2F6F6D]/5 dark:to-[#4A9B98]/5 border-y border-[#E5E7EB] dark:border-[#1F2937]">
         <div className="max-w-[1200px] mx-auto px-4 sm:px-6 md:px-8 lg:px-20 py-12 sm:py-16 md:py-20">
           <div className="bg-white dark:bg-[#1a1f26] p-6 sm:p-8 md:p-10 lg:p-12 border border-[#E5E7EB] dark:border-[#1F2937] rounded-2xl shadow-lg max-w-3xl mx-auto text-center">
             <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full bg-[#2F6F6D]/10 dark:bg-[#4A9B98]/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 md:mb-6">
