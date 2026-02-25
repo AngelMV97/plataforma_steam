@@ -342,8 +342,8 @@ export default function EnfoquePage() {
         </div>
       </section>
 
-      {/* CTA Final */}
-      <section className="max-w-[1200px] mx-auto px-4 sm:px-6 md:px-8 lg:px-20 py-12 sm:py-16 md:py-20">
+      {/* Final CTA */}
+      <section ref={ctaRef} className="max-w-[1200px] mx-auto px-4 sm:px-6 md:px-8 lg:px-20 py-12 sm:py-16 md:py-20">
         <div className="bg-white dark:bg-[#1a1f26] p-6 sm:p-8 md:p-10 lg:p-12 border border-[#E5E7EB] dark:border-[#1F2937] rounded-2xl shadow-lg max-w-3xl mx-auto text-center">
           <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl font-semibold text-[#1F3A5F] dark:text-[#5B8FB9] mb-3 sm:mb-4">
             ¿Listo para entrenar tu pensamiento científico?
@@ -358,33 +358,6 @@ export default function EnfoquePage() {
             Postula a la cohorte piloto
             <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
           </Link>
-        </div>
-      </section>
-
-      {/* Final CTA */}
-      <section ref={ctaRef} className="bg-gradient-to-br from-[#1F3A5F]/5 dark:from-[#5B8FB9]/5 to-[#2F6F6D]/5 dark:to-[#4A9B98]/5 border-y border-[#E5E7EB] dark:border-[#1F2937]">
-        <div className="max-w-[1200px] mx-auto px-4 sm:px-6 md:px-8 lg:px-20 py-12 sm:py-16 md:py-20">
-          <div className="bg-white dark:bg-[#1a1f26] p-6 sm:p-8 md:p-10 lg:p-12 border border-[#E5E7EB] dark:border-[#1F2937] rounded-2xl shadow-lg max-w-3xl mx-auto text-center">
-            <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full bg-[#2F6F6D]/10 dark:bg-[#4A9B98]/10 flex items-center justify-center mx-auto mb-4 sm:mb-5 md:mb-6">
-              <TargetIcon className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-[#2F6F6D] dark:text-[#4A9B98]" />
-            </div>
-            <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl font-semibold text-[#1F3A5F] dark:text-[#5B8FB9] mb-3 sm:mb-4">
-              Gomot está iniciando su primera cohorte piloto
-            </h2>
-            <p className="text-base sm:text-lg md:text-xl text-[#4B5563] dark:text-[#D1D5DB] leading-relaxed mb-6 sm:mb-8">
-              Buscamos estudiantes comprometidos con aprender a pensar.
-            </p>
-            <Link
-              href="/postulacion"
-              className="group bg-white dark:bg-[#1a1f26] border-2 border-[#1F3A5F] dark:border-[#5B8FB9] !text-[#1F3A5F] dark:!text-[#5B8FB9] px-6 sm:px-8 md:px-10 py-3 sm:py-3.5 md:py-4 rounded-sm font-medium hover:!bg-[#1F3A5F] dark:hover:!bg-[#5B8FB9] hover:!text-white transition-all duration-300 inline-flex items-center gap-2 shadow-sm hover:shadow-md no-underline text-sm sm:text-base"
-            >
-              Postulación piloto
-              <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
-            </Link>
-            <p className="text-xs sm:text-sm text-[#6B7280] dark:text-[#9CA3AF] mt-4 sm:mt-5 md:mt-6">
-              Cupos limitados · Inicio marzo 2026
-            </p>
-          </div>
         </div>
       </section>
 

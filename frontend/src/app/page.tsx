@@ -14,6 +14,8 @@ export default function Home() {
   const ctaRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // wait until intro finishes so the CTA element exists in DOM
+    if (showIntro) return;
     const el = ctaRef.current;
     if (!el) return;
     const obs = new IntersectionObserver(
@@ -23,7 +25,7 @@ export default function Home() {
     );
     obs.observe(el);
     return () => obs.disconnect();
-  }, []);
+  }, [showIntro]);
 
   /* display fullscreen video until it finishes */
   if (showIntro) {
