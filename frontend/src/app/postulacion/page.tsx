@@ -10,23 +10,29 @@ import { SunIcon, MoonIcon } from '@/components/icons/ThemeIcons';
 export default function PostulacionPage() {
   const { isDark, toggle, mounted } = useDarkMode();
   const heroRef = useRef<HTMLDivElement>(null);
+  const appRef = useRef<HTMLDivElement>(null);
   const [showSticky, setShowSticky] = useState(false);
   const formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSeyauR_JGwEPTRvgnnl6HcyvBcvUe0PhqHYwNwTF3TEJQbAxQ/viewform?usp=dialog";
 
   useEffect(() => {
-    const el = heroRef.current;
-    if (!el) return;
+    const heroEl = heroRef.current;
+    const formEl = appRef.current;
+    if (!heroEl || !formEl) return;
+
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting) {
-          setShowSticky(false);
-        } else {
-          setShowSticky(true);
-        }
+        let heroVisible = false;
+        let formVisible = false;
+        entries.forEach(e => {
+          if (e.target === heroEl) heroVisible = e.isIntersecting;
+          if (e.target === formEl) formVisible = e.isIntersecting;
+        });
+        setShowSticky(!heroVisible && !formVisible);
       },
       { rootMargin: "-10px 0px 0px 0px" }
     );
-    observer.observe(el);
+    observer.observe(heroEl);
+    observer.observe(formEl);
     return () => observer.disconnect();
   }, []);
 
@@ -233,7 +239,7 @@ export default function PostulacionPage() {
                 <div className="absolute -top-4 left-6 w-8 h-8 rounded-full bg-[#2F6F6D] dark:bg-[#4A9B98] flex items-center justify-center text-white text-sm font-bold">
                   1
                 </div>
-                <h3 className="font-serif text-lg font-semibold text-[#1F3A5F] dark:text-[#5B8FB9] mb-4 mt-2">
+                <h3 className="font-serif text-lg font-semibold text-[#1F3A5F] dark:text-[#5B8FB9] mb-3 mt-2">
                   Completa el formulario
                 </h3>
                 <p className="text-sm text-[#4B5563] dark:text-[#D1D5DB] leading-relaxed">
@@ -247,7 +253,7 @@ export default function PostulacionPage() {
                 <div className="absolute -top-4 left-6 w-8 h-8 rounded-full bg-[#1F3A5F] dark:bg-[#5B8FB9] flex items-center justify-center text-white text-sm font-bold">
                   2
                 </div>
-                <h3 className="font-serif text-lg font-semibold text-[#1F3A5F] dark:text-[#5B8FB9] mb-4 mt-2">
+                <h3 className="font-serif text-lg font-semibold text-[#1F3A5F] dark:text-[#5B8FB9] mb-3 mt-2">
                   Revisión de perfil
                 </h3>
                 <p className="text-sm text-[#4B5563] dark:text-[#D1D5DB] leading-relaxed">
@@ -261,7 +267,7 @@ export default function PostulacionPage() {
                 <div className="absolute -top-4 left-6 w-8 h-8 rounded-full bg-[#1F3A5F] dark:bg-[#5B8FB9] flex items-center justify-center text-white text-sm font-bold">
                   3
                 </div>
-                <h3 className="font-serif text-lg font-semibold text-[#1F3A5F] dark:text-[#5B8FB9] mb-4 mt-2">
+                <h3 className="font-serif text-lg font-semibold text-[#1F3A5F] dark:text-[#5B8FB9] mb-3 mt-2 min-h-[3.5rem]">
                   Confirmación
                 </h3>
                 <p className="text-sm text-[#4B5563] dark:text-[#D1D5DB] leading-relaxed">
@@ -332,7 +338,7 @@ export default function PostulacionPage() {
       </section>
 
       {/* CTA final - Formulario */}
-      <section className="bg-gradient-to-br from-[#1F3A5F]/5 to-[#2F6F6D]/5 dark:from-[#5B8FB9]/5 dark:to-[#4A9B98]/5 border-y border-[#E5E7EB] dark:border-[#1F2937]">
+      <section ref={appRef} className="bg-gradient-to-br from-[#1F3A5F]/5 to-[#2F6F6D]/5 dark:from-[#5B8FB9]/5 dark:to-[#4A9B98]/5 border-y border-[#E5E7EB] dark:border-[#1F2937]">
         <div className="max-w-[1200px] mx-auto px-4 sm:px-6 md:px-8 lg:px-20 py-12 sm:py-16 md:py-20">
           <div className="bg-white dark:bg-[#1a1f26] p-6 sm:p-8 md:p-10 lg:p-12 border border-[#E5E7EB] dark:border-[#1F2937] rounded-2xl shadow-lg max-w-3xl mx-auto text-center">
             <div className="w-16 h-16 rounded-full bg-[#2F6F6D]/10 dark:bg-[#4A9B98]/20 flex items-center justify-center mx-auto mb-6">
@@ -380,15 +386,15 @@ export default function PostulacionPage() {
 
       {/* sticky CTA for scrolling */}
       {showSticky && (
-        <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-[#1a1f26] border-t border-[#E5E7EB] dark:border-[#1F2937] py-3 px-6 z-50 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <span className="text-sm text-[#1F2937] dark:text-[#D1D5DB]">
+        <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-[#1a1f26] border-t border-[#E5E7EB] dark:border-[#1F2937] py-4 px-6 z-50 flex flex-col sm:flex-row items:center justify-between gap-3">
+          <span className="text-base text-[#1F2937] dark:text-[#D1D5DB]">
             Gomot está iniciando su primera cohorte piloto. Buscamos estudiantes comprometidos con aprender a pensar.
           </span>
           <a
             href={formUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-1 sm:mt-0 bg-[#1F3A5F] dark:bg-[#5B8FB9] text-white px-4 py-2 rounded-sm text-sm font-medium hover:bg-[#2F6F6D] dark:hover:bg-[#4A9B98] transition-colors"
+            className="mt-1 sm:mt-0 bg-[#1F3A5F] dark:bg-[#5B8FB9] text-white px-6 py-3 rounded-sm text-base font-medium hover:bg-[#2F6F6D] dark:hover:bg-[#4A9B98] transition-colors"
           >
             Postulación piloto
           </a>

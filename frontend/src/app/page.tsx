@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { DocumentIcon, NotebookIcon, NodeIcon, UsersIcon, ClockIcon, TargetIcon, CheckCircleIcon, ArrowRightIcon } from "@/components/icons/MinimalIcons";
 import { useDarkMode } from '@/hooks/useDarkMode';
@@ -8,25 +9,25 @@ import Image from 'next/image';
 
 export default function Home() {
   const { isDark, toggle, mounted } = useDarkMode();
+  const [showIntro, setShowIntro] = useState(true);
+
+  /* display fullscreen video until it finishes */
+  if (showIntro) {
+    return (
+      <video
+        src="/media/intro.mp4"
+        poster="/media/static_intro.png"
+        className="fixed inset-0 w-full h-full object-cover z-50"
+        autoPlay
+        muted
+        playsInline
+        onEnded={() => setShowIntro(false)}
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#FAFAF8] dark:bg-[#0F1419]">
-      {/* Intro Clip */}
-      <section className="w-full">
-        <video
-          src="/media/intro.mp4"
-          poster="/media/static_intro.png"
-          className="w-full max-h-[400px] object-cover"
-          autoPlay
-          muted
-          playsInline
-          controls
-          // when it ends we simply stop, it won't loop
-          onEnded={e => {
-            e.currentTarget.pause();
-          }}
-        />
-      </section>
-
       {/* Header */}
       <header className="border-b border-[#E5E7EB] dark:border-[#1F2937] bg-white/80 dark:bg-[#1a1f26]/80 backdrop-blur-sm sticky top-0 z-50">
         <nav className="max-w-[1200px] mx-auto px-4 sm:px-6 md:px-8 lg:px-20 py-4 sm:py-5 flex items-center justify-between">
