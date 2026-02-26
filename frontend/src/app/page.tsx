@@ -93,15 +93,15 @@ export default function Home() {
       {/* Floating CTA Card */}
       {showCard && (
         <div className="fixed bottom-6 right-6 z-40 max-w-xs">
-        <div className="bg-white dark:bg-[#1a1f26] border border-[#E5E7EB] dark:border-[#1F2937] rounded-lg shadow-lg p-4 md:p-5">
-          <p className="text-sm md:text-base text-[#1F2937] dark:text-[#D1D5DB] mb-3 leading-relaxed">
+        <div className="bg-[#1F3A5F] dark:bg-white border border-[#1F3A5F] dark:border-[#E5E7EB] rounded-lg shadow-lg p-4 md:p-5">
+          <p className="text-sm md:text-base text-white dark:text-[#1F2937] mb-3 leading-relaxed">
             Gomot está iniciando su primera cohorte piloto. Buscamos estudiantes comprometidos con aprender a pensar.
           </p>
           <a
             href="https://docs.google.com/forms/d/e/1FAIpQLSeyauR_JGwEPTRvgnnl6HcyvBcvUe0PhqHYwNwTF3TEJQbAxQ/viewform?usp=dialog"
             target="_blank"
             rel="noopener noreferrer"
-            className="block bg-[#1F3A5F] dark:bg-[#5B8FB9] !text-white px-4 py-2 rounded-sm text-sm font-medium hover:bg-[#2F6F6D] dark:hover:bg-[#4A9B98] transition-colors text-center"
+            className="block bg-[#2F6F6D] dark:bg-[#1F3A5F] !text-white px-4 py-2 rounded-sm text-sm font-medium hover:bg-[#5B8FB9] dark:hover:bg-[#5B8FB9] transition-colors text-center"
           >
             Postulación piloto
           </a>
@@ -246,7 +246,7 @@ export default function Home() {
             <div className="hidden md:block absolute top-20 left-0 right-0 h-0.5 bg-gradient-to-r from-[#2F6F6D]/20 via-[#2F6F6D]/40 to-[#2F6F6D]/20 dark:from-[#4A9B98]/20 dark:via-[#4A9B98]/40 dark:to-[#4A9B98]/20"></div>
             
             <div className="relative">
-              <div className="bg-white dark:bg-[#1a1f26] p-8 border-2 border-[#2F6F6D] dark:border-[#4A9B98] rounded-lg relative h-full">
+              <div className="bg-white dark:bg-[#1a1f26] p-8 border-2 border-[#2F6F6D] dark:border-[#4A9B98] rounded-lg relative h-full flex flex-col">
                 <div className="absolute -top-4 left-8 w-8 h-8 rounded-full bg-[#2F6F6D] dark:bg-[#4A9B98] flex items-center justify-center text-white text-sm font-bold">
                   1
                 </div>
@@ -256,7 +256,7 @@ export default function Home() {
                 <p className="text-[#4B5563] dark:text-[#D1D5DB] leading-relaxed mb-4">
                   Análisis guiado de un artículo científico o de divulgación
                 </p>
-                <div className="flex items-center gap-2 text-sm text-[#2F6F6D] dark:text-[#4A9B98]">
+                <div className="flex items-center gap-2 text-sm text-[#2F6F6D] dark:text-[#4A9B98] mt-6">
                   <CheckCircleIcon className="w-4 h-4" />
                   <span>Lectura profunda</span>
                 </div>
@@ -264,7 +264,7 @@ export default function Home() {
             </div>
 
             <div className="relative">
-              <div className="bg-white dark:bg-[#1a1f26] p-8 border-2 border-[#1F3A5F]/30 dark:border-[#5B8FB9]/30 rounded-lg relative h-full">
+              <div className="bg-white dark:bg-[#1a1f26] p-8 border-2 border-[#1F3A5F]/30 dark:border-[#5B8FB9]/30 rounded-lg relative h-full flex flex-col">
                 <div className="absolute -top-4 left-8 w-8 h-8 rounded-full bg-[#1F3A5F] dark:bg-[#5B8FB9] flex items-center justify-center text-white text-sm font-bold">
                   2
                 </div>
@@ -274,7 +274,7 @@ export default function Home() {
                 <p className="text-[#4B5563] dark:text-[#D1D5DB] leading-relaxed mb-4">
                   Matemáticas y física necesarias para comprender los conceptos
                 </p>
-                <div className="flex items-center gap-2 text-sm text-[#2F6F6D] dark:text-[#4A9B98]">
+                <div className="flex items-center gap-2 text-sm text-[#2F6F6D] dark:text-[#4A9B98] mt-6">
                   <CheckCircleIcon className="w-4 h-4" />
                   <span>Fundamentos sólidos</span>
                 </div>
@@ -282,7 +282,7 @@ export default function Home() {
             </div>
 
             <div className="relative">
-              <div className="bg-white dark:bg-[#1a1f26] p-8 border-2 border-[#1F3A5F]/30 dark:border-[#5B8FB9]/30 rounded-lg relative h-full">
+              <div className="bg-white dark:bg-[#1a1f26] p-8 border-2 border-[#1F3A5F]/30 dark:border-[#5B8FB9]/30 rounded-lg relative h-full flex flex-col">
                 <div className="absolute -top-4 left-8 w-8 h-8 rounded-full bg-[#1F3A5F] dark:bg-[#5B8FB9] flex items-center justify-center text-white text-sm font-bold">
                   3
                 </div>
@@ -292,7 +292,7 @@ export default function Home() {
                 <p className="text-[#4B5563] dark:text-[#D1D5DB] leading-relaxed mb-4">
                   Lectura crítica y razonamiento para pruebas estandarizadas
                 </p>
-                <div className="flex items-center gap-2 text-sm text-[#2F6F6D] dark:text-[#4A9B98]">
+                <div className="flex items-center gap-2 text-sm text-[#2F6F6D] dark:text-[#4A9B98] mt-6">
                   <CheckCircleIcon className="w-4 h-4" />
                   <span>Aplicación práctica</span>
                 </div>

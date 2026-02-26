@@ -208,7 +208,7 @@ export default function PostulacionPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
             <div className="relative">
-              <div className="bg-white dark:bg-[#1a1f26] p-6 border-2 border-[#2F6F6D] dark:border-[#4A9B98] rounded-lg relative h-full">
+              <div className="bg-white dark:bg-[#1a1f26] p-6 border-2 border-[#2F6F6D] dark:border-[#4A9B98] rounded-lg relative h-full flex flex-col">
                 <div className="absolute -top-4 left-6 w-8 h-8 rounded-full bg-[#2F6F6D] dark:bg-[#4A9B98] flex items-center justify-center text-white text-sm font-bold">
                   1
                 </div>
@@ -222,7 +222,7 @@ export default function PostulacionPage() {
             </div>
 
             <div className="relative">
-              <div className="bg-white dark:bg-[#1a1f26] p-6 border-2 border-[#1F3A5F]/30 dark:border-[#5B8FB9]/30 rounded-lg relative h-full">
+              <div className="bg-white dark:bg-[#1a1f26] p-6 border-2 border-[#1F3A5F]/30 dark:border-[#5B8FB9]/30 rounded-lg relative h-full flex flex-col">
                 <div className="absolute -top-4 left-6 w-8 h-8 rounded-full bg-[#1F3A5F] dark:bg-[#5B8FB9] flex items-center justify-center text-white text-sm font-bold">
                   2
                 </div>
@@ -236,7 +236,7 @@ export default function PostulacionPage() {
             </div>
 
             <div className="relative">
-              <div className="bg-white dark:bg-[#1a1f26] p-6 border-2 border-[#1F3A5F]/30 dark:border-[#5B8FB9]/30 rounded-lg relative h-full">
+              <div className="bg-white dark:bg-[#1a1f26] p-6 border-2 border-[#1F3A5F]/30 dark:border-[#5B8FB9]/30 rounded-lg relative h-full flex flex-col">
                 <div className="absolute -top-4 left-6 w-8 h-8 rounded-full bg-[#1F3A5F] dark:bg-[#5B8FB9] flex items-center justify-center text-white text-sm font-bold">
                   3
                 </div>
