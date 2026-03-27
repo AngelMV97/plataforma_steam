@@ -49,8 +49,8 @@ export default function DashboardLayout({
             <div className="flex items-center">
               <Link href={profile.role === 'student' ? '/student' : '/mentor'} className="flex items-center group">
                 <Image
-                  src="/logos/gomot-seal.png"
-                  alt="Gomot Seal"
+                  src="/logos/logo.png"
+                  alt="Gomot Logo"
                   width={48}
                   height={48}
                   className="mr-3 rounded-sm"
