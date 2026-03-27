@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   title: "Gomot Science Academy - Formación en Pensamiento Científico",
   description: "Analizamos artículos, construimos modelos y aprendemos a pensar como científicos e ingenieros.",
   icons: {
-    icon: "/logos/favicon.ico",
+    icon: "/logos/icon_G.ico",
   },
 };
 

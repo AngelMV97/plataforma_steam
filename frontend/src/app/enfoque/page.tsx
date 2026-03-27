@@ -74,7 +74,7 @@ export default function EnfoquePage() {
       {/* Floating CTA Card */}
       {showCard && (
         <div className="fixed bottom-6 right-6 z-40 max-w-xs">
-        <div className="bg-[#1F3A5F] dark:bg-white border border-[#1F3A5F] dark:border-[#E5E7EB] rounded-lg shadow-lg p-4 md:p-5">
+        <div className="bg-[#1a1f26] dark:bg-white border border-[#1F2937] dark:border-[#E5E7EB] rounded-lg shadow-lg p-4 md:p-5">
           <p className="text-sm md:text-base text-white dark:text-[#1F2937] mb-3 leading-relaxed">
             Gomot está iniciando su primera cohorte piloto. Buscamos estudiantes comprometidos con aprender a pensar.
           </p>
@@ -82,7 +82,7 @@ export default function EnfoquePage() {
             href="https://docs.google.com/forms/d/e/1FAIpQLSeyauR_JGwEPTRvgnnl6HcyvBcvUe0PhqHYwNwTF3TEJQbAxQ/viewform?usp=dialog"
             target="_blank"
             rel="noopener noreferrer"
-            className="block bg-[#2F6F6D] dark:bg-[#1F3A5F] !text-white px-4 py-2 rounded-sm text-sm font-medium hover:bg-[#5B8FB9] dark:hover:bg-[#5B8FB9] transition-colors text-center"
+            className="block bg-[#2F6F6D] dark:bg-[#4A9B98] !text-white px-4 py-2 rounded-sm text-sm font-medium hover:bg-[#5B8FB9] dark:hover:bg-[#5B8FB9] transition-colors text-center"
           >
             Postulación piloto
           </a>
@@ -349,7 +349,7 @@ export default function EnfoquePage() {
             ¿Listo para entrenar tu pensamiento científico?
           </h2>
           <p className="text-base sm:text-lg md:text-xl text-[#4B5563] dark:text-[#D1D5DB] leading-relaxed mb-6 sm:mb-8">
-            La cohorte piloto inicia en marzo 2026. Los cupos son limitados.
+            La cohorte piloto inicia en abril 2026. Los cupos son limitados.
           </p>
           <Link 
             href="/postulacion" 

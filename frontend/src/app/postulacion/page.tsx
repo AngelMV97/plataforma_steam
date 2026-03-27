@@ -277,7 +277,7 @@ export default function PostulacionPage() {
               Duración
             </h3>
             <p className="text-[#4B5563] dark:text-[#D1D5DB] leading-relaxed mb-4">
-              <strong>4 semanas</strong> (marzo - abril 2026)
+              <strong>4 semanas</strong> (abril - mayo 2026)
             </p>
             <p className="text-sm text-[#6B7280] dark:text-[#9CA3AF]">
               Con posibilidad de continuar en cohortes posteriores si el piloto es exitoso.
